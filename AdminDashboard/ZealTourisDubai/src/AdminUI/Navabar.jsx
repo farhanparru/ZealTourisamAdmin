@@ -17,7 +17,7 @@ const Navbar = () => {
         // Clear the admin token from localStorage
         localStorage.removeItem('adminToken');
 
-        // Optionally redirect or update the UI to reflect the logout
+        
         console.log("Logged out successfully");
       }
     } catch (error) {
