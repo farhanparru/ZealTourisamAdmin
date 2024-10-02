@@ -14,7 +14,7 @@ const Navbar = () => {
       console.log(response,"kk");
       
       if (response.data.success) {
-        // Clear the admin token from localStorage
+      
         localStorage.removeItem('adminToken');
 
         
