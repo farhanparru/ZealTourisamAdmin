@@ -1,9 +1,47 @@
 // eslint-disable-next-line no-unused-vars
-import React from 'react';
+import React,{useState} from 'react';
 import logo from '../assets/Images/Logon bar.png'
-
+import axios from 'axios'
+import {useNavigate} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const AdminLogin = () => {
+const [username,setUsername] = useState('')
+const [password,setPassword] = useState('')
+const [errorMessage,setErrorMessage] = useState('')
+const navigate = useNavigate()
+
+// handle login Submission
+
+const handleLogin = async (e)=>{
+  e.preventDefault(); // Prevent page reload on form submission
+  setErrorMessage(''); // Reset error message before submitting
+
+  try {
+    const response = await axios.post('http://localhost:3002/api/admin/login', {
+      username,
+      password
+    });
+
+    if (response.data.success) {
+      // Store the JWT token in localStorage
+      localStorage.setItem('adminToken', response.data.token);
+
+      // Redirect to admin dashboard or any other page after successful login
+      navigate('/Dashboard');
+    }
+  } catch (error) {
+    if (error.response && error.response.data.message) {
+      // Set the error message returned from the server
+      setErrorMessage(error.response.data.message);
+    } else {
+      // Default error message for unexpected errors
+      setErrorMessage('Something went wrong. Please try again.');
+    }
+  }
+}
+
+  
   return (
     <div
       className="relative w-full h-screen bg-cover bg-center"
@@ -30,7 +68,14 @@ const AdminLogin = () => {
 
           <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Login Your Account</h2>
 
-          <form className="space-y-4">
+    {/* Error Message */}
+    {errorMessage && (
+            <div className="mb-4 text-center text-red-500">
+              {errorMessage}
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={handleLogin}>
             <div>
               <label className="block text-gray-700 mb-1" htmlFor="username">Username</label>
               <input
@@ -38,6 +83,9 @@ const AdminLogin = () => {
                 id="username"
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-orange-400"
                 placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)} // Update username state
+                required
               />
             </div>
 
@@ -48,6 +96,9 @@ const AdminLogin = () => {
                 id="password"
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-orange-400"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} // Update password state
+                required
               />
             </div>
 
@@ -61,7 +112,7 @@ const AdminLogin = () => {
                 <label htmlFor="staySignedIn" className="text-gray-700">Stay Signed In</label>
               </div>
               
-              <a href="#" className="text-sm text-orange-500 hover:underline">Forgot Password?</a>
+              <Link to="/forgot"><a href="#" className="text-sm text-orange-500 hover:underline">Forgot Password?</a></Link>
             </div>
 
             <button

@@ -8,6 +8,9 @@ import Umraha from './Pacakegs/Umraha';
 import Holidays from './Pacakegs/Holidays';
 import GlobalVisas from './Pacakegs/GlobalVisas';
 import AdminLogin from './AdminUI/AdminLogin';
+import ProtectedRoute from './AdminUI/ProtectedRoute';
+import Adminprofile from './AdminUI/Adminprofile';
+import AdminForgotPassword from './AdminUI/AdminforgotPassword';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -23,14 +26,15 @@ const Feedback = () => <h2>Feedback</h2>;
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/'; // Check if current route is /Adminlogin
+  const isForgotPasswordPage = location.pathname === '/forgot'; // Check if current route is /forgot
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Conditionally show Navbar and Sidebar */}
-      {!isLoginPage && <Navbar />}
+      {!isLoginPage && !isForgotPasswordPage && <Navbar />}
       <div className="flex flex-grow">
         {/* Conditionally show Sidebar */}
-        {!isLoginPage && <Sidebar />}
+        {!isLoginPage && !isForgotPasswordPage && <Sidebar />}
         <div className="flex-grow p-7">
           {children}
         </div>
@@ -45,17 +49,19 @@ function App() {
       <AppLayout>
         <Routes>
           <Route path="/" element={<AdminLogin />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/packages" element={<Packages />} />
+          <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/packages" element={<ProtectedRoute><Packages /></ProtectedRoute>} />
           <Route path="/bookings" element={<Bookings />} />
-          <Route path="/GlobalVisas" element={<GlobalVisas />} />
+          <Route path="/GlobalVisas" element={<ProtectedRoute><GlobalVisas /></ProtectedRoute>} />
           <Route path="/travelers" element={<Travelers />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/deals" element={<Deals />} />
-          <Route path="/Umrahaall" element={<Umraha />} />
-          <Route path="/Holidays" element={<Holidays />} />
+          <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />
+          <Route path="/Holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
           <Route path="/feedback" element={<Feedback />} />
+          <Route path='/Profile' element={<Adminprofile/>}/>
+          <Route path='/forgot' element={<AdminForgotPassword/>}/>
         </Routes>
       </AppLayout>
     </Router>

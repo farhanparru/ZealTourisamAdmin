@@ -3,8 +3,28 @@ import { Link } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
 import logo from '../assets/Images/Logon bar.png';  // Make sure the file path is correct
+import axios from 'axios';
 
 const Navbar = () => {
+
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post('http://localhost:3002/api/admin/adminLogout'); // Replace with your actual endpoint
+      console.log(response,"kk");
+      
+      if (response.data.success) {
+        // Clear the admin token from localStorage
+        localStorage.removeItem('adminToken');
+
+        // Optionally redirect or update the UI to reflect the logout
+        console.log("Logged out successfully");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   // State to control dropdown visibility
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -57,16 +77,16 @@ const Navbar = () => {
         {/* Conditional rendering of the dropdown */}
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-            <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <Link to="/Profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
               Profile
             </Link>
             <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
               Settings
             </Link>
-            <Link to="/logout" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <button className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={handleLogout}>
               <FiLogOut className="inline-block mr-2" />
               Logout
-            </Link>
+            </button>
           </div>
         )}
       </div>

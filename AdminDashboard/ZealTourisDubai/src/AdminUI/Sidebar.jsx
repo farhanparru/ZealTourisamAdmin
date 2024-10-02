@@ -27,7 +27,7 @@ const Sidebar = () => {
       <ul className="pt-8">
         <li className="flex items-center p-2 my-4 text-gray-700 rounded-md cursor-pointer hover:bg-blue-200">
           <FaHome className="text-xl" />
-          {isOpen && <Link to="/" className="ml-4 text-md">Dashboard</Link>}
+          {isOpen && <Link to="/Dashboard" className="ml-4 text-md">Dashboard</Link>}
         </li>
 
         {/* Packages Section */}
