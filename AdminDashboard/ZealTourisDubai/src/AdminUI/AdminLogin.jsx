@@ -22,7 +22,10 @@ const handleLogin = async (e)=>{
       username,
       password
     });
+    
 
+    console.log(response);
+    
     if (response.data.success) {
       // Store the JWT token in localStorage
       localStorage.setItem('adminToken', response.data.token);
@@ -35,8 +38,8 @@ const handleLogin = async (e)=>{
       // Set the error message returned from the server
       setErrorMessage(error.response.data.message);
     } else {
-      // Default error message for unexpected errors
-      setErrorMessage('Something went wrong. Please try again.');
+     console.log(error);
+     
     }
   }
 }

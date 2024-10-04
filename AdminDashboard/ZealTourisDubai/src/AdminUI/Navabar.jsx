@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
+import {useNavigate} from 'react-router-dom'
 import { FiLogOut } from 'react-icons/fi';
 import logo from '../assets/Images/Logon bar.png';  // Make sure the file path is correct
 import axios from 'axios';
 
 const Navbar = () => {
 
+  const navigate = useNavigate()
 
   const handleLogout = async () => {
     try {
@@ -14,7 +16,8 @@ const Navbar = () => {
       console.log(response,"kk");
       
       if (response.data.success) {
-      
+        navigate('/') // login page
+
         localStorage.removeItem('adminToken');
 
         
