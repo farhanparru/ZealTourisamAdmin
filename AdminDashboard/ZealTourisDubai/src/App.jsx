@@ -11,6 +11,7 @@ import AdminLogin from './AdminUI/AdminLogin';
 import ProtectedRoute from './AdminUI/ProtectedRoute';
 import Adminprofile from './AdminUI/Adminprofile';
 import AdminForgotPassword from './AdminUI/AdminforgotPassword';
+import UmrahaView from './AllPackgesviewSection/UmrahaView';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -62,6 +63,7 @@ function App() {
           <Route path="/feedback" element={<Feedback />} />
           <Route path='/Profile' element={<Adminprofile/>}/>
           <Route path='/forgot' element={<AdminForgotPassword/>}/>
+          <Route path='/View' element={<UmrahaView/>}/>
         </Routes>
       </AppLayout>
     </Router>

@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import AddUmrahaPackageModal from "./AddUmrahaPackageModal"; // Import the modal component
 import packge from '../assets/Images/umraga.png'
+import { useNavigate } from "react-router-dom";
 
 const Umraha = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const navigate = useNavigate()
   const [packages, setPackages] = useState([
     {
       id: 1,
@@ -37,6 +39,7 @@ const Umraha = () => {
   };
 
   const handleView = (id) => {
+   navigate('/View')
     console.log(`View package with id: ${id}`);
   };
 
