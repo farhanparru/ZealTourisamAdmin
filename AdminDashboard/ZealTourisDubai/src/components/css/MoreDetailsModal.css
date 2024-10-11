@@ -1,0 +1,112 @@
+/* MoreDetailsModal.css */
+
+.modal-title {
+    text-align: center;
+    font-size: 26px; /* Larger title */
+    margin-bottom: 20px;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .input-group {
+    margin-bottom: 25px; /* Increased margin for better spacing */
+  }
+  
+  .holiday-input {
+    width: calc(100% - 20px); /* Adjusted width for better alignment */
+    padding: 12px; /* Increased padding for comfort */
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px; /* More rounded corners */
+    box-sizing: border-box;
+    font-size: 16px; /* Increased font size */
+    transition: border-color 0.3s; /* Smooth border transition */
+  }
+  
+  .holiday-input:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    outline: none; /* Remove outline */
+  }
+  
+  .field-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .add-button, .remove-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .add-button {
+    background-color: #007bff; /* Primary color for add buttons */
+  }
+  
+  .add-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  .remove-button {
+    background-color: #dc3545; /* Danger color for remove buttons */
+  }
+  
+  .remove-button:hover {
+    background-color: #c82333; /* Darker shade on hover */
+  }
+  
+  .submit-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px; /* More rounded corners */
+    background-color: #28a745; /* Success color for submit button */
+    color: white;
+    cursor: pointer;
+    margin-right: 10px; /* Space between buttons */
+    transition: background-color 0.3s;
+  }
+  
+  .cancel-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px; /* More rounded corners */
+    background-color: #dc3545; /* Danger color for cancel button */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838; /* Darker shade on hover */
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333; /* Darker shade on hover */
+  }
+  
+  .textarea {
+    width: calc(100% - 20px); /* Adjusted width for textareas */
+    padding: 12px; /* Increased padding */
+    border: 1px solid #ccc;
+    border-radius: 8px; /* More rounded corners */
+    font-size: 16px; /* Increased font size */
+    margin: 5px 0;
+    resize: vertical; /* Allow vertical resizing only */
+    transition: border-color 0.3s; /* Smooth border transition */
+  }
+  
+  .textarea:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    outline: none; /* Remove outline */
+  }
+  
+  .modal-buttons {
+    display: flex; /* Use flexbox for button layout */
+    justify-content: center; /* Center buttons */
+    margin-top: 20px; /* Margin above buttons */
+  }
+  

@@ -4,14 +4,17 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Sidebar from './AdminUI/Sidebar';
 import Navbar from './AdminUI/Navabar';
 import Dashboard from './AdminUI/Dashboard';
-import Umraha from './Pacakegs/Umraha';
-import Holidays from './Pacakegs/Holidays';
-import GlobalVisas from './Pacakegs/GlobalVisas';
+import Umraha from './packages/Umraha';
+import Holidays2 from './packages/Holidays';
+import GlobalVisas from './packages/GlobalVisas';
 import AdminLogin from './AdminUI/AdminLogin';
 import ProtectedRoute from './AdminUI/ProtectedRoute';
 import Adminprofile from './AdminUI/Adminprofile';
 import AdminForgotPassword from './AdminUI/AdminforgotPassword';
 import UmrahaView from './AllPackgesviewSection/UmrahaView';
+import AddHolidays from './pages/AddHolidays/AddHolidays';
+import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
+import Holidays from './pages/Holidays/Holidays';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -59,11 +62,15 @@ function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/deals" element={<Deals />} />
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />
-          <Route path="/Holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
+          <Route path="/Holidays2" element={<ProtectedRoute><Holidays2 /></ProtectedRoute>} />
+          <Route path="/holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
+          <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />
+          <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />
+
           <Route path="/feedback" element={<Feedback />} />
-          <Route path='/Profile' element={<Adminprofile/>}/>
-          <Route path='/forgot' element={<AdminForgotPassword/>}/>
-          <Route path='/View' element={<UmrahaView/>}/>
+          <Route path='/Profile' element={<Adminprofile />} />
+          <Route path='/forgot' element={<AdminForgotPassword />} />
+          <Route path='/View' element={<UmrahaView />} />
         </Routes>
       </AppLayout>
     </Router>

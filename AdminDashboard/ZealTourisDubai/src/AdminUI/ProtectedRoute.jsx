@@ -1,21 +1,47 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react'
-import { Navigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import axios from 'axios';
+import baseUrl from '../../contants/baseUrl';
 
-// eslint-disable-next-line react/prop-types
-const ProtectedRoute = ({children}) => {
+const ProtectedRoute = ({ children }) => {
+   const [isAuthenticated, setIsAuthenticated] = useState(null);
+   const token = localStorage.getItem('adminToken');
 
-const token = localStorage.getItem('adminToken')
-// console.log(token);
+   useEffect(() => {
+      const checkAuth = async () => {
+         try {
+            const response = await axios.get(baseUrl + '/admin/protected', {
+               headers: {
+                  'x-access-token': token,
+               },
+            });
+            if (response.status === 200) {
+               setIsAuthenticated(true);
+            } else {
+               setIsAuthenticated(false);
+            }
+         } catch (error) {
+            setIsAuthenticated(false);
+         }
+      };
 
- // If token is not available, redirect to login
- if(!token){
-    return <Navigate to="/" />
- }
+      if (token) {
+         checkAuth();
+      } else {
+         setIsAuthenticated(false);
+      }
+   }, [token]);
 
-     // Otherwise, render the children (protected content)
-  return children
-    
-}
+   if (isAuthenticated === null) {
+      // You can return a loading spinner or null while the authentication check is in progress
+      return <div>Loading...</div>;
+   }
 
-export default ProtectedRoute
+   if (!isAuthenticated) {
+      return <Navigate to="/login" />;
+   }
+
+   return children;
+};
+
+export default ProtectedRoute;

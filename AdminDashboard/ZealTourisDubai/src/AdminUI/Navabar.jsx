@@ -63,6 +63,7 @@ const Navbar = () => {
       <div className="flex space-x-6">
         <Link to="/" className="text-white hover:underline">Dashboard</Link>
         <Link to="/packages" className="text-white hover:underline">Packages</Link>
+        <Link to="/holidays" className="text-white hover:underline">Holidays</Link>
         <Link to="/bookings" className="text-white hover:underline">Bookings</Link>
         <Link to="/travelers" className="text-white hover:underline">Travelers</Link>
         <Link to="/guides" className="text-white hover:underline">Guides</Link>

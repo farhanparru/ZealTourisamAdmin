@@ -4,6 +4,7 @@ import logo from '../assets/Images/Logon bar.png'
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import { Link } from 'react-router-dom';
+import baseUrl from '../../contants/baseUrl';
 
 const AdminLogin = () => {
 const [username,setUsername] = useState('')
@@ -18,7 +19,7 @@ const handleLogin = async (e)=>{
   setErrorMessage(''); // Reset error message before submitting
 
   try {
-    const response = await axios.post('http://localhost:3002/api/admin/login', {
+    const response = await axios.post(baseUrl+'/admin/login', {
       username,
       password
     });

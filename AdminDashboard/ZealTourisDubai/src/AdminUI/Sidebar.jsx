@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import { FiMenu, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { FaHome, FaCalendar, FaUsers, FaSuitcase, FaEnvelope, FaPhotoVideo, FaPercentage, FaCommentDots } from 'react-icons/fa';
 
@@ -16,7 +16,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`bg-blue-100 shadow-md h-screen p-5 pt-8 duration-300 ${isOpen ? 'w-64' : 'w-20'}`}>
+    <div className={`bg-blue-100 shadow-md p-5 pt-8 duration-300 ${isOpen ? 'w-64' : 'w-20'}`}>
       <div className="flex justify-between items-center">
         <span className="text-blue-500 text-2xl cursor-pointer" onClick={toggleSidebar}>
           {isOpen ? <FiX /> : <FiMenu />}
@@ -41,7 +41,10 @@ const Sidebar = () => {
         {isPackagesOpen && isOpen && (
           <ul className="ml-8">
             <li className="p-2 text-gray-600 hover:bg-blue-200 rounded-md">
-              <Link to="/Holidays">Exciting Holidays</Link>
+              <Link to="/holidays">Exciting Holidays</Link>
+            </li>
+            <li className="p-2 text-gray-600 hover:bg-blue-200 rounded-md">
+              <Link to="/add-holidays">Add Holidays</Link>
             </li>
             <li className="p-2 text-gray-600 hover:bg-blue-200 rounded-md">
               <Link to="/GlobalVisas">Global Visas</Link>
