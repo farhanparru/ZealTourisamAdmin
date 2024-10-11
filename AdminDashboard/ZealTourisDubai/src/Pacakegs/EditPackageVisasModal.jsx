@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from 'axios'
 
 // eslint-disable-next-line react/prop-types
-const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
+const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -156,7 +156,7 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
-        <h2 className="text-2xl mb-4">Add New Visa Package</h2>
+        <h2 className="text-2xl mb-4">Edit  Visa Package</h2>
         {/* Page 1: Basic Info & Pricing Details */}
         {page === 1 && (
           <form className="space-y-4">
@@ -557,4 +557,4 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
   );
 };
 
-export default AddGlobalVisasPackageModal;
+export default EditPackageVisasModal;
