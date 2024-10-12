@@ -4,7 +4,7 @@ import './AddHolidays.css';
 import ItineraryForm from '../../components/ItineraryForm';
 import MoreDetailsModal from '../../components/MoreDetailsModal'; // Import the new modal component
 import baseUrl from '../../../contants/baseUrl';
-import FaqModal from '../../components/FAQModal';
+import FaqModal from '../../components/FaqModal';
 import BookingPolicyModal from '../../components/BookingPolicyModal';
 import PricingModal from '../../components/PricingModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
