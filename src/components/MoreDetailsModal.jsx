@@ -41,6 +41,7 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
     discount: holidayData.details?.discount || '',
     discountPrice: holidayData.details?.discountPrice || '',
     discountPercentage: holidayData.details?.discountPercentage || '',
+    attracts: holidayData.details?.attracts || '',
     tags: holidayData.details?.tags || ['']
   });
 
@@ -87,6 +88,22 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
     setDetails((prevDetails) => ({
       ...prevDetails,
       tags: [...prevDetails.tags, ''],
+    }));
+  };
+
+  const handleAttractsChange = (index, value) => {
+    setDetails((prevDetails) => {
+      const updatedAttracts = [...prevDetails.attracts];
+      updatedAttracts[index] = value;
+      return { ...prevDetails, attracts: updatedAttracts };
+    });
+
+  };
+
+  const addAttractsField = () => {
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      attracts: [...prevDetails.attracts, ''],
     }));
   };
 
@@ -320,6 +337,23 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             ))}
             <button type="button" onClick={addTagField} className="add-button">Add Tag</button>
           </div>
+        </div>
+
+
+        <div className="input-group">
+          <h4>Attracts</h4>
+          {details?.attracts?.map((attract, index) => (
+            <input
+              key={index}
+              type="text"
+              value={attract}
+              onChange={(e) => handleAttractsChange(index, e.target.value)}
+              placeholder="Attracts"
+              required
+              className="holiday-input"
+            />
+          ))}
+          <button type="button" onClick={addAttractsField} className="add-button">Add Attracts</button>
         </div>
 
         <div className="modal-buttons">

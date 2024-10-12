@@ -10,6 +10,7 @@ import PricingModal from '../../components/PricingModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
 import axios from 'axios';
+import RatingModal from '../../components/RatingModal';
 
 const customStyles = {
   content: {
@@ -65,6 +66,7 @@ const Holidays = () => {
   const [isPricingModalOpen, setPricingModalOpen] = useState(false);
   const [isBookingPolicyModalOpen, setBookingPolicyModalOpen] = useState(false);
   const [isFaqModalOpen, setFaqModalOpen] = useState(false);
+  const [isRatingModalOpen, setRatingModalOpen] = useState(false);
   const [selectedItineraryIndex, setSelectedItineraryIndex] = useState(null);
   const [itineraryData, setItineraryData] = useState({
     title: '',
@@ -84,6 +86,10 @@ const Holidays = () => {
 
   const handleFaqSubmit = (faqData) => {
     setHolidayData({ ...holidayData, faq: faqData });
+  };
+
+  const handleRatingSubmit = (ratingData) => {
+    setHolidayData({ ...holidayData, rating: ratingData });
   };
 
   // Handles changes for all inputs
@@ -139,6 +145,7 @@ const Holidays = () => {
     formDataToSend.append('pricing', JSON.stringify(holidayData.pricing));
     formDataToSend.append('bookingPolicy', JSON.stringify(holidayData.bookingPolicy));
     formDataToSend.append('faq', JSON.stringify(holidayData.faq));
+    formDataToSend.append('rating', JSON.stringify(holidayData.rating));
     formDataToSend.append('details', JSON.stringify(holidayData.details));
 
     try {
@@ -275,12 +282,13 @@ const Holidays = () => {
         <button className="btn-add" onClick={() => setBookingPolicyModalOpen(true)}>Add Booking Policy</button>
         <button className="btn-add" onClick={() => setFaqModalOpen(true)}>Add FAQs</button>
         <button type="button" className="btn-add" onClick={openDetailModal}>Add More Details</button>
+        <button type="button" className="btn-add" onClick={() => setRatingModalOpen(true)}>Add Ratings</button>
 
         <MoreDetailsModal isOpen={tourModalIsOpen} onClose={closeTourModal} onSubmit={addTourDetails} holidayData={holidayData} />
         <PricingModal isOpen={isPricingModalOpen} onClose={() => setPricingModalOpen(false)} onSubmit={handlePricingSubmit} holidayData={holidayData} />
         <BookingPolicyModal isOpen={isBookingPolicyModalOpen} onClose={() => setBookingPolicyModalOpen(false)} onSubmit={handleBookingPolicySubmit} holidayData={holidayData} />
         <FaqModal isOpen={isFaqModalOpen} onClose={() => setFaqModalOpen(false)} onSubmit={handleFaqSubmit} holidayData={holidayData} />
-
+        <RatingModal isOpen={isRatingModalOpen} onClose={() => setRatingModalOpen(false)} onSubmit={handleRatingSubmit} holidayData={holidayData} />
         <button type="submit" onClick={handleSubmit} className="btn submit-btn">Submit</button>
       </div>
 
