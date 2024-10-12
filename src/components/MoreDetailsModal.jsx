@@ -1,4 +1,3 @@
-// MoreDetailsModal.js
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import './css/MoreDetailsModal.css'; // Import the CSS file for styling
@@ -41,7 +40,7 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
     discount: holidayData.details?.discount || '',
     discountPrice: holidayData.details?.discountPrice || '',
     discountPercentage: holidayData.details?.discountPercentage || '',
-    attracts: holidayData.details?.attracts || '',
+    attracts: holidayData.details?.attracts || [''],
     tags: holidayData.details?.tags || ['']
   });
 
@@ -64,6 +63,10 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
     setter((prev) => [...prev, '']);
   };
 
+  const removeField = (setter) => (index) => {
+    setter((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleTimingChange = (index, field, value) => {
     setTimings((prev) => {
       const updated = [...prev];
@@ -74,6 +77,10 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
 
   const addTimingField = () => {
     setTimings((prev) => [...prev, { title: '', days: '', time: '' }]);
+  };
+
+  const removeTimingField = (index) => {
+    setTimings((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleTagChange = (index, value) => {
@@ -91,19 +98,32 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
     }));
   };
 
+  const removeTagField = (index) => {
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      tags: prevDetails.tags.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleAttractsChange = (index, value) => {
     setDetails((prevDetails) => {
       const updatedAttracts = [...prevDetails.attracts];
       updatedAttracts[index] = value;
       return { ...prevDetails, attracts: updatedAttracts };
     });
-
   };
 
   const addAttractsField = () => {
     setDetails((prevDetails) => ({
       ...prevDetails,
       attracts: [...prevDetails.attracts, ''],
+    }));
+  };
+
+  const removeAttractsField = (index) => {
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      attracts: prevDetails.attracts.filter((_, i) => i !== index),
     }));
   };
 
@@ -134,33 +154,34 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
         <div className="input-group">
           <h4>Faculty</h4>
           {faculty.map((member, index) => (
-            <input
-              key={index}
-              type="text"
-              value={member}
-              onChange={(e) => handleChange(setFaculty)(index, e.target.value)}
-              placeholder="Faculty Member"
-              required
-              className="holiday-input"
-            />
+            <div key={index} className="input-item">
+              <input
+                type="text"
+                value={member}
+                onChange={(e) => handleChange(setFaculty)(index, e.target.value)}
+                placeholder="Faculty Member"
+                className="holiday-input"
+              />
+              <button type="button" onClick={() => removeField(setFaculty)(index)} className="remove-button">Remove</button>
+            </div>
           ))}
           <button type="button" onClick={addField(setFaculty)} className="add-button">Add Faculty</button>
         </div>
-
 
         {/* Other fields: Highlights, Overview, Tour Overview, Inclusions, Exclusions, and Timings */}
         <div className="input-group">
           <h4>Highlights</h4>
           {highlights.map((highlight, index) => (
-            <input
-              key={index}
-              type="text"
-              value={highlight}
-              onChange={(e) => handleChange(setHighlights)(index, e.target.value)}
-              placeholder="Highlight"
-              required
-              className="holiday-input"
-            />
+            <div key={index} className="input-item">
+              <input
+                type="text"
+                value={highlight}
+                onChange={(e) => handleChange(setHighlights)(index, e.target.value)}
+                placeholder="Highlight"
+                className="holiday-input"
+              />
+              <button type="button" onClick={() => removeField(setHighlights)(index)} className="remove-button">Remove</button>
+            </div>
           ))}
           <button type="button" onClick={addField(setHighlights)} className="add-button">Add Highlight</button>
         </div>
@@ -171,7 +192,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             value={tourOverview}
             onChange={(e) => setTourOverview(e.target.value)}
             placeholder="Tour Overview"
-            required
             className="holiday-input"
           />
         </div>
@@ -179,15 +199,16 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
         <div className="input-group">
           <h4>Inclusions</h4>
           {inclusion.map((item, index) => (
-            <input
-              key={index}
-              type="text"
-              value={item}
-              onChange={(e) => handleChange(setInclusion)(index, e.target.value)}
-              placeholder="Inclusion"
-              required
-              className="holiday-input"
-            />
+            <div key={index} className="input-item">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => handleChange(setInclusion)(index, e.target.value)}
+                placeholder="Inclusion"
+                className="holiday-input"
+              />
+              <button type="button" onClick={() => removeField(setInclusion)(index)} className="remove-button">Remove</button>
+            </div>
           ))}
           <button type="button" onClick={addField(setInclusion)} className="add-button">Add Inclusion</button>
         </div>
@@ -195,15 +216,16 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
         <div className="input-group">
           <h4>Exclusions</h4>
           {exclusion.map((item, index) => (
-            <input
-              key={index}
-              type="text"
-              value={item}
-              onChange={(e) => handleChange(setExclusion)(index, e.target.value)}
-              placeholder="Exclusion"
-              required
-              className="holiday-input"
-            />
+            <div key={index} className="input-item">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => handleChange(setExclusion)(index, e.target.value)}
+                placeholder="Exclusion"
+                className="holiday-input"
+              />
+              <button type="button" onClick={() => removeField(setExclusion)(index)} className="remove-button">Remove</button>
+            </div>
           ))}
           <button type="button" onClick={addField(setExclusion)} className="add-button">Add Exclusion</button>
         </div>
@@ -218,7 +240,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
                 onChange={(e) => handleTimingChange(index, 'title', e.target.value)}
                 placeholder="Timing Title"
                 className="holiday-input"
-                required
               />
               <input
                 type="text"
@@ -226,7 +247,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
                 onChange={(e) => handleTimingChange(index, 'days', e.target.value)}
                 placeholder="Days"
                 className="holiday-input"
-                required
               />
               <input
                 type="text"
@@ -234,12 +254,13 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
                 onChange={(e) => handleTimingChange(index, 'time', e.target.value)}
                 placeholder="Time"
                 className="holiday-input"
-                required
               />
+              <button type="button" onClick={() => removeTimingField(index)} className="remove-button">Remove</button>
             </div>
           ))}
           <button type="button" onClick={addTimingField} className="add-button">Add Timing</button>
         </div>
+
         {/* Adding details fields */}
         <div className="input-group">
           <h4>More Details</h4>
@@ -249,7 +270,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('share', e.target.value)}
             placeholder="Share"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -257,7 +277,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('fcb', e.target.value)}
             placeholder="FCB"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -265,7 +284,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('from', e.target.value)}
             placeholder="From"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -273,7 +291,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('to', e.target.value)}
             placeholder="To"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -281,7 +298,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('duration', e.target.value)}
             placeholder="Duration"
             className="holiday-input"
-            required
           />
           <input
             type="date"
@@ -289,7 +305,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('date', e.target.value)}
             placeholder="Date"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -297,7 +312,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('price', e.target.value)}
             placeholder="Price"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -305,7 +319,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('discount', e.target.value)}
             placeholder="Discount"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -313,7 +326,6 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('discountPrice', e.target.value)}
             placeholder="Discount Price"
             className="holiday-input"
-            required
           />
           <input
             type="text"
@@ -321,37 +333,38 @@ const MoreDetailsModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
             onChange={(e) => handleDetailsChange('discountPercentage', e.target.value)}
             placeholder="Discount Percentage"
             className="holiday-input"
-            required
           />
           <div className="tags-section">
             <h4>Tags</h4>
             {details.tags.map((tag, index) => (
-              <input
-                key={index}
-                type="text"
-                value={tag}
-                onChange={(e) => handleTagChange(index, e.target.value)}
-                placeholder="Tag"
-                className="holiday-input"
-              />
+              <div key={index} className="input-item">
+                <input
+                  type="text"
+                  value={tag}
+                  onChange={(e) => handleTagChange(index, e.target.value)}
+                  placeholder="Tag"
+                  className="holiday-input"
+                />
+                <button type="button" onClick={() => removeTagField(index)} className="remove-button">Remove</button>
+              </div>
             ))}
             <button type="button" onClick={addTagField} className="add-button">Add Tag</button>
           </div>
         </div>
 
-
         <div className="input-group">
           <h4>Attracts</h4>
           {details?.attracts?.map((attract, index) => (
-            <input
-              key={index}
-              type="text"
-              value={attract}
-              onChange={(e) => handleAttractsChange(index, e.target.value)}
-              placeholder="Attracts"
-              required
-              className="holiday-input"
-            />
+            <div key={index} className="input-item">
+              <input
+                type="text"
+                value={attract}
+                onChange={(e) => handleAttractsChange(index, e.target.value)}
+                placeholder="Attracts"
+                className="holiday-input"
+              />
+              <button type="button" onClick={() => removeAttractsField(index)} className="remove-button">Remove</button>
+            </div>
           ))}
           <button type="button" onClick={addAttractsField} className="add-button">Add Attracts</button>
         </div>

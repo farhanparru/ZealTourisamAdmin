@@ -11,6 +11,7 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 
 import axios from 'axios';
 import RatingModal from '../../components/RatingModal';
+import { useNavigate } from 'react-router-dom';
 
 const customStyles = {
   content: {
@@ -27,6 +28,7 @@ const customStyles = {
 };
 
 const Holidays = () => {
+  const navigate = useNavigate();
   const [holidayData, setHolidayData] = useState({
     title: '',
     description: '',
@@ -157,6 +159,7 @@ const Holidays = () => {
       });
       if (response.status === 200) {
         alert('Holiday saved successfully');
+        navigate('/holidays');
       } else {
         throw new Error('Failed to save holiday');
       }

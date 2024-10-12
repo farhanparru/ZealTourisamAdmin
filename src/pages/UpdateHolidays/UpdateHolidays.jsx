@@ -9,7 +9,7 @@ import BookingPolicyModal from '../../components/BookingPolicyModal';
 import PricingModal from '../../components/PricingModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import RatingModal from '../../components/RatingModal';
 
 const customStyles = {
@@ -28,6 +28,7 @@ const customStyles = {
 
 const UpdateHolidays = () => {
     let { id } = useParams();
+    const navigate = useNavigate();
     const [holidayData, setHolidayData] = useState({
         title: '',
         description: '',
@@ -198,6 +199,7 @@ const UpdateHolidays = () => {
             });
             if (response.status === 200) {
                 alert('Holiday saved successfully');
+                navigate('/holidays');
             } else {
                 throw new Error('Failed to save holiday');
             }
