@@ -5,7 +5,7 @@ const BookingPolicyModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
   const [bookingPolicy, setBookingPolicy] = useState({
     cancellation: holidayData?.bookingPolicy?.cancellation || '',
     childPolicy: holidayData?.bookingPolicy?.childPolicy || '',
-    otherPolicies: holidayData?.bookingPolicy?.otherPolicies || [{ title: '', description: '' }],
+    otherPolicies: holidayData?.bookingPolicy?.otherPolicies || [],
   });
 
   const handleChange = (index, e) => {
