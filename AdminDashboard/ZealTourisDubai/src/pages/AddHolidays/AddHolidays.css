@@ -1,0 +1,378 @@
+.holiday-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btn {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-remove {
+  margin-left: 10px;
+  background-color: #dc3545;
+}
+
+.btn:hover {
+  background-color: #218838;
+}
+
+.btn-remove:hover {
+  background-color: #c82333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+}
+
+/* Itinerary Form Enhanced Styles */
+
+.itinerary-form {
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.form-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.form-subtitle {
+  font-size: 1.4rem;
+  color: #34495e;
+  margin-bottom: 1rem;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  margin: 5px 0;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.form-button:hover {
+  transform: translateY(-1px);
+}
+
+.form-button:active {
+  transform: translateY(1px);
+}
+
+.remove-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.remove-button:hover {
+  background-color: #c0392b;
+}
+
+.add-button {
+  background-color: #2ecc71;
+  color: white;
+  margin-top: 1rem;
+}
+
+.add-button:hover {
+  background-color: #27ae60;
+}
+
+.submit-button {
+  background-color: #3498db;
+  color: white;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+.submit-button:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 600px) {
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+  }
+
+  .form-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .form-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Holidays.css */
+
+.holidays-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.holidays-title {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.holiday-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.holiday-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.holiday-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.itinerary-section {
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.itinerary-title {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.itinerary-item {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.itinerary-item h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2em;
+  color: #444;
+}
+
+.itinerary-item p {
+  margin: 0;
+  color: #666;
+}
+
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.add-itinerary-btn {
+  background-color: #28a745;
+  color: white;
+  align-self: flex-start;
+}
+
+.add-itinerary-btn:hover {
+  background-color: #218838;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Modal styles */
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+.ReactModal__Content {
+  transform: scale(0.8);
+  transition: all 200ms ease-in-out;
+}
+
+.ReactModal__Content--after-open {
+  transform: scale(1);
+}
+
+.ReactModal__Content--before-close {
+  transform: scale(0.8);
+}
+
+/* Add styles for your "Add" buttons */
+.btn-add {
+  background-color: #4CAF50;
+  /* Green background */
+  color: white;
+  /* White text */
+  border: none;
+  /* Remove border */
+  padding: 10px 20px;
+  /* Add some padding */
+  font-size: 16px;
+  /* Set font size */
+  border-radius: 5px;
+  /* Rounded corners */
+  cursor: pointer;
+  /* Pointer on hover */
+  margin-right: 10px;
+  /* Space between buttons */
+  transition: background-color 0.3s ease;
+  /* Smooth transition for hover effect */
+}
+
+.btn-add:hover {
+  background-color: #45a049;
+  /* Darker green on hover */
+}
+
+.btn-add:active {
+  background-color: #3e8e41;
+  /* Even darker green when clicked */
+}
+
+.btn-add:focus {
+  outline: none;
+  /* Remove default focus outline */
+  box-shadow: 0 0 5px 2px rgba(72, 219, 72, 0.6);
+  /* Add a subtle glow for focus */
+}
+
+/* Common Button Styling */
+.btn {
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Style for Cancel Button */
+.btn.cancel-btn {
+  background-color: #f44336;
+  /* Red background for Cancel */
+  color: white;
+  /* White text */
+  border: none;
+  /* No border */
+  margin-left: 10px;
+  /* Space between the Cancel and other buttons */
+}
+
+.btn.cancel-btn:hover {
+  background-color: #d32f2f;
+  /* Darker red on hover */
+}
+
+.btn.cancel-btn:active {
+  background-color: #b71c1c;
+  /* Even darker red when clicked */
+}
+
+.btn.cancel-btn:focus {
+  outline: none;
+  /* Remove default focus outline */
+  box-shadow: 0 0 5px 2px rgba(244, 67, 54, 0.5);
+  /* Subtle red glow on focus */
+}

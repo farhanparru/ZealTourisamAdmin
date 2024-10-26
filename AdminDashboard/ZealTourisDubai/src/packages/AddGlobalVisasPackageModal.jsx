@@ -1,29 +1,32 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import axios from 'axios'
+import axios from "axios";
 
 // eslint-disable-next-line react/prop-types
-const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
+const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
+  // eslint-disable-next-line no-unused-vars
+  const [images, setImages] = useState(null);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    images: [""],
-    thumbnail:"",
+    images: [],
+    thumbnail: null,
     details: "",
-    faculty: [], // Initialize faculty as an empty array
+    faculty: [],
     howToApply: "",
     overview: "",
     pricing: [{ title: "", amount: "", currency: "" }],
     faq: [{ question: "", answer: "" }],
-    processType: ["Low"], // Initialize with a default value
-    visaNo: [0], // Initialize with a default number
+    processType: ["Low"],
+    visaNo: [0],
     options: [
       {
         title: "",
         badge: "",
         discount: "",
         refundStatus: "",
-        processType:["Low", "Medium", "High"],
+        processType: ["Low", "Medium", "High"],
         visaNo: [""],
         price: "",
         currency: "",
@@ -35,13 +38,13 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
     packageCost: [{ title: "", amount: "", currency: "" }],
     tax: [{ title: "", amount: "", currency: "" }],
   });
-
+  
   const [page, setPage] = useState(1); // Track the current page
 
   const handleChange = (e, index, section) => {
     const { name, value } = e.target;
-    console.log(value,"valueee");
-    
+    console.log(value, "valueee");
+
     if (section) {
       const updatedSection = [...formData[section]];
       updatedSection[index][name] = value;
@@ -88,59 +91,141 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
     setPage((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = async () => {
-    try {
-      // Retrieve the token from local storage (or wherever it's stored)
-      const token = localStorage.getItem('adminToken');
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-   
+    try {
+      const token = localStorage.getItem("adminToken");
       
-      // Sending form data with authorization token
-      const response = await axios.post('http://localhost:3002/api/global-visa', formData, {
-        headers: {
-          'x-access-token': `${token}`,
-          'Content-Type': 'application/json',
-        },
+      // Create a new FormData instance
+      const formDataToSend = new FormData();
+   // Append basic fields to formDataToSend
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('overview', formData.overview);
+      
+     
+      if (formData.images && formData.images.length > 0) {
+        formData.images.forEach((image) => {
+          formDataToSend.append('images', image); // Ensure images are appended correctly
+        });
+      }
+  
+      if (formData.faculty && formData.faculty.length > 0) {
+        // Extract the 'faculty' property value from each object in the array
+        const facultyValues = formData.faculty.map(facultyObj => facultyObj.faculty);
+        console.log("Faculty data:", facultyValues);
+      
+        // Append each faculty value as a separate entry in formDataToSend
+        facultyValues.forEach(facult => {
+          formDataToSend.append('faculty', facult);
+        });
+      }
+      
+  
+  
+      // Append thumbnail if any
+      if (formData.thumbnail) {
+        formDataToSend.append('thumbnail', formData.thumbnail);
+      }
+  
+      // Append pricing data
+      formData.pricing.forEach((item, index) => {
+        formDataToSend.append(`pricing[${index}][title]`, item.title);
+        formDataToSend.append(`pricing[${index}][amount]`, item.amount);
+        formDataToSend.append(`pricing[${index}][currency]`, item.currency);
       });
-      
+  
+      // Append FAQ data
+      formData.faq.forEach((item, index) => {
+        formDataToSend.append(`faq[${index}][question]`, item.question);
+        formDataToSend.append(`faq[${index}][answer]`, item.answer);
+      });
+  
+      // Append options data
+      formData.options.forEach((item, index) => {
+        formDataToSend.append(`options[${index}][title]`, item.title);
+        formDataToSend.append(`options[${index}][badge]`, item.badge);
+        formDataToSend.append(`options[${index}][discount]`, item.discount);
+        formDataToSend.append(`options[${index}][refundStatus]`, item.refundStatus);
+
+        // Send only one process type (you can select the desired one based on your requirements)
+  formDataToSend.append(`options[${index}][processType]`, item.processType[0]); // or just item.processType
+  
+  formDataToSend.append(`options[${index}][visaNo]`, item.visaNo[0]); // Ensure this is an array of numbers
+
+
+        formDataToSend.append(`options[${index}][price]`, item.price);
+        formDataToSend.append(`options[${index}][currency]`, item.currency);
+        formDataToSend.append(`options[${index}][discountPercentage]`, item.discountPercentage);
+        formDataToSend.append(`options[${index}][footerText]`, item.footerText);
+      });
+  
+      // Append package cost data
+      formData.packageCost.forEach((item, index) => {
+        formDataToSend.append(`packageCost[${index}][title]`, item.title);
+        formDataToSend.append(`packageCost[${index}][amount]`, item.amount);
+        formDataToSend.append(`packageCost[${index}][currency]`, item.currency);
+      });
+  
+      // Append tax data
+      formData.tax.forEach((item, index) => {
+        formDataToSend.append(`tax[${index}][title]`, item.title);
+        formDataToSend.append(`tax[${index}][amount]`, item.amount);
+        formDataToSend.append(`tax[${index}][currency]`, item.currency);
+      });
+  
+      // Send POST request
+      const response = await axios.post(
+        "http://localhost:3002/api/global-visa",
+        formDataToSend,
+        {
+          headers: {
+            "x-access-token": `${token}`,
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        }
+      );
   
       // Handle the API response
       if (response.status === 200) {
         console.log("Form submitted successfully:", response.data);
-        // Reset form fields after successful submission
-      setFormData({
-        title: "",
-        description: "",
-        images: [""],
-        thumbnail:"",
-        details: "",
-        faculty: [], 
-        howToApply: "",
-        overview: "",
-        pricing: [{ title: "", amount: "", currency: "" }],
-        faq: [{ question: "", answer: "" }],
-        processType: ["Low"],
-        visaNo: [0], 
-        options: [
-          {
-            title: "",
-            badge: "",
-            discount: "",
-            refundStatus: "",
-            processType: ["Low", "Medium", "High"],
-            visaNo: [""],
-            price: "",
-            currency: "",
-            discountPercentage: "",
-            discountPrice: "",
-            footerText: "",
-          },
-        ],
-        packageCost: [{ title: "", amount: "", currency: "" }],
-        tax: [{ title: "", amount: "", currency: "" }],
-      });
       
-      onRequestClose();  // Close the modal on success
+        // Reset form data after successful submission
+        setFormData({
+          title: "",
+          description: "",
+          images: [],
+          thumbnail: null,
+          details: "",
+          faculty: [],
+          howToApply: "",
+          overview: "",
+          pricing: [{ title: "", amount: "", currency: "" }],
+          faq: [{ question: "", answer: "" }],
+          processType: ["Low"],
+          visaNo: [0],
+          options: [
+            {
+              title: "",
+              badge: "",
+              discount: "",
+              refundStatus: "",
+              processType: ["Low", "Medium", "High"],
+              visaNo: [""],
+              price: "",
+              currency: "",
+              discountPercentage: "",
+              footerText: "",
+            },
+          ],
+          packageCost: [{ title: "", amount: "", currency: "" }],
+          tax: [{ title: "", amount: "", currency: "" }],
+        });
+  
+        onRequestClose(); 
       } else {
         console.error("Failed to submit form:", response.status, response.data);
       }
@@ -149,14 +234,31 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
     }
   };
   
-  
+
   if (!isOpen) return null;
 
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData({
+      ...formData,
+      images: files, // Store the image files directly
+    });
+  };
   
+  const handleThumbnailUpload = (e) => {
+    const file = e.target.files[0];
+    setFormData({
+      ...formData,
+      thumbnail: file, // Store the single thumbnail file
+    });
+  };
+
+
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
-        <h2 className="text-2xl mb-4">Edit  Visa Package</h2>
+        <h2 className="text-2xl mb-4">Add New Visa Package</h2>
         {/* Page 1: Basic Info & Pricing Details */}
         {page === 1 && (
           <form className="space-y-4">
@@ -174,32 +276,28 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
               placeholder="Description"
               className="w-full p-2 border"
             />
-  
-            {/* Thumbnail URL Input */}
-            <input
-              name="thumbnail"
-              value={formData.thumbnail}
-              onChange={handleChange}
-              placeholder="Thumbnail URL"
-              className="w-full p-2 border"
-            />
-  
-            {/* Image Upload */}
+
+            {/* Thumbnail File Input */}
+            <label className="block mb-2 font-bold">Upload Thumbnail:</label>
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  setFormData({
-                    ...formData,
-                    images: file,
-                  });
-                }
-              }}
+              onChange={handleThumbnailUpload}
               className="w-full p-2 border"
             />
-  
+
+            {/* Image Upload (Multiple) */}
+            <label className="block mb-2 font-bold">
+              Upload Images (Multiple):
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className="w-full p-2 border"
+            />
+
             <textarea
               name="details"
               value={formData.details}
@@ -207,7 +305,7 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
               placeholder="Details"
               className="w-full p-2 border"
             />
-  
+
             {/* Process Type */}
             <div className="mt-6">
               <h3 className="text-xl mb-2">Process Type</h3>
@@ -252,7 +350,7 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
                 Add Process Type
               </button>
             </div>
-  
+
             {/* Visa Numbers */}
             <div className="mt-6">
               <h3 className="text-xl mb-2">Visa Numbers</h3>
@@ -292,7 +390,7 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
                 Add Visa Number
               </button>
             </div>
-  
+
             {/* Pricing Details */}
             <div className="mt-6">
               <h3 className="text-xl mb-2">Pricing Details</h3>
@@ -344,14 +442,14 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
             {/* Faculty Section */}
             <h3 className="text-xl mb-2">Faculty</h3>
             {formData.faculty.map((facultyDetail, index) => (
-                <div key={index} className="flex space-x-4 mb-2">
-                  <input
-                    name="faculty"
-                    value={facultyDetail.faculty}
-                    onChange={(e) => handleChange(e, index, "faculty")}
-                    placeholder="faculty"
-                    className="w-1/3 p-2 border"
-                  />
+              <div key={index} className="flex space-x-4 mb-2">
+                <input
+                  name="faculty"
+                  value={facultyDetail.faculty}
+                  onChange={(e) => handleChange(e, index, "faculty")}
+                  placeholder="faculty"
+                  className="w-1/3 p-2 border"
+                />
                 <button
                   type="button"
                   onClick={() => handleRemoveField(index, "faculty")}
@@ -557,4 +655,4 @@ const  EditPackageVisasModal = ({ isOpen, onRequestClose }) => {
   );
 };
 
-export default EditPackageVisasModal;
+export default AddGlobalVisasPackageModal;

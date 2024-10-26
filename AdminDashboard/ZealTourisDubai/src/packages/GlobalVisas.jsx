@@ -5,13 +5,14 @@ import axios from "axios"; // Import axios for making API requests
 import visas from "../assets/Images/visas.png"; // You can change this path or use different images for packages
 import AddGlobalVisasPackageModal from "./AddGlobalVisasPackageModal";
 import { Link } from "react-router-dom";
-import EditPackageVisasModal from "./EditPackageVisasModal";
+import EditPackageVisasModal from "./EditPackageVisModal";
 
 const GlobalVisas = () => {
   const [addModalIsOpen, setAddModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [packages, setPackages] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null); // For editing a selected package
+console.log(setSelectedPackage,"setSelectedPackage");
 
   // Fetching visa packages from the API
   useEffect(() => {
@@ -26,8 +27,11 @@ const GlobalVisas = () => {
             image: pkg.thumbnail, // Use the thumbnail image from the API
           }));
           setPackages(fetchedPackages);
+          console.log(fetchedPackages,'fetchedPackages');
         }
       })
+      
+      
       .catch((error) => {
         console.error("There was an error fetching the visa packages!", error);
       });
@@ -57,6 +61,34 @@ const GlobalVisas = () => {
       });
   };
 
+
+   // handle Editt
+
+   // Handle submission of edited package
+  const handleEditPackage = async (updatedPackage) => {
+    const token = localStorage.getItem('adminToken');
+    try {
+      const response = await axios.put(`http://localhost:3002/api/global-visa/${updatedPackage.id}`, updatedPackage, {
+        headers: {
+          'x-access-token': token,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.success) {
+        // Update the state with the new package data
+        const updatedPackages = packages.map((pkg) =>
+          pkg.id === updatedPackage.id ? response.data.results : pkg
+        );
+        setPackages(updatedPackages);
+        closeEditModal();
+      }
+    } catch (error) {
+      console.error("There was an error updating the package!", error);
+    }
+  };
+
+
   // Handle opening and closing of Add Modal
   const openAddModal = () => {
     setAddModalIsOpen(true);
@@ -83,14 +115,7 @@ const GlobalVisas = () => {
     closeAddModal();
   };
 
-  // Handle submission of edited package
-  const handleEditPackage = (updatedPackage) => {
-    const updatedPackages = packages.map((pkg) =>
-      pkg.id === updatedPackage.id ? updatedPackage : pkg
-    );
-    setPackages(updatedPackages);
-    closeEditModal();
-  };
+
 
   return (
     <div className="p-6">
@@ -151,8 +176,8 @@ const GlobalVisas = () => {
                   <td className="px-4 py-2">{pkg.description}</td>
                   <td className="px-4 py-2">
                     <img
-                      src={pkg.image}
-                      alt={pkg.packageName}
+                      src={pkg.image} // Ensure this is the correct field for your image
+                      alt="Hidd"
                       className="w-20 h-auto rounded"
                     />
                   </td>
