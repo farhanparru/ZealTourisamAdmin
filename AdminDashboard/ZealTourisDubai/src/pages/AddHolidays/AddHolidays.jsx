@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import Modal from 'react-modal';
 import './AddHolidays.css';
 import ItineraryForm from '../../components/ItineraryForm';

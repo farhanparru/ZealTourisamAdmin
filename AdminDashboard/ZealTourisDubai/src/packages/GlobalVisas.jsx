@@ -3,52 +3,77 @@ import React, { useState, useEffect } from "react";
 import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
 import axios from "axios"; // Import axios for making API requests
 import visas from "../assets/Images/visas.png"; // You can change this path or use different images for packages
-import AddGlobalVisasPackageModal from "./AddGlobalVisasPackageModal";
-import { Link } from "react-router-dom";
 import EditPackageVisasModal from "./EditPackageVisModal";
+import { useNavigate, Link } from 'react-router-dom';
+
+
 
 const GlobalVisas = () => {
-  const [addModalIsOpen, setAddModalIsOpen] = useState(false);
+  
+  const navigate = useNavigate();
+
+  const handleClick = ()=>{
+     navigate('/sss')
+  }
+  
+
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [packages, setPackages] = useState([]);
+
   const [selectedPackage, setSelectedPackage] = useState(null); // For editing a selected package
-console.log(setSelectedPackage,"setSelectedPackage");
 
   // Fetching visa packages from the API
   useEffect(() => {
-    axios
-      .get("http://localhost:3002/api/global-visa")
-      .then((response) => {
+    const fetchVisaPackages = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3002/api/global-visa"
+        );
+
         if (response.data.success) {
           const fetchedPackages = response.data.results.map((pkg) => ({
-            id: pkg._id, // Capture the package ID
+            id: pkg._id, // Ensure 'id' is included
             packageName: pkg.title,
             description: pkg.description,
-            image: pkg.thumbnail, // Use the thumbnail image from the API
+            images: pkg.images.length > 0 ? pkg.images : [null],
+            thumbnail: pkg.thumbnail,
+            details: pkg.details,
+            faculty: pkg.faculty.length > 0 ? pkg.faculty : ["Not specified"], // Ensure faculty is an array
+            visaNo: pkg.visaNo?.length > 0 ? pkg.visaNo : [0],
+            howToApply: pkg.howToApply,
+            overview: pkg.overview,
+            pricing: {
+              packageCost: pkg.pricing.packageCost,
+              tax: pkg.pricing.tax,
+            },
+            options: pkg.options || [],
+            faq: pkg.faq || [],
           }));
+          console.log(fetchedPackages, "fetchedPackages");
+
           setPackages(fetchedPackages);
-          console.log(fetchedPackages,'fetchedPackages');
         }
-      })
-      
-      
-      .catch((error) => {
-        console.error("There was an error fetching the visa packages!", error);
-      });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchVisaPackages();
   }, []);
 
   // Delete Visa package by ID
   const handleDeletePackage = (id) => {
-    const token = localStorage.getItem('adminToken');
-  
+    console.log("Deleting package with id:", id); // Check if id is undefined
+    const token = localStorage.getItem("adminToken");
+
     axios
-      .delete(`http://localhost:3002/api/global-visa/${id} `,{
+      .delete(`http://localhost:3002/api/global-visa/${id} `, {
         headers: {
-          'x-access-token': `${token}`,
-          'Content-Type': 'application/json',
+          "x-access-token": `${token}`,
+          "Content-Type": "application/json",
         },
       })
-      
+
       .then((response) => {
         if (response.data.success) {
           // Remove the deleted package from the state
@@ -61,42 +86,7 @@ console.log(setSelectedPackage,"setSelectedPackage");
       });
   };
 
-
-   // handle Editt
-
-   // Handle submission of edited package
-  const handleEditPackage = async (updatedPackage) => {
-    const token = localStorage.getItem('adminToken');
-    try {
-      const response = await axios.put(`http://localhost:3002/api/global-visa/${updatedPackage.id}`, updatedPackage, {
-        headers: {
-          'x-access-token': token,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.data.success) {
-        // Update the state with the new package data
-        const updatedPackages = packages.map((pkg) =>
-          pkg.id === updatedPackage.id ? response.data.results : pkg
-        );
-        setPackages(updatedPackages);
-        closeEditModal();
-      }
-    } catch (error) {
-      console.error("There was an error updating the package!", error);
-    }
-  };
-
-
-  // Handle opening and closing of Add Modal
-  const openAddModal = () => {
-    setAddModalIsOpen(true);
-  };
-
-  const closeAddModal = () => {
-    setAddModalIsOpen(false);
-  };
+  // handle Editt
 
   // Handle opening and closing of Edit Modal
   const openEditModal = (pkg) => {
@@ -108,14 +98,6 @@ console.log(setSelectedPackage,"setSelectedPackage");
     setEditModalIsOpen(false);
     setSelectedPackage(null); // Clear the selected package
   };
-
-  // Handle submission of a new package
-  const handleAddPackage = (newPackage) => {
-    setPackages([...packages, newPackage]);
-    closeAddModal();
-  };
-
-
 
   return (
     <div className="p-6">
@@ -141,16 +123,17 @@ console.log(setSelectedPackage,"setSelectedPackage");
         </div>
       </div>
 
-      {/* Add New Package Button */}
       <div className="bg-white shadow rounded-lg p-4 mb-6">
         <h2 className="text-xl font-semibold mb-2">Add New Package</h2>
         <button
-          className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
-          onClick={openAddModal}
+         
+          className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center space-x-2"
+          onClick={handleClick}
         >
-          <span className="text-lg">+</span>
+          Add New Package
         </button>
       </div>
+
 
       {/* Packages Table */}
       <div className="bg-white shadow rounded-lg p-4">
@@ -176,7 +159,7 @@ console.log(setSelectedPackage,"setSelectedPackage");
                   <td className="px-4 py-2">{pkg.description}</td>
                   <td className="px-4 py-2">
                     <img
-                      src={pkg.image} // Ensure this is the correct field for your image
+                      src={pkg.images} // Ensure this is the correct field for your image
                       alt="Hidd"
                       className="w-20 h-auto rounded"
                     />
@@ -207,19 +190,13 @@ console.log(setSelectedPackage,"setSelectedPackage");
         </div>
       </div>
 
-      {/* Add Package Modal */}
-      <AddGlobalVisasPackageModal
-        isOpen={addModalIsOpen}
-        onRequestClose={closeAddModal}
-        onSubmit={handleAddPackage}
-      />
-
       {/* Edit Package Modal */}
       <EditPackageVisasModal
         isOpen={editModalIsOpen}
         onRequestClose={closeEditModal}
         selectedPackage={selectedPackage}
-        onSubmit={handleEditPackage}
+        packages={packages} // Pass packages as a prop
+        setPackages={setPackages} // Pass setPackages as a prop
       />
     </div>
   );

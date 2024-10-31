@@ -1,25 +1,23 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import { FaGlobe } from "react-icons/fa";
+import AddMoreDetails from "../components/AddMoreDetails";
+import AddPricing from "../components/AddPricing";
+import AddVisaOption from "../components/AddVisaOption";
 import axios from "axios";
 
-// eslint-disable-next-line react/prop-types
-const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
-  // eslint-disable-next-line no-unused-vars
-  const [images, setImages] = useState(null);
-
-  const [formData, setFormData] = useState({
+const AddGlobalVisasPackageModal = () => {
+  const [globalVisaData, setGlobalVisaData] = useState({
     title: "",
     description: "",
+    slug: "",
     images: [],
     thumbnail: null,
     details: "",
     faculty: [],
     howToApply: "",
     overview: "",
-    pricing: [{ title: "", amount: "", currency: "" }],
     faq: [{ question: "", answer: "" }],
-    processType: ["Low"],
-    visaNo: [0],
     options: [
       {
         title: "",
@@ -27,7 +25,7 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
         discount: "",
         refundStatus: "",
         processType: ["Low", "Medium", "High"],
-        visaNo: [""],
+        visaNo: [0],
         price: "",
         currency: "",
         discountPercentage: "",
@@ -35,148 +33,194 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
         footerText: "",
       },
     ],
-    packageCost: [{ title: "", amount: "", currency: "" }],
-    tax: [{ title: "", amount: "", currency: "" }],
+    pricing: {
+      packageCost: [{ title: "", amount: "", currency: "" }],
+      tax: [{ title: "", amount: "", currency: "" }],
+    },
   });
+
+  // Modal Submit HandleFunction
+
+  // AddMoreDetails submission function
+  const addMoreDetailsSubmit = (details) => {
+    setGlobalVisaData((prevData) => ({
+      ...prevData,
+      faculty: details.faculty,
+      howToApply: details.howToApply,
+      overview: details.overview,
+      processType: details.processType,
+      visaNo: details.visaNo,
+      faq: details.faq,
+    }));
+    closeMoreDetailsModal();
+  };
+
+
+  const addPricingSubmit = (pricingData) => {
+    // Destructure packageCost and tax from pricingData.pricing
+    const { packageCost, tax } = pricingData.pricing;
   
-  const [page, setPage] = useState(1); // Track the current page
-
-  const handleChange = (e, index, section) => {
-    const { name, value } = e.target;
-    console.log(value, "valueee");
-
-    if (section) {
-      const updatedSection = [...formData[section]];
-      updatedSection[index][name] = value;
-      setFormData({ ...formData, [section]: updatedSection });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    // Update globalVisaData state with new pricing details
+    setGlobalVisaData((prevState) => ({
+      ...prevState,
+      pricing: {
+        packageCost: [...prevState.pricing.packageCost, ...packageCost],
+        tax: [...prevState.pricing.tax, ...tax],
+      },
+    }));
+  
+    // Close the Pricing Modal after submission
+    closePricingModal();
   };
+  
+  
 
-  const handleAddField = (section) => {
-    const newField =
-      section === "pricing" || section === "packageCost" || section === "tax"
-        ? { title: "", amount: "", currency: "" }
-        : section === "faq"
-        ? { question: "", answer: "" }
-        : section === "options"
-        ? {
-            title: "",
-            badge: "",
-            discount: "",
-            refundStatus: "",
-            processType: [""],
-            visaNo: [""],
-            price: "",
-            currency: "",
-            discountPercentage: "",
-            footerText: "",
-          }
-        : { faculty: "" };
-
-    setFormData({ ...formData, [section]: [...formData[section], newField] });
+  const AddVisaOptionSubmit = (visaOptionData) => {
+    // Destructure the visa option data for easier use
+    const {
+      title,
+      badge,
+      discount,
+      refundStatus,
+      price,
+      currency,
+      discountPercentage,
+      discountPrice,
+      footerText
+    } = visaOptionData;
+  
+    setGlobalVisaData((prevState) => ({
+      ...prevState,
+      visaOptions: [
+        ...(prevState.visaOptions || []), // Provide an empty array if visaOptions is undefined
+        {
+          title,
+          badge,
+          discount,
+          refundStatus,
+          price,
+          currency,
+          discountPercentage,
+          discountPrice,
+          footerText,
+        }
+      ]
+    }));
+    
+    // Close the Visa Option Modal after submission
+    closeVisaoptionModal();
   };
+  
 
-  const handleRemoveField = (index, section) => {
-    const updatedSection = formData[section].filter((_, i) => i !== index);
-    setFormData({ ...formData, [section]: updatedSection });
-  };
+  const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+  const [isVisaOptionModalOpen, setIsVisasOptionModalOpen] = useState(false);
 
-  const handleNext = () => {
-    setPage((prev) => Math.min(prev + 1, 3));
-  };
-
-  const handlePrev = () => {
-    setPage((prev) => Math.max(prev - 1, 1));
-  };
-
-
+  const openMoreDetailsModal = () => setIsMoreDetailsModalOpen(true);
+  const closeMoreDetailsModal = () => setIsMoreDetailsModalOpen(false);
+  const openPricingModal = () => setIsPricingModalOpen(true);
+  const closePricingModal = () => setIsPricingModalOpen(false);
+  const openVisaoptionModal = () => setIsVisasOptionModalOpen(true);
+  const closeVisaoptionModal = () => setIsVisasOptionModalOpen(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const token = localStorage.getItem("adminToken");
-      
+
       // Create a new FormData instance
       const formDataToSend = new FormData();
-   // Append basic fields to formDataToSend
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('overview', formData.overview);
-      
-     
-      if (formData.images && formData.images.length > 0) {
-        formData.images.forEach((image) => {
-          formDataToSend.append('images', image); // Ensure images are appended correctly
+      // Append basic fields to formDataToSend
+      formDataToSend.append("title", globalVisaData.title);
+      formDataToSend.append("description", globalVisaData.description);
+      formDataToSend.append("overview", globalVisaData.overview);
+      formDataToSend.append("howToApply", globalVisaData.howToApply);
+      formDataToSend.append("details", globalVisaData.details);
+
+      if (globalVisaData.images && globalVisaData.images.length > 0) {
+        globalVisaData.images.forEach((image) => {
+          formDataToSend.append("images", image); // Ensure images are appended correctly
         });
       }
-  
-      if (formData.faculty && formData.faculty.length > 0) {
+
+      if (globalVisaData.faculty && globalVisaData.faculty.length > 0) {
         // Extract the 'faculty' property value from each object in the array
-        const facultyValues = formData.faculty.map(facultyObj => facultyObj.faculty);
-        console.log("Faculty data:", facultyValues);
-      
+        const facultyValues = globalVisaData.faculty.map(
+          (facultyObj) => facultyObj.faculty
+        );
+
         // Append each faculty value as a separate entry in formDataToSend
-        facultyValues.forEach(facult => {
-          formDataToSend.append('faculty', facult);
+        facultyValues.forEach((facult) => {
+          formDataToSend.append("faculty", facult);
         });
       }
-      
-  
-  
+
       // Append thumbnail if any
-      if (formData.thumbnail) {
-        formDataToSend.append('thumbnail', formData.thumbnail);
+      if (globalVisaData.thumbnail) {
+        formDataToSend.append("thumbnail", globalVisaData.thumbnail);
       }
-  
-      // Append pricing data
-      formData.pricing.forEach((item, index) => {
-        formDataToSend.append(`pricing[${index}][title]`, item.title);
-        formDataToSend.append(`pricing[${index}][amount]`, item.amount);
-        formDataToSend.append(`pricing[${index}][currency]`, item.currency);
-      });
-  
+
       // Append FAQ data
-      formData.faq.forEach((item, index) => {
+      globalVisaData.faq.forEach((item, index) => {
         formDataToSend.append(`faq[${index}][question]`, item.question);
         formDataToSend.append(`faq[${index}][answer]`, item.answer);
       });
-  
+
       // Append options data
-      formData.options.forEach((item, index) => {
+      globalVisaData.options.forEach((item, index) => {
         formDataToSend.append(`options[${index}][title]`, item.title);
         formDataToSend.append(`options[${index}][badge]`, item.badge);
         formDataToSend.append(`options[${index}][discount]`, item.discount);
-        formDataToSend.append(`options[${index}][refundStatus]`, item.refundStatus);
+        formDataToSend.append(
+          `options[${index}][refundStatus]`,
+          item.refundStatus
+        );
+        formDataToSend.append(`options[${index}][visaNo]`, globalVisaData.visaNo);
 
-        // Send only one process type (you can select the desired one based on your requirements)
-  formDataToSend.append(`options[${index}][processType]`, item.processType[0]); // or just item.processType
-  
-  formDataToSend.append(`options[${index}][visaNo]`, item.visaNo[0]); // Ensure this is an array of numbers
-
+        formDataToSend.append(
+          `options[${index}][processType]`,
+          item.processType[0]
+        );
 
         formDataToSend.append(`options[${index}][price]`, item.price);
         formDataToSend.append(`options[${index}][currency]`, item.currency);
-        formDataToSend.append(`options[${index}][discountPercentage]`, item.discountPercentage);
+        formDataToSend.append(
+          `options[${index}][discountPercentage]`,
+          item.discountPercentage
+        );
+        formDataToSend.append(
+          `options[${index}][discountPrice]`,
+          item.discountPrice
+        );
         formDataToSend.append(`options[${index}][footerText]`, item.footerText);
       });
-  
+
       // Append package cost data
-      formData.packageCost.forEach((item, index) => {
-        formDataToSend.append(`packageCost[${index}][title]`, item.title);
-        formDataToSend.append(`packageCost[${index}][amount]`, item.amount);
-        formDataToSend.append(`packageCost[${index}][currency]`, item.currency);
+      globalVisaData.pricing.packageCost.forEach((item, index) => {
+        formDataToSend.append(
+          `pricing[packageCost][${index}][title]`,
+          item.title
+        );
+        formDataToSend.append(
+          `pricing[packageCost][${index}][amount]`,
+          item.amount
+        );
+        formDataToSend.append(
+          `pricing[packageCost][${index}][currency]`,
+          item.currency
+        );
       });
-  
+
       // Append tax data
-      formData.tax.forEach((item, index) => {
-        formDataToSend.append(`tax[${index}][title]`, item.title);
-        formDataToSend.append(`tax[${index}][amount]`, item.amount);
-        formDataToSend.append(`tax[${index}][currency]`, item.currency);
+      globalVisaData.pricing.tax.forEach((item, index) => {
+        formDataToSend.append(`pricing[tax][${index}][title]`, item.title);
+        formDataToSend.append(`pricing[tax][${index}][amount]`, item.amount);
+        formDataToSend.append(
+          `pricing[tax][${index}][currency]`,
+          item.currency
+        );
       });
-  
       // Send POST request
       const response = await axios.post(
         "http://localhost:3002/api/global-visa",
@@ -188,13 +232,13 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
           },
         }
       );
-  
+
       // Handle the API response
       if (response.status === 200) {
-        console.log("Form submitted successfully:", response.data);
-      
+        console.log("newww", response.data);
+
         // Reset form data after successful submission
-        setFormData({
+        setGlobalVisaData({
           title: "",
           description: "",
           images: [],
@@ -203,10 +247,7 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
           faculty: [],
           howToApply: "",
           overview: "",
-          pricing: [{ title: "", amount: "", currency: "" }],
           faq: [{ question: "", answer: "" }],
-          processType: ["Low"],
-          visaNo: [0],
           options: [
             {
               title: "",
@@ -221,436 +262,168 @@ const AddGlobalVisasPackageModal = ({ isOpen, onRequestClose }) => {
               footerText: "",
             },
           ],
-          packageCost: [{ title: "", amount: "", currency: "" }],
-          tax: [{ title: "", amount: "", currency: "" }],
+          pricing: {
+            packageCost: [{ title: "", amount: "", currency: "" }],
+            tax: [{ title: "", amount: "", currency: "" }],
+          },
         });
-  
-        onRequestClose(); 
       } else {
-        console.error("Failed to submit form:", response.status, response.data);
+        console.error("update:", response.status, response.data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
-  
-
-  if (!isOpen) return null;
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    setFormData({
-      ...formData,
+    setGlobalVisaData({
+      ...globalVisaData,
       images: files, // Store the image files directly
     });
   };
-  
+
   const handleThumbnailUpload = (e) => {
     const file = e.target.files[0];
-    setFormData({
-      ...formData,
+    setGlobalVisaData({
+      ...globalVisaData,
       thumbnail: file, // Store the single thumbnail file
     });
   };
 
-
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-1/2">
-        <h2 className="text-2xl mb-4">Add New Visa Package</h2>
-        {/* Page 1: Basic Info & Pricing Details */}
-        {page === 1 && (
-          <form className="space-y-4">
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
+      <h1 className="text-xl font-semibold text-center text-gray-700 mb-6 flex items-center justify-center gap-2">
+        <FaGlobe className="text-blue-500" /> Add Global Visas Package
+      </h1>
+
+      <form>
+        <div className="grid gap-4">
+          <label className="block">
+            <span className="text-gray-700 font-medium">Title*</span>
             <input
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Title"
-              className="w-full p-2 border"
+              type="text"
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              placeholder="Enter title"
+              required
             />
+          </label>
+
+          <label className="block">
+            <span className="text-gray-700 font-medium">Description*</span>
             <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Description"
-              className="w-full p-2 border"
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              placeholder="Enter description"
+              required
             />
+          </label>
 
-            {/* Thumbnail File Input */}
-            <label className="block mb-2 font-bold">Upload Thumbnail:</label>
+          <label className="block">
+            <span className="text-gray-700 font-medium">Details*</span>
+            <textarea
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              placeholder="Enter details"
+              required
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-gray-700 font-medium">Slug*</span>
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleThumbnailUpload}
-              className="w-full p-2 border"
+              type="text"
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              placeholder="Enter slug"
+              required
             />
+          </label>
 
-            {/* Image Upload (Multiple) */}
-            <label className="block mb-2 font-bold">
-              Upload Images (Multiple):
-            </label>
+          <label className="block">
+            <span className="text-gray-700 font-medium">Images File*</span>
             <input
               type="file"
               accept="image/*"
               multiple
               onChange={handleImageUpload}
-              className="w-full p-2 border"
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              required
             />
+          </label>
 
-            <textarea
-              name="details"
-              value={formData.details}
-              onChange={handleChange}
-              placeholder="Details"
-              className="w-full p-2 border"
+          <label className="block">
+            <span className="text-gray-700 font-medium">Thumbnail File*</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleThumbnailUpload}
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              required
             />
+          </label>
 
-            {/* Process Type */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">Process Type</h3>
-              {formData.processType.map((type, index) => (
-                <div key={index} className="flex space-x-4 mb-2">
-                  <select
-                    value={type}
-                    onChange={(e) => {
-                      const newTypes = [...formData.processType];
-                      newTypes[index] = e.target.value;
-                      setFormData({ ...formData, processType: newTypes });
-                    }}
-                    className="w-1/3 p-2 border"
-                  >
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newTypes = [...formData.processType];
-                      newTypes.splice(index, 1);
-                      setFormData({ ...formData, processType: newTypes });
-                    }}
-                    className="text-red-500"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData({
-                    ...formData,
-                    processType: [...formData.processType, "Low"],
-                  });
-                }}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Add Process Type
-              </button>
-            </div>
-
-            {/* Visa Numbers */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">Visa Numbers</h3>
-              {formData.visaNo.map((visa, index) => (
-                <div key={index} className="flex space-x-4 mb-2">
-                  <input
-                    type="number"
-                    value={visa}
-                    onChange={(e) => {
-                      const newVisaNos = [...formData.visaNo];
-                      newVisaNos[index] = e.target.value;
-                      setFormData({ ...formData, visaNo: newVisaNos });
-                    }}
-                    placeholder="Visa Number"
-                    className="w-1/3 p-2 border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newVisaNos = [...formData.visaNo];
-                      newVisaNos.splice(index, 1);
-                      setFormData({ ...formData, visaNo: newVisaNos });
-                    }}
-                    className="text-red-500"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData({ ...formData, visaNo: [...formData.visaNo, 0] });
-                }}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Add Visa Number
-              </button>
-            </div>
-
-            {/* Pricing Details */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">Pricing Details</h3>
-              {formData.pricing.map((priceDetail, index) => (
-                <div key={index} className="flex space-x-4 mb-2">
-                  <input
-                    name="title"
-                    value={priceDetail.title}
-                    onChange={(e) => handleChange(e, index, "pricing")}
-                    placeholder="Title"
-                    className="w-1/3 p-2 border"
-                  />
-                  <input
-                    name="amount"
-                    value={priceDetail.amount}
-                    onChange={(e) => handleChange(e, index, "pricing")}
-                    placeholder="Amount"
-                    className="w-1/3 p-2 border"
-                  />
-                  <input
-                    name="currency"
-                    value={priceDetail.currency}
-                    onChange={(e) => handleChange(e, index, "pricing")}
-                    placeholder="Currency"
-                    className="w-1/3 p-2 border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveField(index, "pricing")}
-                    className="text-red-500"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAddField("pricing")}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Add Pricing
-              </button>
-            </div>
-          </form>
-        )}
-        {/* Page 2: Faculty, Options & FAQs */}
-        {page === 2 && (
-          <div className="mt-6">
-            {/* Faculty Section */}
-            <h3 className="text-xl mb-2">Faculty</h3>
-            {formData.faculty.map((facultyDetail, index) => (
-              <div key={index} className="flex space-x-4 mb-2">
-                <input
-                  name="faculty"
-                  value={facultyDetail.faculty}
-                  onChange={(e) => handleChange(e, index, "faculty")}
-                  placeholder="faculty"
-                  className="w-1/3 p-2 border"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveField(index, "faculty")}
-                  className="text-red-500"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+          <div className="grid gap-3">
             <button
               type="button"
-              onClick={() => handleAddField("faculty")}
-              className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded transition"
+              onClick={openMoreDetailsModal}
             >
-              Add Faculty
+              Add More Details
             </button>
 
-            {/* Options Section */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">Options</h3>
-              {formData.options.map((option, index) => (
-                <div key={index} className="flex flex-col mb-2">
-                  <input
-                    name="title"
-                    value={option.title}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Option Title"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="badge"
-                    value={option.badge}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Badge"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="discount"
-                    value={option.discount}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Discount"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="refundStatus"
-                    value={option.refundStatus}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Refund Status"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="price"
-                    value={option.price}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Price"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="currency"
-                    value={option.currency}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Currency"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="discountPercentage"
-                    value={option.discountPercentage}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Discount Percentage"
-                    className="w-full p-2 border"
-                  />
+            <button
+              type="button"
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded transition"
+              onClick={openPricingModal}
+            >
+              Add Pricing
+            </button>
 
-                  <input
-                    name="discountPrice"
-                    value={option.discountPrice}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="discountPrice"
-                    className="w-full p-2 border"
-                  />
-                  <input
-                    name="footerText"
-                    value={option.footerText}
-                    onChange={(e) => handleChange(e, index, "options")}
-                    placeholder="Footer Text"
-                    className="w-full p-2 border"
-                  />
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAddField("options")}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Add Option
-              </button>
-            </div>
-
-            {/* FAQs Section */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">FAQs</h3>
-              {formData.faq.map((faqItem, index) => (
-                <div key={index} className="flex space-x-4 mb-2">
-                  <input
-                    name="question"
-                    value={faqItem.question}
-                    onChange={(e) => handleChange(e, index, "faq")}
-                    placeholder="Question"
-                    className="w-1/2 p-2 border"
-                  />
-                  <input
-                    name="answer"
-                    value={faqItem.answer}
-                    onChange={(e) => handleChange(e, index, "faq")}
-                    placeholder="Answer"
-                    className="w-1/2 p-2 border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveField(index, "faq")}
-                    className="text-red-500"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAddField("faq")}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Add FAQ
-              </button>
-            </div>
+            <button
+              type="button"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 rounded transition"
+              onClick={openVisaoptionModal}
+            >
+              Add Visa Options
+            </button>
           </div>
-        )}
 
-        {/* Page 3: How to Apply & Overview */}
-        {page === 3 && (
-          <div className="mt-6">
-            {/* How to Apply */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">How to Apply</h3>
-              <textarea
-                name="howToApply"
-                value={formData.howToApply}
-                onChange={handleChange}
-                placeholder="How to Apply"
-                className="w-full p-2 border"
-              />
-            </div>
-
-            {/* Overview */}
-            <div className="mt-6">
-              <h3 className="text-xl mb-2">Overview</h3>
-              <textarea
-                name="overview"
-                value={formData.overview}
-                onChange={handleChange}
-                placeholder="Overview"
-                className="w-full p-2 border"
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="mt-4 flex justify-between">
-          {page > 1 && (
+          <div className="flex justify-between mt-4">
             <button
-              type="button"
-              onClick={handlePrev}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              type="reset"
+              className="w-[48%] bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
             >
-              Previous
+              Reset
             </button>
-          )}
-          {page < 3 ? (
+
             <button
-              type="button"
-              onClick={handleNext}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              type="button"
+              type="submit"
+              className="w-[48%] bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
               onClick={handleSubmit}
-              className="px-4 py-2 bg-green-500 text-white rounded"
             >
               Submit
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onRequestClose}
-            className="px-4 py-2 bg-red-500 text-white rounded"
-          >
-            Close
-          </button>
+          </div>
         </div>
-      </div>
+      </form>
+
+      {/* Render AddMoreDetails modal and pass open and close handlers */}
+      <AddVisaOption
+        isOpen={isVisaOptionModalOpen}
+        onClose={closeVisaoptionModal}
+        globalVisaData={globalVisaData}
+        onSubmit={AddVisaOptionSubmit}
+      />
+      <AddPricing 
+      isOpen={isPricingModalOpen}
+      onClose={closePricingModal} 
+      globalVisaData={globalVisaData} 
+      onSubmit={addPricingSubmit}/>
+
+      <AddMoreDetails
+        isOpen={isMoreDetailsModalOpen}
+        onClose={closeMoreDetailsModal}
+        globalVisaData={globalVisaData}
+        onSubmit={addMoreDetailsSubmit} // Pass the submit handler
+      />
     </div>
   );
 };

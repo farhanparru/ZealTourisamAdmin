@@ -15,6 +15,7 @@ import UmrahaView from './AllPackgesviewSection/UmrahaView';
 import AddHolidays from './pages/AddHolidays/AddHolidays';
 import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
 import Holidays from './pages/Holidays/Holidays';
+import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -53,6 +54,8 @@ function App() {
       <AppLayout>
         <Routes>
           <Route path="/" element={<AdminLogin />} />
+          <Route path="/sss"  element={<AddGlobalVisasPackageModal/>}/>
+
           <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/packages" element={<ProtectedRoute><Packages /></ProtectedRoute>} />
           <Route path="/bookings" element={<Bookings />} />
@@ -61,12 +64,14 @@ function App() {
           <Route path="/messages" element={<Messages />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/deals" element={<Deals />} />
+          
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />
           <Route path="/Holidays2" element={<ProtectedRoute><Holidays2 /></ProtectedRoute>} />
           <Route path="/holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
           <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />
           <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />
 
+      
           <Route path="/feedback" element={<Feedback />} />
           <Route path='/Profile' element={<Adminprofile />} />
           <Route path='/forgot' element={<AdminForgotPassword />} />

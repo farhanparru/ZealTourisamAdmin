@@ -43,9 +43,7 @@ const Sidebar = () => {
             <li className="p-2 text-gray-600 hover:bg-blue-200 rounded-md">
               <Link to="/holidays">Exciting Holidays</Link>
             </li>
-            <li className="p-2 text-gray-600 hover:bg-blue-200 rounded-md">
-              <Link to="/add-holidays">Add Holidays</Link>
-            </li>
+          
             <li className="p-2 text-gray-600 hover:bg-blue-200 rounded-md">
               <Link to="/GlobalVisas">Global Visas</Link>
             </li>

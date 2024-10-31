@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import baseUrl from '../../contants/baseUrl';
 
+// eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ children }) => {
    const [isAuthenticated, setIsAuthenticated] = useState(null);
    const token = localStorage.getItem('adminToken');
@@ -21,6 +23,8 @@ const ProtectedRoute = ({ children }) => {
                setIsAuthenticated(false);
             }
          } catch (error) {
+            console.log(error);
+            
             setIsAuthenticated(false);
          }
       };
@@ -38,7 +42,7 @@ const ProtectedRoute = ({ children }) => {
    }
 
    if (!isAuthenticated) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/" />;
    }
 
    return children;

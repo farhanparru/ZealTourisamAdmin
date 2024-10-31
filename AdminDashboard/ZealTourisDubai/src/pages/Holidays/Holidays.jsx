@@ -1,5 +1,5 @@
 // src/Holidays.js
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal'; // Modal for displaying holiday details
 import './Holidays.css'; // Add any custom CSS styling here
@@ -34,7 +34,7 @@ const Holidays = () => {
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedHoliday, setSelectedHoliday] = useState(null);
+  const [setSelectedHoliday] = useState(null);
   const [state, setState] = useState(false);
   // Holiday data structure for the modal
   const [holidayData, setHolidayData] = useState(null);
@@ -182,6 +182,7 @@ const Holidays = () => {
               <h3 className="text-xl font-semibold mb-2">Images</h3>
               <div className="grid grid-cols-3 gap-2">
                 {holidayData?.images?.map((image, index) => (
+                  // eslint-disable-next-line react/jsx-key
                   <a href={cdnUrl + image} target="_blank" rel="noopener noreferrer">
                     <img key={index} src={cdnUrl + image} alt={`Holiday ${index + 1}`} className="w-10 h-10 object-cover rounded" />
                   </a>
@@ -304,7 +305,8 @@ const Holidays = () => {
           </div>
           <div className="mt-4">
             <h3 className="text-xl font-semibold mb-2">PDF</h3>
-            {holidayData?.pdf?.map((image, index) => (
+            {holidayData?.pdf?.map((image) => (
+              // eslint-disable-next-line react/jsx-key
               <a href={cdnUrl + image} target="_blank" rel="noopener noreferrer">
                 <FaRegFilePdf />
               </a>
