@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { FaGlobe } from "react-icons/fa";
-import AddMoreDetails from "../components/AddMoreDetails";
-import AddPricing from "../components/AddPricing";
-import AddVisaOption from "../components/AddVisaOption";
 import axios from "axios";
+import VisaOption from "../components/VisaOption";
+import Pricing from "../components/Pricing";
+import MoreDetails from "../components/MoreDetails";
 
 const AddGlobalVisasPackageModal = () => {
   const [globalVisaData, setGlobalVisaData] = useState({
@@ -406,19 +406,19 @@ const AddGlobalVisasPackageModal = () => {
       </form>
 
       {/* Render AddMoreDetails modal and pass open and close handlers */}
-      <AddVisaOption
+      <VisaOption
         isOpen={isVisaOptionModalOpen}
         onClose={closeVisaoptionModal}
         globalVisaData={globalVisaData}
         onSubmit={AddVisaOptionSubmit}
       />
-      <AddPricing 
+      <Pricing
       isOpen={isPricingModalOpen}
       onClose={closePricingModal} 
       globalVisaData={globalVisaData} 
       onSubmit={addPricingSubmit}/>
 
-      <AddMoreDetails
+      <MoreDetails
         isOpen={isMoreDetailsModalOpen}
         onClose={closeMoreDetailsModal}
         globalVisaData={globalVisaData}

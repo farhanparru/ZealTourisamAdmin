@@ -20,7 +20,7 @@ const customStyles = {
 };
 
 // eslint-disable-next-line react/prop-types
-const AddMoreDetails = ({ isOpen, onClose, onSubmit }) => {
+const MoreDetails = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     faculty: [""],
     howToApply: "",
@@ -246,4 +246,4 @@ const AddMoreDetails = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-export default AddMoreDetails;
+export default MoreDetails;

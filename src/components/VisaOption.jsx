@@ -19,7 +19,7 @@ const customStyles = {
 };
 
 // eslint-disable-next-line react/prop-types
-const AddVisaOption = ({ isOpen, onClose ,onSubmit}) => {
+const VisaOption = ({ isOpen, onClose ,onSubmit}) => {
  
   const [formData, setFormData] = useState({
     title: '',
@@ -185,4 +185,4 @@ const AddVisaOption = ({ isOpen, onClose ,onSubmit}) => {
   );
 };
 
-export default AddVisaOption;
+export default VisaOption;

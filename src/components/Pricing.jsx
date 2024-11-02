@@ -24,7 +24,7 @@ const customStyles = {
 };
 
 // eslint-disable-next-line react/prop-types
-const AddPricing = ({ isOpen, onClose ,onSubmit}) => {
+const Pricingg = ({ isOpen, onClose ,onSubmit}) => {
   const [packageTitle, setPackageTitle] = useState('');
   const [packageAmount, setPackageAmount] = useState('');
   const [packageCurrency, setPackageCurrency] = useState('');
@@ -156,4 +156,4 @@ console.log(formData,"formData");
   );
 };
 
-export default AddPricing;
+export default Pricing;

@@ -4,12 +4,13 @@ import '../AddHolidays/AddHolidays.css';
 import ItineraryForm from '../../components/ItineraryForm';
 import MoreDetailsModal from '../../components/MoreDetailsModal'; // Import the new modal component
 import baseUrl from '../../../contants/baseUrl';
-import FaqModal from '../../components/FAQModal';
+import FaqModal from '../../components/FaqModal';
 import BookingPolicyModal from '../../components/BookingPolicyModal';
 import PricingModal from '../../components/PricingModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import RatingModal from '../../components/RatingModal';
 
 const customStyles = {
     content: {
@@ -27,6 +28,7 @@ const customStyles = {
 
 const UpdateHolidays = () => {
     let { id } = useParams();
+    const navigate = useNavigate();
     const [holidayData, setHolidayData] = useState({
         title: '',
         description: '',
@@ -103,6 +105,7 @@ const UpdateHolidays = () => {
     const [isPricingModalOpen, setPricingModalOpen] = useState(false);
     const [isBookingPolicyModalOpen, setBookingPolicyModalOpen] = useState(false);
     const [isFaqModalOpen, setFaqModalOpen] = useState(false);
+    const [isRatingModalOpen, setRatingModalOpen] = useState(false);
     const [selectedItineraryIndex, setSelectedItineraryIndex] = useState(null);
     const [itineraryData, setItineraryData] = useState({
         title: '',
@@ -124,6 +127,9 @@ const UpdateHolidays = () => {
         setHolidayData({ ...holidayData, faq: faqData });
     };
 
+    const handleRatingSubmit = (ratingData) => {
+        setHolidayData({ ...holidayData, rating: ratingData });
+    };
     // Handles changes for all inputs
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -177,6 +183,7 @@ const UpdateHolidays = () => {
         formDataToSend.append('pricing', JSON.stringify(holidayData.pricing));
         formDataToSend.append('bookingPolicy', JSON.stringify(holidayData.bookingPolicy));
         formDataToSend.append('faq', JSON.stringify(holidayData.faq));
+        formDataToSend.append('rating', JSON.stringify(holidayData.rating));
         formDataToSend.append('details', JSON.stringify(holidayData.details));
 
         try {
@@ -192,6 +199,7 @@ const UpdateHolidays = () => {
             });
             if (response.status === 200) {
                 alert('Holiday saved successfully');
+                navigate('/holidays');
             } else {
                 throw new Error('Failed to save holiday');
             }
@@ -322,7 +330,7 @@ const UpdateHolidays = () => {
                 <PricingModal isOpen={isPricingModalOpen} onClose={() => setPricingModalOpen(false)} onSubmit={handlePricingSubmit} holidayData={holidayData} />
                 <BookingPolicyModal isOpen={isBookingPolicyModalOpen} onClose={() => setBookingPolicyModalOpen(false)} onSubmit={handleBookingPolicySubmit} holidayData={holidayData} />
                 <FaqModal isOpen={isFaqModalOpen} onClose={() => setFaqModalOpen(false)} onSubmit={handleFaqSubmit} holidayData={holidayData} />
-
+                <RatingModal isOpen={isRatingModalOpen} onClose={() => setRatingModalOpen(false)} onSubmit={handleRatingSubmit} holidayData={holidayData} />
                 <button type="submit" onClick={handleSubmit} className="btn submit-btn">Submit</button>
             </div>
 
