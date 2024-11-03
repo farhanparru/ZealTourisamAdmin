@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import  { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { MdMoreHoriz } from "react-icons/md"; // Import icon from react-icons
 
@@ -20,15 +19,38 @@ const customStyles = {
 };
 
 // eslint-disable-next-line react/prop-types
-const MoreDetails = ({ isOpen, onClose, onSubmit }) => {
+const MoreDetails = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
   const [formData, setFormData] = useState({
     faculty: [""],
     howToApply: "",
     overview: "",
-    processType: ["Low", "Medium", "High"],
+    processType: [""],
     visaNo: [""],
     faq: { question: "", answer: "" },
   });
+
+  useEffect(() => {
+   
+    // eslint-disable-next-line react/prop-types
+    if (isOpen && globalVisaData && globalVisaData.options.length > 0) {
+         // eslint-disable-next-line react/prop-types
+      const visaData = globalVisaData.options[0]; // Get the first option
+      setFormData({
+           // eslint-disable-next-line react/prop-types
+        faculty: globalVisaData.faculty || [""], 
+           // eslint-disable-next-line react/prop-types
+        howToApply: globalVisaData.howToApply || "",
+           // eslint-disable-next-line react/prop-types
+        overview: globalVisaData.overview || "",
+           // eslint-disable-next-line react/prop-types
+        processType: visaData.processType || [""], 
+           // eslint-disable-next-line react/prop-types
+        visaNo: visaData.visaNo || [""], 
+           // eslint-disable-next-line react/prop-types
+        faq: globalVisaData.faq.length > 0 ? globalVisaData.faq[0] : { question: "", answer: "" }, 
+      });
+    }
+  }, [isOpen, globalVisaData]);
 
   const handleChange = (e, index, field) => {
     const { name, value } = e.target;
@@ -61,19 +83,27 @@ const MoreDetails = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     console.log(formData);
     onSubmit(formData); // Call onSubmit with formData
+    // Reset form after submit
+    setFormData({
+      faculty: [""],
+      howToApply: "",
+      overview: "",
+      processType: [""],
+      visaNo: [""],
+      faq: { question: "", answer: "" },
+    });
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      style={customStyles} // Apply custom styles here
+      style={customStyles}
       className="modal-content bg-white rounded-lg p-6 max-w-md mx-auto shadow-lg border border-gray-300"
       overlayClassName="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center"
     >
       <div className="flex items-center mb-4">
-        <MdMoreHoriz className="text-xl text-gray-700 mr-2" />{" "}
-        {/* Icon for "More Details" */}
+        <MdMoreHoriz className="text-xl text-gray-700 mr-2" />
         <h2 className="text-lg font-semibold text-gray-700">
           Add More Details
         </h2>
@@ -141,7 +171,6 @@ const MoreDetails = ({ isOpen, onClose, onSubmit }) => {
           </button>
         </div>
 
-        {/* Process Type Fields */}
         {/* Process Type Fields */}
         <div>
           <label className="block text-gray-700 font-medium">
@@ -226,19 +255,19 @@ const MoreDetails = ({ isOpen, onClose, onSubmit }) => {
         </div>
 
         {/* Submit and Close buttons */}
-        <div className="flex justify-end space-x-2 mt-4">
+        <div className="flex justify-between mt-4">
           <button
-            type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition"
-          >
-            Save
-          </button>
-          <button
-            onClick={onClose}
             type="button"
-            className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition"
+            onClick={onClose}
+            className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
           >
             Close
+          </button>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Submit
           </button>
         </div>
       </form>

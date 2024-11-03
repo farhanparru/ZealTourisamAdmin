@@ -1,81 +1,85 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import { FaMoneyBillWave, FaPercent } from 'react-icons/fa'; // Importing icons
+import { FaMoneyBillWave, FaPercent } from 'react-icons/fa';
 
-
-// Set the app element for accessibility
 Modal.setAppElement('#root');
 
-// Custom styles for the modal
 const customStyles = {
   content: {
     top: '50%',
-    left: '50%', // Center horizontally
-    transform: 'translate(-50%, -50%)', // Center vertically
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
     right: 'auto',
     bottom: 'auto',
-    width: '90%', // Adjust the width to your preference
-    maxWidth: '600px', // Optional max width
+    width: '90%',
+    maxWidth: '600px',
     padding: '20px',
     borderRadius: '9px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Add some shadow for depth
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
   },
 };
 
 // eslint-disable-next-line react/prop-types
-const Pricingg = ({ isOpen, onClose ,onSubmit}) => {
-  const [packageTitle, setPackageTitle] = useState('');
-  const [packageAmount, setPackageAmount] = useState('');
-  const [packageCurrency, setPackageCurrency] = useState('');
-  const [taxTitle, setTaxTitle] = useState('');
-  const [taxAmount, setTaxAmount] = useState('');
-  const [taxCurrency, setTaxCurrency] = useState('');
+const Pricing = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
+  const [formData, setFormData] = useState({
+    pricing: {
+      packageCost: [{ title: '', amount: '', currency: '' }],
+      tax: [{ title: '', amount: '', currency: '' }],
+    }
+  });
+
+  // Use useEffect to populate the form if globalVisaData is provided
+  useEffect(() => {
+    if (globalVisaData) {
+      setFormData(globalVisaData);
+    }
+  }, [globalVisaData]);
+
+  const handleChange = (e, section, field) => {
+    const { value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      pricing: {
+        ...prevData.pricing,
+        [section]: [
+          {
+            ...prevData.pricing[section][0],
+            [field]: value,
+          },
+        ],
+      },
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const formData = {
-      pricing: {
-        packageCost: [{ title: packageTitle, amount: packageAmount, currency: packageCurrency }],
-        tax: [{ title: taxTitle, amount: taxAmount, currency: taxCurrency }],
-      }
-    };
-console.log(formData,"formData");
-
     onSubmit(formData);
+    console.log(formData, "formData");
 
-    setPackageTitle('');
-    setPackageAmount('');
-    setPackageCurrency('');
-    setTaxTitle('');
-    setTaxAmount('');
-    setTaxCurrency('');
-
+    // Reset fields after submission
+    setFormData({
+      pricing: {
+        packageCost: [{ title: '', amount: '', currency: '' }],
+        tax: [{ title: '', amount: '', currency: '' }],
+      }
+    });
     onClose();
   };
 
-
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      contentLabel="Add Pricing Package"
-      style={customStyles} // Apply custom styles here
-    >
+    <Modal isOpen={isOpen} onRequestClose={onClose} contentLabel="Add Pricing Package" style={customStyles}>
       <h2 className="text-xl font-semibold mb-4">Add Pricing Package</h2>
       <form onSubmit={handleSubmit}>
-      <h3 className="text-lg font-semibold mt-4 flex items-center">
-          <FaMoneyBillWave className="mr-2 text-gray-600" /> {/* Package Cost Icon */}
-          Package Cost
+        <h3 className="text-lg font-semibold mt-4 flex items-center">
+          <FaMoneyBillWave className="mr-2 text-gray-600" /> Package Cost
         </h3>
         <div className="mb-3">
           <label className="block text-sm font-medium mb-1">
             Title:
             <input
               type="text"
-              value={packageTitle}
-              onChange={(e) => setPackageTitle(e.target.value)}
+              value={formData.pricing.packageCost[0].title}
+              onChange={(e) => handleChange(e, 'packageCost', 'title')}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />
@@ -86,8 +90,8 @@ console.log(formData,"formData");
             Amount:
             <input
               type="number"
-              value={packageAmount}
-              onChange={(e) => setPackageAmount(e.target.value)}
+              value={formData.pricing.packageCost[0].amount}
+              onChange={(e) => handleChange(e, 'packageCost', 'amount')}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />
@@ -98,8 +102,8 @@ console.log(formData,"formData");
             Currency:
             <input
               type="text"
-              value={packageCurrency}
-              onChange={(e) => setPackageCurrency(e.target.value)}
+              value={formData.pricing.packageCost[0].currency}
+              onChange={(e) => handleChange(e, 'packageCost', 'currency')}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />
@@ -107,16 +111,15 @@ console.log(formData,"formData");
         </div>
 
         <h3 className="text-lg font-semibold mt-4 flex items-center">
-          <FaPercent className="mr-2 text-gray-600" /> {/* Tax Icon */}
-          Tax
+          <FaPercent className="mr-2 text-gray-600" /> Tax
         </h3>
         <div className="mb-3">
           <label className="block text-sm font-medium mb-1">
             Title:
             <input
               type="text"
-              value={taxTitle}
-              onChange={(e) => setTaxTitle(e.target.value)}
+              value={formData.pricing.tax[0].title}
+              onChange={(e) => handleChange(e, 'tax', 'title')}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />
@@ -127,8 +130,8 @@ console.log(formData,"formData");
             Amount:
             <input
               type="number"
-              value={taxAmount}
-              onChange={(e) => setTaxAmount(e.target.value)}
+              value={formData.pricing.tax[0].amount}
+              onChange={(e) => handleChange(e, 'tax', 'amount')}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />
@@ -139,8 +142,8 @@ console.log(formData,"formData");
             Currency:
             <input
               type="text"
-              value={taxCurrency}
-              onChange={(e) => setTaxCurrency(e.target.value)}
+              value={formData.pricing.tax[0].currency}
+              onChange={(e) => handleChange(e, 'tax', 'currency')}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />

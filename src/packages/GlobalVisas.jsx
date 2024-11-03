@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
 import axios from "axios"; // Import axios for making API requests
 import visas from "../assets/Images/visas.png"; // You can change this path or use different images for packages
-import EditPackageVisasModal from "./EditPackageVisModal";
 import { useNavigate, Link } from 'react-router-dom';
 
 
@@ -13,14 +12,11 @@ const GlobalVisas = () => {
   const navigate = useNavigate();
 
   const handleClick = ()=>{
-     navigate('/sss')
+     navigate('/AddVisa')
   }
+
   
-
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [packages, setPackages] = useState([]);
-
-  const [selectedPackage, setSelectedPackage] = useState(null); // For editing a selected package
 
   // Fetching visa packages from the API
   useEffect(() => {
@@ -35,7 +31,7 @@ const GlobalVisas = () => {
             id: pkg._id, // Ensure 'id' is included
             packageName: pkg.title,
             description: pkg.description,
-            images: pkg.images.length > 0 ? pkg.images : [null],
+            images: pkg.images.length > 0 ? pkg.images[0] : null, // Use the first image or null if none
             thumbnail: pkg.thumbnail,
             details: pkg.details,
             faculty: pkg.faculty.length > 0 ? pkg.faculty : ["Not specified"], // Ensure faculty is an array
@@ -88,16 +84,9 @@ const GlobalVisas = () => {
 
   // handle Editt
 
-  // Handle opening and closing of Edit Modal
-  const openEditModal = (pkg) => {
-    setSelectedPackage(pkg); // Set the package to edit
-    setEditModalIsOpen(true);
-  };
 
-  const closeEditModal = () => {
-    setEditModalIsOpen(false);
-    setSelectedPackage(null); // Clear the selected package
-  };
+
+
 
   return (
     <div className="p-6">
@@ -153,8 +142,8 @@ const GlobalVisas = () => {
               </tr>
             </thead>
             <tbody>
-              {packages.map((pkg, index) => (
-                <tr key={index} className="border-b">
+              {packages.map((pkg) => (
+                <tr key={pkg._id} className="border-b">
                   <td className="px-4 py-2">{pkg.packageName}</td>
                   <td className="px-4 py-2">{pkg.description}</td>
                   <td className="px-4 py-2">
@@ -172,7 +161,7 @@ const GlobalVisas = () => {
                     </Link>
                     <button
                       className="text-yellow-500 hover:text-yellow-600 mx-2"
-                      onClick={() => openEditModal(pkg)}
+                      onClick={() => navigate(`/EditGlobalVisa/${pkg.id}`)}
                     >
                       <FiEdit />
                     </button>
@@ -190,14 +179,7 @@ const GlobalVisas = () => {
         </div>
       </div>
 
-      {/* Edit Package Modal */}
-      <EditPackageVisasModal
-        isOpen={editModalIsOpen}
-        onRequestClose={closeEditModal}
-        selectedPackage={selectedPackage}
-        packages={packages} // Pass packages as a prop
-        setPackages={setPackages} // Pass setPackages as a prop
-      />
+      
     </div>
   );
 };

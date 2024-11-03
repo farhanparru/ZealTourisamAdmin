@@ -59,6 +59,8 @@ const UpdateHolidays = () => {
         rating: {},
         additionalInfo: '',
     });
+    console.log(holidayData,"holidayData");
+    
 
     useEffect(() => {
         const fetchHoliday = async () => {

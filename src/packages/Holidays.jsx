@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
 import holiday from '../assets/Images/holiadys.png';
-import AddHolidaysPackageModal from './AddHolidaysPackageModal';
+
 
 // Mock data for holidays
 const initialHolidays = [

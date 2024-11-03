@@ -24,12 +24,17 @@ const AddGlobalVisasPackageModal = () => {
         badge: "",
         discount: "",
         refundStatus: "",
-        processType: ["Low", "Medium", "High"],
-        visaNo: [0],
         price: "",
         currency: "",
         discountPercentage: "",
-        discountPrice: "",
+        priceWithCurrency: [
+          {
+            currency: "",
+            price: "",
+            discountPrice: "",
+            discountPercentage: "",
+          },
+        ],
         footerText: "",
       },
     ],
@@ -38,7 +43,7 @@ const AddGlobalVisasPackageModal = () => {
       tax: [{ title: "", amount: "", currency: "" }],
     },
   });
-
+  
   // Modal Submit HandleFunction
 
   // AddMoreDetails submission function
@@ -59,6 +64,8 @@ const AddGlobalVisasPackageModal = () => {
   const addPricingSubmit = (pricingData) => {
     // Destructure packageCost and tax from pricingData.pricing
     const { packageCost, tax } = pricingData.pricing;
+    console.log( pricingData.pricing," pricingData.pricing");
+    
   
     // Update globalVisaData state with new pricing details
     setGlobalVisaData((prevState) => ({
@@ -76,7 +83,6 @@ const AddGlobalVisasPackageModal = () => {
   
 
   const AddVisaOptionSubmit = (visaOptionData) => {
-    // Destructure the visa option data for easier use
     const {
       title,
       badge,
@@ -85,14 +91,14 @@ const AddGlobalVisasPackageModal = () => {
       price,
       currency,
       discountPercentage,
-      discountPrice,
-      footerText
+      footerText,
+      priceWithCurrency, // Accept priceWithCurrency from the form data
     } = visaOptionData;
   
     setGlobalVisaData((prevState) => ({
       ...prevState,
-      visaOptions: [
-        ...(prevState.visaOptions || []), // Provide an empty array if visaOptions is undefined
+      options: [
+        ...(prevState.options || []),
         {
           title,
           badge,
@@ -101,17 +107,22 @@ const AddGlobalVisasPackageModal = () => {
           price,
           currency,
           discountPercentage,
-          discountPrice,
           footerText,
-        }
-      ]
+          priceWithCurrency: priceWithCurrency || [
+            {
+              currency: "",
+              price: "",
+              discountPrice: "",
+              discountPercentage: "",
+            },
+          ],
+        },
+      ],
     }));
-    
-    // Close the Visa Option Modal after submission
+  
     closeVisaoptionModal();
   };
   
-
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [isVisaOptionModalOpen, setIsVisasOptionModalOpen] = useState(false);
@@ -125,122 +136,111 @@ const AddGlobalVisasPackageModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const token = localStorage.getItem("adminToken");
-
-      // Create a new FormData instance
       const formDataToSend = new FormData();
-      // Append basic fields to formDataToSend
+  
+      // Append standard fields
       formDataToSend.append("title", globalVisaData.title);
+      formDataToSend.append("slug", globalVisaData.slug);
       formDataToSend.append("description", globalVisaData.description);
       formDataToSend.append("overview", globalVisaData.overview);
       formDataToSend.append("howToApply", globalVisaData.howToApply);
       formDataToSend.append("details", globalVisaData.details);
-
+  
+      // Handle images
       if (globalVisaData.images && globalVisaData.images.length > 0) {
         globalVisaData.images.forEach((image) => {
-          formDataToSend.append("images", image); // Ensure images are appended correctly
+          formDataToSend.append("images", image);
         });
       }
-
+  
+      // Handle faculty
       if (globalVisaData.faculty && globalVisaData.faculty.length > 0) {
-        // Extract the 'faculty' property value from each object in the array
-        const facultyValues = globalVisaData.faculty.map(
-          (facultyObj) => facultyObj.faculty
-        );
-
-        // Append each faculty value as a separate entry in formDataToSend
-        facultyValues.forEach((facult) => {
-          formDataToSend.append("faculty", facult);
+        globalVisaData.faculty.forEach((facultyObj) => {
+          formDataToSend.append("faculty", facultyObj.faculty);
         });
       }
-
-      // Append thumbnail if any
+  
+      // Append thumbnail
       if (globalVisaData.thumbnail) {
         formDataToSend.append("thumbnail", globalVisaData.thumbnail);
       }
-
-      // Append FAQ data
-      globalVisaData.faq.forEach((item, index) => {
+  
+      // Handle FAQ data
+      const faqData = Array.isArray(globalVisaData.faq) ? globalVisaData.faq : [globalVisaData.faq];
+      faqData.forEach((item, index) => {
         formDataToSend.append(`faq[${index}][question]`, item.question);
         formDataToSend.append(`faq[${index}][answer]`, item.answer);
       });
-
-      // Append options data
+  
+      // Handle options
       globalVisaData.options.forEach((item, index) => {
         formDataToSend.append(`options[${index}][title]`, item.title);
         formDataToSend.append(`options[${index}][badge]`, item.badge);
+        formDataToSend.append(`options[${index}][refundStatus]`, item.refundStatus);
         formDataToSend.append(`options[${index}][discount]`, item.discount);
-        formDataToSend.append(
-          `options[${index}][refundStatus]`,
-          item.refundStatus
-        );
-        formDataToSend.append(`options[${index}][visaNo]`, globalVisaData.visaNo);
-
-        formDataToSend.append(
-          `options[${index}][processType]`,
-          item.processType[0]
-        );
-
+        formDataToSend.append(`options[${index}][discountPercentage]`, item.discountPercentage);
         formDataToSend.append(`options[${index}][price]`, item.price);
         formDataToSend.append(`options[${index}][currency]`, item.currency);
-        formDataToSend.append(
-          `options[${index}][discountPercentage]`,
-          item.discountPercentage
-        );
-        formDataToSend.append(
-          `options[${index}][discountPrice]`,
-          item.discountPrice
-        );
         formDataToSend.append(`options[${index}][footerText]`, item.footerText);
+  
+        // Append `priceWithCurrency`
+        item.priceWithCurrency.forEach((currencyItem, currencyIndex) => {
+          formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][currency]`, currencyItem.currency);
+          formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][price]`, currencyItem.price);
+          formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][discountPrice]`, currencyItem.discountPrice);
+          formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][discountPercentage]`, currencyItem.discountPercentage);
+        });
+  
+        // Append `processType` if it exists
+        if (item.processType) {
+          item.processType.forEach((type, typeIndex) => {
+            formDataToSend.append(`options[${index}][processType][${typeIndex}]`, type);
+          });
+        }
+  
+        // Append `visaNo` if it exists
+        if (item.visaNo) {
+          item.visaNo.forEach((visa, visaIndex) => {
+            formDataToSend.append(`options[${index}][visaNo][${visaIndex}]`, visa);
+          });
+        }
       });
-
-      // Append package cost data
+  
+      // Handle pricing packageCost
       globalVisaData.pricing.packageCost.forEach((item, index) => {
-        formDataToSend.append(
-          `pricing[packageCost][${index}][title]`,
-          item.title
-        );
-        formDataToSend.append(
-          `pricing[packageCost][${index}][amount]`,
-          item.amount
-        );
-        formDataToSend.append(
-          `pricing[packageCost][${index}][currency]`,
-          item.currency
-        );
+        formDataToSend.append(`pricing[packageCost][${index}][title]`, item.title);
+        formDataToSend.append(`pricing[packageCost][${index}][amount]`, item.amount);
+        formDataToSend.append(`pricing[packageCost][${index}][currency]`, item.currency);
       });
-
-      // Append tax data
+  
+      // Handle pricing tax
       globalVisaData.pricing.tax.forEach((item, index) => {
         formDataToSend.append(`pricing[tax][${index}][title]`, item.title);
         formDataToSend.append(`pricing[tax][${index}][amount]`, item.amount);
-        formDataToSend.append(
-          `pricing[tax][${index}][currency]`,
-          item.currency
-        );
+        formDataToSend.append(`pricing[tax][${index}][currency]`, item.currency);
       });
+  
       // Send POST request
       const response = await axios.post(
         "http://localhost:3002/api/global-visa",
         formDataToSend,
         {
           headers: {
-            "x-access-token": `${token}`,
-            "Content-Type": "multipart/form-data", // Important for file uploads
+            "x-access-token": token,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-
-      // Handle the API response
+  
+      // Reset form if success
       if (response.status === 200) {
-        console.log("newww", response.data);
-
-        // Reset form data after successful submission
         setGlobalVisaData({
           title: "",
           description: "",
+          slug: "",
           images: [],
           thumbnail: null,
           details: "",
@@ -254,12 +254,15 @@ const AddGlobalVisasPackageModal = () => {
               badge: "",
               discount: "",
               refundStatus: "",
-              processType: ["Low", "Medium", "High"],
-              visaNo: [""],
               price: "",
               currency: "",
               discountPercentage: "",
+              priceWithCurrency: [
+                { currency: "", price: "", discountPrice: "", discountPercentage: "" }
+              ],
               footerText: "",
+              processType: [],
+              visaNo: [],
             },
           ],
           pricing: {
@@ -268,12 +271,13 @@ const AddGlobalVisasPackageModal = () => {
           },
         });
       } else {
-        console.error("update:", response.status, response.data);
+        console.error("Error:", response.status, response.data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
+  
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -303,27 +307,30 @@ const AddGlobalVisasPackageModal = () => {
             <span className="text-gray-700 font-medium">Title*</span>
             <input
               type="text"
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="Enter title"
+              value={globalVisaData.title}
+              onChange={(e) => setGlobalVisaData({ ...globalVisaData, title: e.target.value })}
               required
+              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
           </label>
 
           <label className="block">
             <span className="text-gray-700 font-medium">Description*</span>
             <textarea
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="Enter description"
+              value={globalVisaData.description}
+              onChange={(e) => setGlobalVisaData({ ...globalVisaData, description: e.target.value })}
               required
+              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
           </label>
 
           <label className="block">
             <span className="text-gray-700 font-medium">Details*</span>
             <textarea
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="Enter details"
+              value={globalVisaData.details}
+              onChange={(e) => setGlobalVisaData({ ...globalVisaData, details: e.target.value })}
               required
+              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
           </label>
 
@@ -331,9 +338,10 @@ const AddGlobalVisasPackageModal = () => {
             <span className="text-gray-700 font-medium">Slug*</span>
             <input
               type="text"
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="Enter slug"
+              value={globalVisaData.slug}
+              onChange={(e) => setGlobalVisaData({ ...globalVisaData, slug: e.target.value })}
               required
+              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
           </label>
 

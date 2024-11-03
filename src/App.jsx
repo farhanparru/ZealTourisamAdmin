@@ -16,6 +16,7 @@ import AddHolidays from './pages/AddHolidays/AddHolidays';
 import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
 import Holidays from './pages/Holidays/Holidays';
 import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
+import EditVisModal from '../src/packages/EditVisModal'
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -54,7 +55,8 @@ function App() {
       <AppLayout>
         <Routes>
           <Route path="/" element={<AdminLogin />} />
-          <Route path="/sss"  element={<AddGlobalVisasPackageModal/>}/>
+          <Route path="/AddVisa"  element={<AddGlobalVisasPackageModal/>}/>
+          <Route path='/EditGlobalVisa/:id' element={<EditVisModal/>} />
 
           <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/packages" element={<ProtectedRoute><Packages /></ProtectedRoute>} />
