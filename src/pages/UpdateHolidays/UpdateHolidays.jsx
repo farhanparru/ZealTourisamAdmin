@@ -11,7 +11,8 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import RatingModal from '../../components/RatingModal';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const customStyles = {
     content: {
         top: '50%',
@@ -200,7 +201,7 @@ const UpdateHolidays = () => {
                 },
             });
             if (response.status === 200) {
-                alert('Holiday saved successfully');
+                toast.success('Holiday update successfully');
                 navigate('/holidays');
             } else {
                 throw new Error('Failed to save holiday');

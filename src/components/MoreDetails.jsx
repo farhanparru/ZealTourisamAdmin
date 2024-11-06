@@ -24,8 +24,6 @@ const MoreDetails = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
     faculty: [""],
     howToApply: "",
     overview: "",
-    processType: [""],
-    visaNo: [""],
     faq: { question: "", answer: "" },
   });
 
@@ -81,15 +79,14 @@ const MoreDetails = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log(formData,"editt");
     onSubmit(formData); // Call onSubmit with formData
     // Reset form after submit
     setFormData({
       faculty: [""],
       howToApply: "",
       overview: "",
-      processType: [""],
-      visaNo: [""],
+    
       faq: { question: "", answer: "" },
     });
   };
@@ -141,73 +138,7 @@ const MoreDetails = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
         </div>
 
         {/* Visa No Fields */}
-        <div>
-          <label className="block text-gray-700 font-medium">Visa No:</label>
-          {formData.visaNo.map((visa, index) => (
-            <div key={index} className="flex items-center space-x-2 mt-1">
-              <input
-                type="text"
-                name="visaNo"
-                value={visa}
-                onChange={(e) => handleChange(e, index, "visaNo")}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => removeField("visaNo", index)}
-                className="text-red-500 font-semibold"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addField("visaNo")}
-            className="text-blue-500 mt-2"
-          >
-            + Add Visa No
-          </button>
-        </div>
-
-        {/* Process Type Fields */}
-        <div>
-          <label className="block text-gray-700 font-medium">
-            Process Type:
-          </label>
-          {formData.processType.map((process, index) => (
-            <div key={index} className="flex items-center space-x-2 mt-1">
-              <select
-                name="processType"
-                value={process}
-                onChange={(e) => handleChange(e, index, "processType")}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded outline-none"
-              >
-                <option value="">Select Process Type</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
-              <button
-                type="button"
-                onClick={() => removeField("processType", index)}
-                className="text-red-500 font-semibold"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addField("processType")}
-            className="text-blue-500 mt-2"
-          >
-            + Add Process Type
-          </button>
-        </div>
-
+      
         {/* Other fields (How to Apply, Overview, FAQ) */}
         <div>
           <label className="block text-gray-700 font-medium">

@@ -10,14 +10,15 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
     right: 'auto',
     bottom: 'auto',
-    width: '90%',
-    maxWidth: '600px',
+    width: '120%',
+    maxWidth: '700px',
     height: '90%',
     padding: '20px',
     borderRadius: '9px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
   },
 };
+
 // eslint-disable-next-line react/prop-types
 const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
   const [formData, setFormData] = useState({
@@ -28,6 +29,8 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
     discountPercentage: '',
     price: '',
     currency: '',
+    visaNo: [''],
+    processType: [''],
     priceWithCurrency: [{ currency: '', price: '', discountPrice: '', discountPercentage: '' }],
     footerText: '',
   });
@@ -46,28 +49,45 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleFieldChange = (e, index, fieldName) => {
+    const updatedFields = [...formData[fieldName]];
+    updatedFields[index] = e.target.value;
+    setFormData({ ...formData, [fieldName]: updatedFields });
+  };
+
+  const addField = (fieldName) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [fieldName]: [...prevData[fieldName], ''],
+    }));
+  };
+
+  const removeField = (fieldName, index) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [fieldName]: prevData[fieldName].filter((_, i) => i !== index),
+    }));
+  };
+
   const handleCurrencyChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedPriceWithCurrency = Array.isArray(formData.priceWithCurrency)
-      ? [...formData.priceWithCurrency]
-      : [];
+    const updatedPriceWithCurrency = [...formData.priceWithCurrency];
     updatedPriceWithCurrency[index][name] = value;
     setFormData({ ...formData, priceWithCurrency: updatedPriceWithCurrency });
   };
+
   const handleAddCurrency = () => {
     setFormData((prevData) => ({
       ...prevData,
-      priceWithCurrency: Array.isArray(prevData.priceWithCurrency)
-        ? [...prevData.priceWithCurrency, { currency: '', price: '', discountPrice: '', discountPercentage: '' }]
-        : [{ currency: '', price: '', discountPrice: '', discountPercentage: '' }],
+      priceWithCurrency: [...prevData.priceWithCurrency, { currency: '', price: '', discountPrice: '', discountPercentage: '' }],
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-  console.log(formData,"VisaOption");
-  
+    console.log(formData,"editt");
+    
     setFormData({
       title: '',
       badge: '',
@@ -76,6 +96,8 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
       discountPercentage: '',
       price: '',
       currency: '',
+      visaNo: [''],
+      processType: [''],
       priceWithCurrency: [{ currency: '', price: '', discountPrice: '', discountPercentage: '' }],
       footerText: '',
     });
@@ -129,7 +151,7 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">
-          RefundStatus:
+            Refund Status:
             <input
               type="text"
               name="refundStatus"
@@ -179,6 +201,71 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
             />
           </label>
         </div>
+
+        {/* Visa No Fields */}
+        <div>
+          <label className="block text-gray-700 font-medium">Visa No:</label>
+          {formData.visaNo.map((visa, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-1">
+              <input
+                type="text"
+                value={visa}
+                onChange={(e) => handleFieldChange(e, index, "visaNo")}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => removeField("visaNo", index)}
+                className="text-red-500 font-semibold"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => addField("visaNo")}
+            className="text-blue-500 mt-2"
+          >
+            + Add Visa No
+          </button>
+        </div>
+
+        {/* Process Type Fields */}
+        <div>
+          <label className="block text-gray-700 font-medium">Process Type:</label>
+          {formData.processType.map((process, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-1">
+              <select
+                value={process}
+                onChange={(e) => handleFieldChange(e, index, "processType")}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded outline-none"
+              >
+                <option value="">Select Process Type</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              <button
+                type="button"
+                onClick={() => removeField("processType", index)}
+                className="text-red-500 font-semibold"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => addField("processType")}
+            className="text-blue-500 mt-2"
+          >
+            + Add Process Type
+          </button>
+        </div>
+
         <div className="space-y-4">
           <label className="block text-sm font-medium mb-1">Price with Currency:</label>
           {formData.priceWithCurrency?.map((item, index) => (
@@ -189,8 +276,7 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
                 placeholder="Currency"
                 value={item.currency}
                 onChange={(e) => handleCurrencyChange(index, e)}
-                required
-                className="block border border-gray-300 rounded-md shadow-sm p-3 w-1/4"
+                className="w-1/3 p-2 border border-gray-300 rounded"
               />
               <input
                 type="number"
@@ -198,55 +284,61 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
                 placeholder="Price"
                 value={item.price}
                 onChange={(e) => handleCurrencyChange(index, e)}
-                required
-                className="block border border-gray-300 rounded-md shadow-sm p-3 w-1/4"
+                className="w-1/3 p-2 border border-gray-300 rounded"
               />
               <input
                 type="number"
                 name="discountPrice"
-                placeholder="discountPrice"
+                placeholder="Discount Price"
                 value={item.discountPrice}
                 onChange={(e) => handleCurrencyChange(index, e)}
-                required
-                className="block border border-gray-300 rounded-md shadow-sm p-3 w-2/4"
+                className="w-1/3 p-2 border border-gray-300 rounded"
               />
-              <input
+               <input
                 type="text"
                 name="discountPercentage"
-                placeholder="DiscountPercentage"
+                placeholder="discountPercentage"
                 value={item.discountPercentage}
                 onChange={(e) => handleCurrencyChange(index, e)}
-                required
-                className="block border border-gray-300 rounded-md shadow-sm p-3 w-2/4"
+                className="w-1/3 p-2 border border-gray-300 rounded"
               />
             </div>
           ))}
           <button
             type="button"
             onClick={handleAddCurrency}
-            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+            className="text-blue-500 mt-2"
           >
-            Add Another Currency
+            + Add Price with Currency
           </button>
         </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">
             Footer Text:
-            <textarea
+            <input
+              type="text"
               name="footerText"
               value={formData.footerText}
               onChange={handleChange}
-              required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3"
-            ></textarea>
+            />
           </label>
         </div>
-        <div className="flex justify-end space-x-2 mt-4">
-          <button type="submit" className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition">
-            Save
+
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="mr-3 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+          >
+            Cancel
           </button>
-          <button onClick={onClose} type="button" className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition">
-            Close
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+          >
+            Submit
           </button>
         </div>
       </form>

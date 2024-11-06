@@ -11,12 +11,13 @@ import AdminLogin from './AdminUI/AdminLogin';
 import ProtectedRoute from './AdminUI/ProtectedRoute';
 import Adminprofile from './AdminUI/Adminprofile';
 import AdminForgotPassword from './AdminUI/AdminforgotPassword';
-import UmrahaView from './AllPackgesviewSection/UmrahaView';
 import AddHolidays from './pages/AddHolidays/AddHolidays';
 import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
 import Holidays from './pages/Holidays/Holidays';
 import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
 import EditVisModal from '../src/packages/EditVisModal'
+import { ToastContainer } from 'react-toastify';
+import GlobalVisa from './AllPackgesviewSection/GlobalVisa';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -77,10 +78,13 @@ function App() {
           <Route path="/feedback" element={<Feedback />} />
           <Route path='/Profile' element={<Adminprofile />} />
           <Route path='/forgot' element={<AdminForgotPassword />} />
-          <Route path='/View' element={<UmrahaView />} />
+          <Route path='/View' element={<GlobalVisa />} />
+          
         </Routes>
+        <ToastContainer />
       </AppLayout>
     </Router>
+    
   );
 }
 

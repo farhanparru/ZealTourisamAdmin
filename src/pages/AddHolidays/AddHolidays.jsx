@@ -8,7 +8,8 @@ import FaqModal from '../../components/FaqModal';
 import BookingPolicyModal from '../../components/BookingPolicyModal';
 import PricingModal from '../../components/PricingModal';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import RatingModal from '../../components/RatingModal';
 import { useNavigate } from 'react-router-dom';
@@ -158,7 +159,7 @@ const Holidays = () => {
         },
       });
       if (response.status === 200) {
-        alert('Holiday saved successfully');
+        toast.success('Holiday saved successfully');
         navigate('/holidays');
       } else {
         throw new Error('Failed to save holiday');
