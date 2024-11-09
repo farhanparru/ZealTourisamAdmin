@@ -5,7 +5,8 @@ import {useNavigate} from 'react-router-dom'
 import { FiLogOut } from 'react-icons/fi';
 import logo from '../assets/Images/Logon bar.png';  // Make sure the file path is correct
 import axios from 'axios';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Navbar = () => {
 
   const navigate = useNavigate()
@@ -13,11 +14,11 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       const response = await axios.post('http://localhost:3002/api/admin/adminLogout'); // Replace with your actual endpoint
-      console.log(response,"kk");
+  
       
       if (response.data.success) {
         navigate('/') // login page
-
+        toast.success("Admin Logout successfully")
         localStorage.removeItem('adminToken');
 
         

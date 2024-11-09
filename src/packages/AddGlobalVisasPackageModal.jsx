@@ -7,8 +7,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import VisaOption from "../components/VisaOption";
 import Pricing from "../components/Pricing";
 import MoreDetails from "../components/MoreDetails";
+import { useNavigate} from 'react-router-dom';
 
 const AddGlobalVisasPackageModal = () => {
+
+  const navigate = useNavigate();
+
+  const handleClick = ()=>{
+     navigate('/SEOsettings')
+  }
+
+
+
   const [globalVisaData, setGlobalVisaData] = useState({
     title: "",
     description: "",
@@ -51,7 +61,7 @@ const AddGlobalVisasPackageModal = () => {
   console.log("Form data before sending:", globalVisaData);
 
   
-  // Modal Submit HandleFunction
+// Modal Submit HandleFunction
 
   // AddMoreDetails submission function
   const addMoreDetailsSubmit = (details) => {
@@ -305,7 +315,7 @@ const AddGlobalVisasPackageModal = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200" style={{marginTop:'-19px'}}>
       <h1 className="text-xl font-semibold text-center text-gray-700 mb-6 flex items-center justify-center gap-2">
         <FaGlobe className="text-blue-500" /> Add Global Visas Package
       </h1>
@@ -401,14 +411,18 @@ const AddGlobalVisasPackageModal = () => {
             >
               Add Visa Options
             </button>
+            
           </div>
+
+          
 
           <div className="flex justify-between mt-4">
             <button
               type="reset"
               className="w-[48%] bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
+              onClick={handleClick}
             >
-              Reset
+               SEO Settings
             </button>
 
             <button

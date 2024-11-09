@@ -18,12 +18,15 @@ import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageMod
 import EditVisModal from '../src/packages/EditVisModal'
 import { ToastContainer } from 'react-toastify';
 import GlobalVisa from './AllPackgesviewSection/GlobalVisa';
+import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
+import UmrahaSEO from './SEOsettings/UmrahaSEO';
+import AddBanner from './packages/AddBanner';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
 const Bookings = () => <h2>Bookings</h2>;
 const Travelers = () => <h2>Travelers</h2>;
-const Messages = () => <h2>Messages</h2>;
+
 const Gallery = () => <h2>Gallery</h2>;
 const Deals = () => <h2>Deals</h2>;
 const Feedback = () => <h2>Feedback</h2>;
@@ -57,6 +60,8 @@ function App() {
         <Routes>
           <Route path="/" element={<AdminLogin />} />
           <Route path="/AddVisa"  element={<AddGlobalVisasPackageModal/>}/>
+          <Route path='/SEOsettings' element={<UmrahaSEO/>}/>
+          <Route path='/AddUmraha' element={<AddUmrahPackageModal/>}/>
           <Route path='/EditGlobalVisa/:id' element={<EditVisModal/>} />
 
           <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -64,7 +69,7 @@ function App() {
           <Route path="/bookings" element={<Bookings />} />
           <Route path="/GlobalVisas" element={<ProtectedRoute><GlobalVisas /></ProtectedRoute>} />
           <Route path="/travelers" element={<Travelers />} />
-          <Route path="/messages" element={<Messages />} />
+          <Route path="/Addbanner" element={<AddBanner />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/deals" element={<Deals />} />
           

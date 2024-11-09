@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import RatingModal from '../../components/RatingModal';
 import { useNavigate } from 'react-router-dom';
+import { FaCalendarAlt } from "react-icons/fa";
 
 const customStyles = {
   content: {
@@ -226,7 +227,9 @@ const Holidays = () => {
 
   return (
     <div className="holidays-container">
-      <h1 className="holidays-title">Add Holidays</h1>
+      <h1 className="holidays-title">
+      <FaCalendarAlt style={{ marginRight: "8px" }} /> Add Holidays
+    </h1>
       <div className="holiday-form">
         <input type="text" name="title" placeholder="Title" onChange={handleChange} required className="holiday-input" />
         <textarea name="description" placeholder="Description" onChange={handleChange} className="holiday-input"></textarea>

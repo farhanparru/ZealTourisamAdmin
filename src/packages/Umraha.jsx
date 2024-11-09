@@ -1,52 +1,69 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
-import AddUmrahaPackageModal from "./AddUmrahaPackageModal"; // Import the modal component
 import packge from '../assets/Images/umraga.png'
+import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Umraha = () => {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const navigate = useNavigate()
-  const [packages, setPackages] = useState([
-    {
-      id: 1,
-      host: "Ryan Richards",
-      location: "Khulna",
-      packageName: "Sundarbans",
-      type: "Group",
-      duration: "3D 2N",
-      phone: "(164)224-5824",
-      email: "ronnie.nelson@mail.com",
-    },
-    // Add other package details
-  ]);
+  const navigate = useNavigate();
+  const [packages, setPackages] = useState(null);
 
-  const openModal = () => {
-    setModalIsOpen(true);
+
+  const handleClick = ()=>{
+     navigate('/AddUmraha')
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3002/api/umrahaall/'); // Add your backend URL here
+
+        setPackages(response.data.results); // Set the response data to state
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+  
+
+  const handleDelete = async (id) => {
+    console.log("Deleting package with id:", id); // Check if id is undefined
+    const token = localStorage.getItem("adminToken");
+    try {
+      await axios.delete(`http://localhost:3002/api/umrahaall/${id}`,{
+        headers: {
+          "x-access-token": `${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+       toast.success("Umraha pacakaje delete successfully")
+      setPackages((prevPackages) => prevPackages.filter(pkg => pkg._id !== id));
+    } catch (error) {
+      console.error('Error deleting package:', error);
+
+    }
   };
 
-  const closeModal = () => {
-    setModalIsOpen(false);
+
+  const handleView = (pkg) => {
+    navigate(`/Umrahaall/view-package/${pkg._id}`, { state: { packageData: pkg } })
   };
 
-  const handleEdit = (id) => {
-    console.log(`Edit package with id: ${id}`);
-  };
+  
 
-  const handleDelete = (id) => {
-    console.log(`Delete package with id: ${id}`);
-  };
 
-  const handleView = (id) => {
-   navigate('/View')
-    console.log(`View package with id: ${id}`);
-  };
 
-  const handleAddPackage = (newPackage) => {
-    // Add the new package to the list of packages
-    setPackages([...packages, { id: packages.length + 1, ...newPackage }]);
-  };
+
+
 
   return (
     <div className="container mx-auto p-4">
@@ -78,15 +95,16 @@ const Umraha = () => {
 
       {/* Add New Package Section */}
       <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Add New Package</h2>
-          <button
-            className="bg-green-500 text-white p-2 rounded-full"
-            onClick={openModal} // Open modal
-          >
-            +
-          </button>
-        </div>
+      <div className="bg-white shadow rounded-lg p-4 mb-6">
+        <h2 className="text-xl font-semibold mb-2">Add New Package</h2>
+        <button
+         
+          className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center space-x-2"
+          onClick={handleClick}
+        >
+          Add New Package
+        </button>
+      </div>
         <p className="text-gray-600">
           Add a new Umraha package to our collection.
         </p>
@@ -99,46 +117,45 @@ const Umraha = () => {
         <div className="grid grid-cols-5 font-bold text-gray-700 mb-2">
           <div>Name</div>
           <div>Description</div>
+          <div>Location</div>
           <div>Image</div>
           <div>Actions</div>
         </div>
 
         {/* Package Rows */}
-        {packages.map((pkg) => (
-          <div key={pkg.id} className="grid grid-cols-5 py-2 border-b">
-            <div>{pkg.name}</div>
-            <div>{pkg.description}</div>
-            <div>
-              <img
-                src={pkg.imageUrl}
-                alt={pkg.name}
-                className="w-16 h-16 object-cover rounded-lg"
-              />
+        {packages && (
+          packages.map((pkg) => (
+            <div key={pkg._id} className="grid grid-cols-5 py-2 border-b">
+              <div>{pkg.title}</div>
+              <div>{pkg.description}</div>
+              <div>{pkg.location}</div>
+              <div>
+                <img
+                  src={pkg.thumbnail}
+                  alt={pkg.name}
+                  className="w-16 h-16 object-cover rounded-lg"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <FaEye
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => handleView(pkg)}
+                />
+               
+                <FaEdit
+                  className="text-green-500 cursor-pointer"
+                 
+                />
+                <FaTrashAlt
+                  className="text-red-500 cursor-pointer"
+                  onClick={() => handleDelete(pkg._id)}
+                />
+              </div>
             </div>
-            <div className="flex space-x-2">
-              <FaEye
-                className="text-blue-500 cursor-pointer"
-                onClick={() => handleView(pkg.id)}
-              />
-              <FaEdit
-                className="text-green-500 cursor-pointer"
-                onClick={() => handleEdit(pkg.id)}
-              />
-              <FaTrashAlt
-                className="text-red-500 cursor-pointer"
-                onClick={() => handleDelete(pkg.id)}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))
+        )}
 
-      {/* AddUmrahaPackageModal Component */}
-      <AddUmrahaPackageModal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        onSubmit={handleAddPackage}
-      />
+      </div>
     </div>
   );
 };

@@ -4,7 +4,8 @@ import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
 import axios from "axios"; // Import axios for making API requests
 import visas from "../assets/Images/visas.png"; // You can change this path or use different images for packages
 import { useNavigate, Link } from 'react-router-dom';
-
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const GlobalVisas = () => {
@@ -72,6 +73,7 @@ const GlobalVisas = () => {
 
       .then((response) => {
         if (response.data.success) {
+          toast.success("Delete pacakaje successfully")
           // Remove the deleted package from the state
           const updatedPackages = packages.filter((pkg) => pkg.id !== id);
           setPackages(updatedPackages);

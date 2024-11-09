@@ -4,6 +4,8 @@ import logo from '../assets/Images/Logon bar.png'
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const AdminLogin = () => {
@@ -30,7 +32,7 @@ const handleLogin = async (e)=>{
     if (response.data.success) {
       // Store the JWT token in localStorage
       localStorage.setItem('adminToken', response.data.token);
-
+      toast.success("Admin Login Successfully")
       // Redirect to admin dashboard or any other page after successful login
       navigate('/Dashboard');
     }

@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState,useEffect  } from "react";
-import { useParams } from 'react-router-dom'; // Import useParams from react-router-dom
+import {  useNavigate, useParams } from 'react-router-dom'; // Import useParams from react-router-dom
 import { FaGlobe } from "react-icons/fa";
 import axios from "axios";
 import VisaOption from "../components/VisaOption";
@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const EditVisModal = () => {
 
   let { id } = useParams();
-
+  const navigate = useNavigate()
   const [globalVisaData, setGlobalVisaData] = useState({
     title: "",
     description: "",
@@ -217,7 +217,9 @@ const EditVisModal = () => {
         });
 
         if (response.status === 200) {
+            navigate('/GlobalVisas')
            toast.success("Global visa updated successfully");
+         
         }
     } catch (error) {
         console.error("Error updating global visa:", error);
