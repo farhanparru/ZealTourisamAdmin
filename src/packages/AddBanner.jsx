@@ -46,6 +46,8 @@ const AddBanner = () => {
       completedCrop.height
     );
 
+
+    
     canvas.toBlob((blob) => {
       if (blob) {
         const croppedImageUrl = URL.createObjectURL(blob);
@@ -53,6 +55,9 @@ const AddBanner = () => {
       }
     });
   };
+
+
+  
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
