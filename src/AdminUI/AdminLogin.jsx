@@ -51,7 +51,7 @@ const handleLogin = async (e)=>{
   return (
     <div
       className="relative w-full h-screen bg-cover bg-center"
-      style={{ backgroundImage: 'url(https://img.freepik.com/premium-photo/world-tourism-background_1102-5029.jpg?w=1060)' }}
+      style={{ backgroundImage: 'url(https://www.smsgatewayhub.com/case-studies/travel.jpg)' }}
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
       

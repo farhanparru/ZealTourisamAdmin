@@ -21,13 +21,14 @@ import GlobalVisa from './AllPackgesviewSection/GlobalVisa';
 import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
 import UmrahaSEO from './SEOsettings/UmrahaSEO';
 import AddBanner from './packages/AddBanner';
+import Enquiry from './components/Enquiry';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
 const Bookings = () => <h2>Bookings</h2>;
 const Travelers = () => <h2>Travelers</h2>;
 
-const Gallery = () => <h2>Gallery</h2>;
+
 const Deals = () => <h2>Deals</h2>;
 const Feedback = () => <h2>Feedback</h2>;
 
@@ -70,7 +71,7 @@ function App() {
           <Route path="/GlobalVisas" element={<ProtectedRoute><GlobalVisas /></ProtectedRoute>} />
           <Route path="/travelers" element={<Travelers />} />
           <Route path="/Addbanner" element={<AddBanner />} />
-          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/Enquirys" element={<Enquiry />} />
           <Route path="/deals" element={<Deals />} />
           
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />

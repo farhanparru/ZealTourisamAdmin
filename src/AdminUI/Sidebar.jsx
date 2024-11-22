@@ -98,10 +98,10 @@ const Sidebar = () => {
         </li>
 
         {/* Enquiries with Icon */}
-        <li className={`flex items-center p-3 my-4 text-blue-700 rounded-lg transition-all duration-200 ${isActive('/gallery') ? 'bg-blue-300' : 'hover:bg-blue-200'}`}>
+        <li className={`flex items-center p-3 my-4 text-blue-700 rounded-lg transition-all duration-200 ${isActive('/Enquirys') ? 'bg-blue-300' : 'hover:bg-blue-200'}`}>
           <FaQuestionCircle className="text-xl" />
           {isOpen && (
-            <Link to="/gallery" className="ml-4 font-semibold text-md">
+            <Link to="/Enquirys" className="ml-4 font-semibold text-md">
               Enquiries
             </Link>
           )}
