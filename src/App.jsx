@@ -71,7 +71,7 @@ function App() {
           <Route path="/GlobalVisas" element={<ProtectedRoute><GlobalVisas /></ProtectedRoute>} />
           <Route path="/travelers" element={<Travelers />} />
           <Route path="/Addbanner" element={<AddBanner />} />
-          <Route path="/Enquirys" element={<Enquiry />} />
+          <Route path="/EnquirysVisa" element={<Enquiry />} />
           <Route path="/deals" element={<Deals />} />
           
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />

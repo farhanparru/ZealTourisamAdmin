@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import user from '../assets/Images/user.png'
 
 const Enquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -34,7 +35,7 @@ const Enquiry = () => {
             className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center text-center"
           >
             <img
-              src="https://via.placeholder.com/150"
+              src={user}
               alt="User Avatar"
               className="w-24 h-24 rounded-full mb-4"
             />
