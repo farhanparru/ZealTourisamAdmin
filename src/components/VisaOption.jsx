@@ -1,38 +1,45 @@
-import { useState, useEffect } from 'react';
-import Modal from 'react-modal';
-import { MdCreditCard } from 'react-icons/md';
+import { useState, useEffect } from "react";
+import Modal from "react-modal";
+import { MdCreditCard } from "react-icons/md";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // Custom styles for the modal
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    right: 'auto',
-    bottom: 'auto',
-    width: '120%',
-    maxWidth: '700px',
-    height: '90%',
-    padding: '20px',
-    borderRadius: '9px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    right: "auto",
+    bottom: "auto",
+    width: "120%",
+    maxWidth: "700px",
+    height: "90%",
+    padding: "20px",
+    borderRadius: "9px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
 };
 
 // eslint-disable-next-line react/prop-types
 const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    badge: '',
-    discount: '',
-    refundStatus: '',
-    discountPercentage: '',
-    price: '',
-    currency: '',
-    visaNo: [''],
-    processType: [''],
-    priceWithCurrency: [{ currency: '', price: '', discountPrice: '', discountPercentage: '' }],
-    footerText: '',
+    title: "",
+    badge: "",
+    discount: "",
+    refundStatus: "",
+    discountPercentage: "",
+    price: "",
+    currency: "",
+    visaNo: [""],
+    processType: [""],
+    priceWithCurrency: [
+      { currency: "", price: "", discountPrice: "", discountPercentage: "" },
+    ],
+    visaPackage: [
+      { destinationOrTour: "", living: "", date: "", nationality: "" },
+    ],
+    footerText: "",
   });
 
   useEffect(() => {
@@ -55,10 +62,12 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
     setFormData({ ...formData, [fieldName]: updatedFields });
   };
 
+
+
   const addField = (fieldName) => {
     setFormData((prevData) => ({
       ...prevData,
-      [fieldName]: [...prevData[fieldName], ''],
+      [fieldName]: [...prevData[fieldName], ""],
     }));
   };
 
@@ -76,30 +85,52 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
     setFormData({ ...formData, priceWithCurrency: updatedPriceWithCurrency });
   };
 
+  const handleSerachVisaChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedvisaPackageCurrency = [...formData.visaPackage];
+    updatedvisaPackageCurrency[index][name] = value;
+    setFormData({ ...formData, visaPackage: updatedvisaPackageCurrency });
+  };
+
+  const handleDateChange = (date, index) => {
+    const updatedvisaPackage = [...formData.visaPackage];
+    updatedvisaPackage[index].date = date;
+    setFormData({ ...formData, visaPackage :updatedvisaPackage });
+  };
+
+
   const handleAddCurrency = () => {
     setFormData((prevData) => ({
       ...prevData,
-      priceWithCurrency: [...prevData.priceWithCurrency, { currency: '', price: '', discountPrice: '', discountPercentage: '' }],
+      priceWithCurrency: [
+        ...prevData.priceWithCurrency,
+        { currency: "", price: "", discountPrice: "", discountPercentage: "" },
+      ],
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-    console.log(formData,"editt");
-    
+    console.log(formData, "editt");
+
     setFormData({
-      title: '',
-      badge: '',
-      discount: '',
-      refundStatus: '',
-      discountPercentage: '',
-      price: '',
-      currency: '',
-      visaNo: [''],
-      processType: [''],
-      priceWithCurrency: [{ currency: '', price: '', discountPrice: '', discountPercentage: '' }],
-      footerText: '',
+      title: "",
+      badge: "",
+      discount: "",
+      refundStatus: "",
+      discountPercentage: "",
+      price: "",
+      currency: "",
+      visaNo: [""],
+      processType: [""],
+      priceWithCurrency: [
+        { currency: "", price: "", discountPrice: "", discountPercentage: "" },
+      ],
+      visaPackage: [
+        { destinationOrTour: "", living: "", date: "", nationality: "" },
+      ],
+      footerText: "",
     });
   };
 
@@ -109,7 +140,10 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
         <MdCreditCard className="text-2xl text-gray-700 mr-2" />
         <h2 className="text-xl font-semibold">Add Visa Option</h2>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto h-[75vh]">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 overflow-y-auto h-[75vh]"
+      >
         <div>
           <label className="block text-sm font-medium mb-1">
             Title:
@@ -234,7 +268,9 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
 
         {/* Process Type Fields */}
         <div>
-          <label className="block text-gray-700 font-medium">Process Type:</label>
+          <label className="block text-gray-700 font-medium">
+            Process Type:
+          </label>
           {formData.processType.map((process, index) => (
             <div key={index} className="flex items-center space-x-2 mt-1">
               <select
@@ -267,7 +303,9 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
         </div>
 
         <div className="space-y-4">
-          <label className="block text-sm font-medium mb-1">Price with Currency:</label>
+          <label className="block text-sm font-medium mb-1">
+            Price with Currency:
+          </label>
           {formData.priceWithCurrency?.map((item, index) => (
             <div key={index} className="flex space-x-4">
               <input
@@ -294,7 +332,7 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
                 onChange={(e) => handleCurrencyChange(index, e)}
                 className="w-1/3 p-2 border border-gray-300 rounded"
               />
-               <input
+              <input
                 type="text"
                 name="discountPercentage"
                 placeholder="discountPercentage"
@@ -311,6 +349,54 @@ const VisaOption = ({ isOpen, onClose, onSubmit, globalVisaData }) => {
           >
             + Add Price with Currency
           </button>
+        </div>
+
+        {/* Search Implimentioan*/}
+        <div className="space-y-4">
+          <label className="block text-sm font-medium mb-1">
+            VisaSearchPKG:
+          </label>
+          {formData.visaPackage?.map((item, index) => (
+            <div key={index} className="flex space-x-4">
+              <input
+                type="text"
+                name="living"
+                placeholder="living"
+                value={item.living}
+                onChange={(e) => handleSerachVisaChange(index, e)}
+                className="w-1/3 p-2 border border-gray-300 rounded"
+              />
+              <input
+                type="text"
+                name="destinationOrTour"
+                placeholder="destinationOrTour"
+                value={item.destinationOrTour}
+                onChange={(e) => handleSerachVisaChange(index, e)}
+                className="w-1/3 p-2 border border-gray-300 rounded"
+              />
+
+              <div>
+                <DatePicker
+                  selected={item.date}
+                  onChange={(date) => handleDateChange(date, index)}
+                
+                  placeholderText="Select a date"
+                  className="p-2 border border-gray-300 rounded"
+                  style={{ width: "12rem" }}
+                />
+              
+              </div>
+
+              <input
+                type="text"
+                name="nationality"
+                placeholder="nationality"
+                value={item.nationality}
+                onChange={(e) => handleSerachVisaChange(index, e)}
+                className="w-1/3 p-2 border border-gray-300 rounded"
+              />
+            </div>
+          ))}
         </div>
 
         <div>

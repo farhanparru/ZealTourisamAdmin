@@ -49,6 +49,9 @@ const AddGlobalVisasPackageModal = () => {
             discountPercentage: "",
           },
         ],
+        visaPackage: [
+          { destinationOrTour: "", living: "", date: "", nationality: "" },
+        ],
         footerText: "",
       },
     ],
@@ -110,6 +113,7 @@ const AddGlobalVisasPackageModal = () => {
       discountPercentage,
       footerText,
       priceWithCurrency, // Accept priceWithCurrency from the form data
+      visaPackage,
       processType, // Include processType
       visaNo,      // Include visaNo
     } = visaOptionData;
@@ -132,6 +136,14 @@ const AddGlobalVisasPackageModal = () => {
               price: (priceWithCurrency && priceWithCurrency[0] && priceWithCurrency[0].price) || "",
               discountPrice: (priceWithCurrency && priceWithCurrency[0] && priceWithCurrency[0].discountPrice) || "",
               discountPercentage: (priceWithCurrency && priceWithCurrency[0] && priceWithCurrency[0].discountPercentage) || "",
+            },
+          ],
+          visaPackage: [
+            {
+              destinationOrTour: ( visaPackage &&visaPackage [0] && visaPackage [0].destinationOrTour) || "",
+              living: (visaPackage && visaPackage[0] && visaPackage[0].living) || "",
+              date: (visaPackage && visaPackage[0] && visaPackage[0].date) || "",
+              nationality: (visaPackage && visaPackage[0] && visaPackage[0].nationality) || "",
             },
           ],
          processType: Array.isArray(processType) ? [...processType] : [],
@@ -207,6 +219,15 @@ const AddGlobalVisasPackageModal = () => {
           formDataToSend.append(`options[${index}][priceWithCurrency][${currencyIndex}][discountPercentage]`, currencyItem.discountPercentage || "");
         });
         
+
+        item.visaPackage?.forEach((visaPackageItem, visaPackageIndex) => {
+          formDataToSend.append(`options[${index}][visaPackage][${visaPackageIndex}][destinationOrTour]`, visaPackageItem.destinationOrTour || "");
+          formDataToSend.append(`options[${index}][visaPackage][${visaPackageIndex}][living]`, visaPackageItem.living || "");
+          formDataToSend.append(`options[${index}][visaPackage][${visaPackageIndex}][date]`, visaPackageItem.date || "");
+          formDataToSend.append(`options[${index}][visaPackage][${visaPackageIndex}][nationality]`, visaPackageItem.nationality || "");
+        });
+        
+
         item.processType?.forEach((processType, typeIndex) => {
           if (typeof processType === 'string' && processType) {
         formDataToSend.append(`options[${index}][processType][${typeIndex}]`, processType || "");
@@ -279,6 +300,9 @@ const AddGlobalVisasPackageModal = () => {
               currency: "",
               discountPercentage: "",
               priceWithCurrency: [{ currency: "", price: "", discountPrice: "", discountPercentage: "" }],
+              visaPackage: [
+                { destinationOrTour: "", living: "", date: "", nationality: "" },
+              ],
               footerText: "",
             },
           ],
