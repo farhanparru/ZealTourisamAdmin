@@ -252,9 +252,7 @@ const Holidays = () => {
         </label>
         <input type="file" name="images" onChange={(e) => setImages(e.target.files)} multiple className="holiday-input" />
 
-        <label className="block text-gray-700 text-sm font-bold" htmlFor="pdf">
-          PDF
-        </label>
+      
         <input type="file" name="pdf" onChange={(e) => setPdf(e.target.files)} multiple className="holiday-input" />
         <textarea name="additionalInfo" placeholder="Additional Info" onChange={(e) => setHolidayData((prev) => ({ ...prev, additionalInfo: e.target.value }))} className="holiday-input"></textarea>
 
