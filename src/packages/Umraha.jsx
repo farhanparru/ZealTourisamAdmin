@@ -20,7 +20,7 @@ const Umraha = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/api/umrahaall/'); // Add your backend URL here
+        const response = await axios.get('https://api.zealtourism.com/api/umrahaall/'); // Add your backend URL here
 
         setPackages(response.data.results); // Set the response data to state
       } catch (error) {
@@ -39,7 +39,7 @@ const Umraha = () => {
     console.log("Deleting package with id:", id); // Check if id is undefined
     const token = localStorage.getItem("adminToken");
     try {
-      await axios.delete(`http://localhost:3002/api/umrahaall/${id}`,{
+      await axios.delete(`https://api.zealtourism.com/api/umrahaall/${id}`,{
         headers: {
           "x-access-token": `${token}`,
           "Content-Type": "application/json",

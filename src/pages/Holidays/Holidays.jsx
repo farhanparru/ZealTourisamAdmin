@@ -4,7 +4,7 @@ import axios from "axios";
 import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
 import Modal from "react-modal"; // Modal for displaying holiday details
 import "./Holidays.css"; // Add any custom CSS styling here
-import baseUrl from "../../../contants/baseUrl";
+
 // import cdnUrl from "../../../contants/cdnUrl";
 // import { FaRegFilePdf } from "react-icons/fa";
 import visas from "../../assets/Images/holidaysimg1.jpg";
@@ -46,7 +46,7 @@ const Holidays = () => {
   useEffect(() => {
     const fetchHolidays = async () => {
       try {
-        const response = await axios.get(baseUrl + "/holidays", {
+        const response = await axios.get("https://api.zealtourism.com/holidays", {
           headers: {
             "x-access-token": localStorage.getItem("adminToken"),
           },
@@ -66,7 +66,7 @@ const Holidays = () => {
   const handleDelete = async (id) => {
     console.log(id, "id::::::::");
     try {
-      await axios.delete(`${baseUrl}/holidays/${id}`, {
+      await axios.delete(`https://api.zealtourism.com/holidays/${id}`, {
         headers: {
           "x-access-token": localStorage.getItem("adminToken"),
         },

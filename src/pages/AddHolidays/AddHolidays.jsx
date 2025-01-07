@@ -3,7 +3,6 @@ import Modal from "react-modal";
 import "./AddHolidays.css";
 import ItineraryForm from "../../components/ItineraryForm";
 import MoreDetailsModal from "../../components/MoreDetailsModal"; // Import the new modal component
-import baseUrl from "../../../contants/baseUrl";
 import FaqModal from "../../components/FaqModal";
 import BookingPolicyModal from "../../components/BookingPolicyModal";
 import PricingModal from "../../components/PricingModal";
@@ -170,7 +169,7 @@ const Holidays = () => {
     formDataToSend.append("details", JSON.stringify(holidayData.details));
 
     try {
-      const response = await axios.post(baseUrl + "/holidays", formDataToSend, {
+      const response = await axios.post('https://api.zealtourism.com/holidays', formDataToSend, {
         headers: {
           "x-access-token": localStorage.getItem("adminToken"),
           "Content-Type": "multipart/form-data",
