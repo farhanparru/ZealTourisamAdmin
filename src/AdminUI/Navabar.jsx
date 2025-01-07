@@ -6,7 +6,7 @@ import { User } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import logo from '../assets/Images/Logon bar.png';
+import logo from '../assets/Images/TourisamLogo.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,8 +41,7 @@ const Navbar = () => {
           <img src={logo} alt="Logo" className="h-12 w-12" />
           <div className="text-xl font-bold text-white hidden sm:block">
             <span>ZealTourism</span>
-            <br />
-            <span className="text-sm">Dubai</span>
+           
           </div>
         </div>
 

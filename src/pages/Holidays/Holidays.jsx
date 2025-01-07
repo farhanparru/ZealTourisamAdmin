@@ -46,7 +46,7 @@ const Holidays = () => {
   useEffect(() => {
     const fetchHolidays = async () => {
       try {
-        const response = await axios.get("https://api.zealtourism.com/holidays", {
+        const response = await axios.get("http://localhost:3002/api/holidays", {
           headers: {
             "x-access-token": localStorage.getItem("adminToken"),
           },
@@ -66,7 +66,7 @@ const Holidays = () => {
   const handleDelete = async (id) => {
     console.log(id, "id::::::::");
     try {
-      await axios.delete(`https://api.zealtourism.com/holidays/${id}`, {
+      await axios.delete(`http://localhost:3002/api/holidays/${id}`, {
         headers: {
           "x-access-token": localStorage.getItem("adminToken"),
         },
