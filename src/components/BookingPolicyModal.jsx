@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Modal from 'react-modal';
-
+import "./BookingPolicy.css";
 const BookingPolicyModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
   const [bookingPolicy, setBookingPolicy] = useState({
     cancellation: holidayData?.bookingPolicy?.cancellation || '',
@@ -36,7 +36,7 @@ const BookingPolicyModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
     onSubmit(bookingPolicy); // Pass data to parent component
     onClose();
   };
-
+console.log(bookingPolicy,"booking policy:::::::::::::")
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} contentLabel="Booking Policy Modal">
       <h2>Booking Policy</h2>
@@ -84,7 +84,7 @@ const BookingPolicyModal = ({ isOpen, onClose, onSubmit, holidayData }) => {
           </div>
         ))}
 
-        <div className='mt-3'>
+        <div className='mt-3 '>
           <button type="button" onClick={addOtherPolicy} className="btn">Add Policy</button>
           <button type="submit" className="btn">Save Policy</button>
           <button type="button" onClick={onClose} className="btn cancel-btn">Cancel</button>

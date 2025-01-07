@@ -1,56 +1,59 @@
 // src/Holidays.js
-import  { useEffect, useState } from 'react';
-import axios from 'axios';
-import Modal from 'react-modal'; // Modal for displaying holiday details
-import './Holidays.css'; // Add any custom CSS styling here
-import baseUrl from '../../../contants/baseUrl';
-import cdnUrl from '../../../contants/cdnUrl';
-import { FaRegFilePdf } from "react-icons/fa";
-import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
+import Modal from "react-modal"; // Modal for displaying holiday details
+import "./Holidays.css"; // Add any custom CSS styling here
+import baseUrl from "../../../contants/baseUrl";
+// import cdnUrl from "../../../contants/cdnUrl";
+// import { FaRegFilePdf } from "react-icons/fa";
+import visas from "../../assets/Images/holidaysimg1.jpg";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 const modalStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    maxWidth: '90%',
-    maxHeight: '90%',
-    minWidth: '80%',
-    overflow: 'auto',
-    padding: '20px',
-    backgroundColor: '#f0f0f0',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    maxWidth: "90%",
+    maxHeight: "90%",
+    minWidth: "80%",
+    overflow: "auto",
+    padding: "20px",
+    backgroundColor: "#f0f0f0",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(197, 75, 75, 0.1)",
   },
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.75)'
-  }
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
+  },
 };
 const Holidays = () => {
   const navigate = useNavigate();
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [setSelectedHoliday] = useState(null);
+  // const [setSelectedHoliday] = useState(null);
   const [state, setState] = useState(false);
   // Holiday data structure for the modal
   const [holidayData, setHolidayData] = useState(null);
 
+  console.log(holidayData, "holiday view ::::::::::::::::");
   // Fetch holidays from API
   useEffect(() => {
     const fetchHolidays = async () => {
       try {
-        const response = await axios.get(baseUrl + '/holidays', {
+        const response = await axios.get(baseUrl + "/holidays", {
           headers: {
             "x-access-token": localStorage.getItem("adminToken"),
           },
         }); // Replace with your API URL
         setHolidays(response.data.results);
       } catch (error) {
-        console.error('Error fetching holidays:', error);
+        console.error("Error fetching holidays:", error);
       } finally {
         setLoading(false);
       }
@@ -61,6 +64,7 @@ const Holidays = () => {
 
   // Delete a holiday
   const handleDelete = async (id) => {
+    console.log(id, "id::::::::");
     try {
       await axios.delete(`${baseUrl}/holidays/${id}`, {
         headers: {
@@ -69,34 +73,34 @@ const Holidays = () => {
       }); // Replace with your API URL
       setState(!state);
     } catch (error) {
-      console.error('Error deleting holiday:', error);
+      console.error("Error deleting holiday:", error);
     }
   };
 
   // Open modal and set selected holiday data
-  const handleViewDetails = (holiday) => {
-    setSelectedHoliday(holiday);
+  const handleViewDetails = (pkg) => {
+    // setSelectedHoliday(pkg);
     setHolidayData({
-      title: holiday?.title,
-      description: holiday?.description,
-      slug: holiday?.slug,
-      thumbnail: holiday?.thumbnail,
-      images: holiday?.images,
-      pdf: holiday?.pdf,
-      faculty: holiday?.faculty,
-      details: holiday?.details,
-      highlights: holiday?.highlights,
-      overview: holiday?.overview,
-      itinerary: holiday?.itinerary,
-      timings: holiday?.timings,
-      inclusions: holiday?.inclusions,
-      exclusions: holiday?.exclusions,
-      tourOverview: holiday?.tourOverview,
-      pricing: holiday?.pricing,
-      bookingPolicy: holiday?.bookingPolicy,
-      faq: holiday?.faq,
-      rating: holiday?.rating,
-      additionalInfo: holiday?.additionalInfo,
+      title: pkg?.title,
+      description: pkg?.description,
+      slug: pkg?.slug,
+      thumbnail: pkg?.thumbnail,
+      images: pkg?.images,
+      pdf: pkg?.pdf,
+      faculty: pkg?.faculty,
+      details: pkg?.details,
+      highlights: pkg?.highlights,
+      overview: pkg?.overview,
+      itinerary: pkg?.itinerary,
+      timings: pkg?.timings,
+      inclusions: pkg?.inclusions,
+      exclusions: pkg?.exclusions,
+      tourOverview: pkg?.tourOverview,
+      pricing: pkg?.pricing,
+      bookingPolicy: pkg?.bookingPolicy,
+      faq: pkg?.faq,
+      rating: pkg?.rating,
+      additionalInfo: pkg?.additionalInfo,
     });
     setModalIsOpen(true);
   };
@@ -110,56 +114,91 @@ const Holidays = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Holidays</h1>
+      <div className="bg-gradient-to-r from-blue-500 to-green-500 text-white p-6 rounded-lg shadow mb-6 flex items-center justify-between">
+        <div className="w-1/2">
+          <h2 className="text-2xl font-bold mb-4">
+            Take only memories, leave only footprints
+          </h2>
+          <p className="mb-4">
+            Get exclusive discounts on our holiday packages for a limited time!
+          </p>
+          <button className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-full font-bold hover:bg-yellow-300 transition">
+            Discover Offers
+          </button>
+        </div>
+        <div className="w-1/2 flex justify-end">
+          <img
+            src={visas}
+            alt="Special Offer Global Visas"
+            className="w-80 h-auto rounded-lg shadow-lg"
+          />
+        </div>
+      </div>
+      <div className="bg-white shadow rounded-lg p-4 mb-6">
+        <h2 className="text-xl font-semibold mb-2">Holidays</h2>
         <button
-          onClick={() => navigate('/add-holidays')} // Assuming you have a function to open a modal for adding a holiday
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center space-x-2"
+          onClick={() => navigate("/add-holidays")}
         >
           Add Holiday
         </button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {holidays.map((holiday, index) => (
-            <tr key={holiday._id}>
-              <td>{index + 1}</td>
-              <td>{holiday.title}</td>
-              <td>{moment(holiday.createdAt).format('DD-MM-YYYY HH:MM:SS A')}</td>
-              <td>
-                <button
-                  onClick={() => handleViewDetails(holiday)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                >
-                  View
-                </button>
-                <button
-                  onClick={() => navigate(`/update-holidays/${holiday._id}`)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(holiday._id)}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {/* Modal for displaying detailed holiday information */}
+      <div className="bg-white shadow rounded-lg p-4">
+        <h2 className="text-xl font-semibold mb-2">All Packages</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 text-left text-gray-600">id</th>
+                <th className="px-4 py-2 text-left text-gray-600">Title</th>
+                <th className="px-4 py-2 text-left text-gray-600">Date</th>
+                <th className="px-4 py-2 text-left text-gray-600">Image</th>
+                <th className="px-4 py-2 text-center text-gray-600">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {holidays.map((pkg, index) => (
+                <tr key={pkg._id} className="border-b">
+                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2">{pkg.title}</td>
+                  <td>
+                    {moment(pkg.createdAt).format("DD-MM-YYYY HH:MM:SS A")}
+                  </td>
+                  <td className="px-4 py-2">
+                    <img
+                      src={pkg.images} // Ensure this is the correct field for your image
+                      alt="Hidd"
+                      className="w-20 h-auto rounded"
+                    />
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    <button
+                      className="text-blue-500 hover:text-blue-600 mx-2"
+                      onClick={() => handleViewDetails(pkg)}
+                    >
+                      <FiEye />
+                    </button>
+
+                    <button
+                      className="text-yellow-500 hover:text-yellow-600 mx-2"
+                      onClick={() => navigate(`/update-holidays/${pkg._id}`)}
+                    >
+                      <FiEdit />
+                    </button>
+                    <button
+                      className="text-red-500 hover:text-red-600 mx-2"
+                      onClick={() => handleDelete(pkg._id)} // Pass the package ID to the delete function
+                    >
+                      <FiTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <Modal
         isOpen={modalIsOpen}
@@ -167,165 +206,167 @@ const Holidays = () => {
         contentLabel="Holiday Details"
         style={modalStyles}
       >
-        <div className="holiday-modal">
-          <h2 className="text-3xl font-bold mb-4">{holidayData?.title}</h2>
+        <div className="holiday-modal p-4 bg-white rounded shadow-md max-w-6xl mx-auto">
+  <h2 className="text-3xl font-bold mb-6 text-center">{holidayData?.title}</h2>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">General Information</h3>
-              <p><strong>Description:</strong> {holidayData?.description}</p>
-              <p><strong>Slug:</strong> {holidayData?.slug}</p>
-              <p><strong>Overview:</strong> {holidayData?.overview}</p>
-            </div>
+  {/* General Information Table */}
+  <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
+    <thead>
+      <tr className="bg-gray-200">
+        <th className="border border-gray-300 px-4 py-2 text-left">Field</th>
+        <th className="border border-gray-300 px-4 py-2 text-left">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-gray-300 px-4 py-2">Description</td>
+        <td className="border border-gray-300 px-4 py-2">{holidayData?.description}</td>
+      </tr>
+      <tr>
+        <td className="border border-gray-300 px-4 py-2">Slug</td>
+        <td className="border border-gray-300 px-4 py-2">{holidayData?.slug}</td>
+      </tr>
+      <tr>
+        <td className="border border-gray-300 px-4 py-2">Overview</td>
+        <td className="border border-gray-300 px-4 py-2">{holidayData?.overview}</td>
+      </tr>
+    </tbody>
+  </table>
 
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Images</h3>
-              <div className="grid grid-cols-3 gap-2">
-                {holidayData?.images?.map((image, index) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <a href={cdnUrl + image} target="_blank" rel="noopener noreferrer">
-                    <img key={index} src={cdnUrl + image} alt={`Holiday ${index + 1}`} className="w-10 h-10 object-cover rounded" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
+  {/* Highlights */}
+  <div className="mb-6">
+    <h3 className="text-xl font-semibold mb-4">Highlights</h3>
+    <ul className="list-disc pl-5">
+      {holidayData?.highlights?.map((highlight, index) => (
+        <li key={index}>{highlight}</li>
+      ))}
+    </ul>
+  </div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Highlights</h3>
-            <ul className="list-disc pl-5">
-              {holidayData?.highlights?.map((highlight, index) => (
-                <li key={index}>{highlight}</li>
-              ))}
-            </ul>
-          </div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Itinerary</h3>
-            {holidayData?.itinerary?.map((item, index) => (
-              <div key={index} className="mb-6 border-b pb-4">
-                <h4 className="font-bold text-lg">{item.title}</h4>
-                <p className="mb-2">{item.description}</p>
-                <p><strong>Place:</strong> {item.place}</p>
-                <p><strong>Day Details:</strong> {item.dayDetails}</p>
+  <div className="flex flex-row gap-6">
+  {/* Images Section */}
+  <div className="mb-6 flex-1">
+    <h3 className="text-xl font-semibold mb-2">Images</h3>
+    <div className="flex flex-wrap gap-4">
+      {holidayData?.images?.map((image, index) => (
+        <a
+          key={index}
+          href={image} // Full URL of the image
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+        >
+          <img
+            src={image} // Display the image
+            alt={`Holiday ${index + 1}`}
+            className="w-60 h-40 object-cover rounded shadow-lg"
+          />
+        </a>
+      ))}
+    </div>
+  </div>
 
-                <div className="mt-3">
-                  <h5 className="font-semibold">Itinerary Details:</h5>
-                  {item.details?.map((detail, detailIndex) => (
-                    <div key={detailIndex} className="mt-2 bg-gray-100 p-3 rounded">
-                      <h6 className="font-semibold">{detail.title}</h6>
-                      {detail.image && (
-                        <a href={cdnUrl + detail.image} target="_blank" rel="noopener noreferrer">
-                          <img
-                            src={cdnUrl + detail.image}
-                            alt={detail.title}
-                            className="w-10 object-cover rounded mt-2 mb-2"
-                          />
-                        </a>
-                      )}
-                      <p><strong>Category:</strong> {detail.category}</p>
-                      <p><strong>Location:</strong> {detail.location}</p>
-                      {detail.room && <p><strong>Room:</strong> {detail.room}</p>}
-                      {detail.checkIn && <p><strong>Check-in:</strong> {detail.checkIn}</p>}
-                      {detail.checkout && <p><strong>Check-out:</strong> {detail.checkout}</p>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+  {/* Thumbnail Section */}
+  <div className="mb-6 flex-1">
+    <h3 className="text-xl font-semibold mb-2">Thumbnail</h3>
+    {holidayData?.thumbnail && (
+      <img
+        src={holidayData?.thumbnail}
+        alt="Thumbnail"
+        className="w-60 h-40 object-cover rounded shadow-lg"
+      />
+    )}
+  </div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Timings</h3>
-            <ul>
-              {holidayData?.timings?.map((timing, index) => (
-                <li key={index}>
-                  <strong>{timing?.title}:</strong> {timing?.days} at {timing?.time}
-                </li>
-              ))}
-            </ul>
-          </div>
+  {/* PDF Section */}
+  {/* <div className="mb-6 flex-1">
+    <h3 className="text-xl font-semibold mb-2">PDFkkkk</h3>
+    <div className="flex flex-col gap-2">
+      {holidayData?.pdf?.map((pdf, index) => (
+        <a
+          key={index}
+          href={`${cdnUrl}${pdf.link}`} // Correctly render the PDF link
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 flex items-center gap-2"
+        >
+          <span className="font-medium">View PDF</span>
+        </a>
+      ))}
+    </div>
+  </div> */}
+</div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Pricing</h3>
-            <p><strong>Title:</strong> {holidayData?.pricing?.title}</p>
-            <p><strong>Description:</strong> {holidayData?.pricing?.description}</p>
-            <p><strong>Total Amount:</strong> {holidayData?.pricing?.totalAmount}</p>
-            <h4 className="font-bold mt-2">Package Costs:</h4>
-            <ul>
-              {holidayData?.pricing?.packageCost?.map((cost, index) => (
-                <li key={index}>
-                  {cost.title}: {cost.amount} {cost.currency}
-                </li>
-              ))}
-            </ul>
-            <h4 className="font-bold mt-2">Taxes:</h4>
-            <ul>
-              {holidayData?.pricing?.tax?.map((tax, index) => (
-                <li key={index}>
-                  {tax.title}: {tax.amount} {tax.currency}
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Booking Policy</h3>
-            <p><strong>Cancellation:</strong> {holidayData?.bookingPolicy?.cancellation}</p>
-            <p><strong>Child Policy:</strong> {holidayData?.bookingPolicy?.childPolicy}</p>
-            <h4 className="font-bold mt-2">Other Policies:</h4>
-            <ul>
-              {holidayData?.bookingPolicy?.otherPolicies?.map((policy, index) => (
-                <li key={index}>{policy}</li>
-              ))}
-            </ul>
-          </div>
+ 
+     
+  {/* Pricing Table */}
+  <h3 className="text-xl font-semibold mb-4">Pricing</h3>
+  <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
+    <thead>
+      <tr className="bg-gray-200">
+        <th className="border border-gray-300 px-4 py-2">Title</th>
+        <th className="border border-gray-300 px-4 py-2">Description</th>
+        <th className="border border-gray-300 px-4 py-2">Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-gray-300 px-4 py-2">{holidayData?.pricing?.title}</td>
+        <td className="border border-gray-300 px-4 py-2">{holidayData?.pricing?.description}</td>
+        <td className="border border-gray-300 px-4 py-2">{holidayData?.pricing?.totalAmount}</td>
+      </tr>
+    </tbody>
+  </table>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">FAQ</h3>
-            {holidayData?.faq?.map((item, index) => (
-              <div key={index} className="mb-2">
-                <p><strong>Q: {item.question}</strong></p>
-                <p>A: {item.answer}</p>
-              </div>
-            ))}
-          </div>
+  {/* Timings Table */}
+  <h3 className="text-xl font-semibold mb-4">Timings</h3>
+  <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
+    <thead>
+      <tr className="bg-gray-200">
+        <th className="border border-gray-300 px-4 py-2">Title</th>
+        <th className="border border-gray-300 px-4 py-2">Days</th>
+        <th className="border border-gray-300 px-4 py-2">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {holidayData?.timings?.map((timing, index) => (
+        <tr key={index}>
+          <td className="border border-gray-300 px-4 py-2">{timing.title}</td>
+          <td className="border border-gray-300 px-4 py-2">{timing.days}</td>
+          <td className="border border-gray-300 px-4 py-2">{timing.time}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Additional Information</h3>
-            <p>{holidayData?.additionalInfo}</p>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Faculty</h3>
-            {holidayData?.faculty?.map((faculty, index) => (
-              <div key={index} className="mb-2">
-                <p><strong>Name:</strong> {faculty}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">PDF</h3>
-            {holidayData?.pdf?.map((image) => (
-              // eslint-disable-next-line react/jsx-key
-              <a href={cdnUrl + image} target="_blank" rel="noopener noreferrer">
-                <FaRegFilePdf />
-              </a>
-            ))}
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Thumbnail</h3>
-            <img
-              src={cdnUrl + holidayData?.thumbnail}
-              className="w-10 h-10 object-cover rounded mt-2 mb-2"
-            />
-          </div>
-          <button
-            onClick={closeModal}
-            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Close
-          </button>
-        </div>
+  {/* FAQ */}
+  <div className="mb-6">
+    <h3 className="text-xl font-semibold mb-4">FAQ</h3>
+    {holidayData?.faq?.map((faq, index) => (
+      <div key={index} className="mb-4">
+        <p className="font-semibold">Q: {faq.question}</p>
+        <p>A: {faq.answer}</p>
+      </div>
+    ))}
+  </div>
+
+  {/* Additional Information */}
+  <div className="mb-6">
+    <h3 className="text-xl font-semibold mb-4">Additional Information</h3>
+    <p>{holidayData?.additionalInfo}</p>
+  </div>
+
+  {/* Close Button */}
+  <button
+    onClick={closeModal}
+    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
+  >
+    Close
+  </button>
+</div>
+
       </Modal>
     </div>
   );

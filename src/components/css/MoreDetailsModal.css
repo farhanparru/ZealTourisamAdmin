@@ -1,6 +1,7 @@
-/* MoreDetailsModal.css */
+MoreDetailsModal.css
 
 .modal-title {
+
     text-align: center;
     font-size: 26px; /* Larger title */
     margin-bottom: 20px;
@@ -16,7 +17,7 @@
     width: calc(100% - 20px); /* Adjusted width for better alignment */
     padding: 12px; /* Increased padding for comfort */
     margin: 5px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #17799c;
     border-radius: 8px; /* More rounded corners */
     box-sizing: border-box;
     font-size: 16px; /* Increased font size */

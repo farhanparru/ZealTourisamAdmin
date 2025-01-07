@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import RatingModal from '../../components/RatingModal';
 import { toast } from 'react-toastify';
+import "./UpdateHolidays.css"
 import 'react-toastify/dist/ReactToastify.css';
 const customStyles = {
     content: {
@@ -60,7 +61,7 @@ const UpdateHolidays = () => {
         rating: {},
         additionalInfo: '',
     });
-    console.log(holidayData,"holidayData");
+    console.log(holidayData,"holidayData::::::::::::");
     
 
     useEffect(() => {
@@ -103,7 +104,7 @@ const UpdateHolidays = () => {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [tourModalIsOpen, setTourModalOpen] = useState(false); // State for tour details modal
     const [images, setImages] = useState(null);
-    const [pdf, setPdf] = useState(null);
+    // const [pdf, setPdf] = useState(null);
     const [itineraryImages, setItineraryImages] = useState({});
     const [isPricingModalOpen, setPricingModalOpen] = useState(false);
     const [isBookingPolicyModalOpen, setBookingPolicyModalOpen] = useState(false);
@@ -156,11 +157,11 @@ const UpdateHolidays = () => {
         }
 
         // Append PDF files
-        if (pdf) {
-            Array.from(pdf).forEach((pdfFile) => {
-                formDataToSend.append('pdf', pdfFile);
-            });
-        }
+        // if (pdf) {
+        //     Array.from(pdf).forEach((pdfFile) => {
+        //         formDataToSend.append('pdf', pdfFile);
+        //     });
+        // }
 
         // Append thumbnail
         if (holidayData.thumbnail) {
@@ -267,7 +268,7 @@ const UpdateHolidays = () => {
     };
 
     return (
-        <div className="holidays-container">
+        <div className="holidays-containers">
             <h1 className="holidays-title">Add Holidays</h1>
             <div className="holiday-form">
                 <input type="text" name="title" placeholder="Title" value={holidayData.title || ''} onChange={handleChange} required className="holiday-input" />
@@ -282,19 +283,19 @@ const UpdateHolidays = () => {
                     type="file"
                     name="thumbnail"
                     onChange={(e) => setHolidayData((prev) => ({ ...prev, thumbnail: e.target.files[0] }))}
-                    className="holiday-input"
+                    className="holiday-inputs"
                 />
 
                 <textarea name="overview" placeholder="Overview" value={holidayData.overview || ''} onChange={handleChange} className="holiday-input"></textarea>
                 <label className="block text-gray-700 text-sm font-bold" htmlFor="images">
                     Images
                 </label>
-                <input type="file" name="images" onChange={(e) => setImages(e.target.files)} multiple className="holiday-input" />
+                <input type="file" name="images" onChange={(e) => setImages(e.target.files)} multiple className="holiday-inputs" />
 
-                <label className="block text-gray-700 text-sm font-bold" htmlFor="pdf">
+                {/* <label className="block text-gray-700 text-sm font-bold" htmlFor="pdf">
                     PDF
                 </label>
-                <input type="file" name="pdf" onChange={(e) => setPdf(e.target.files)} multiple className="holiday-input" />
+                <input type="file" name="pdf" onChange={(e) => setPdf(e.target.files)} multiple className="holiday-inputs" /> */}
                 <textarea name="additionalInfo" placeholder="Additional Info" value={holidayData.additionalInfo || ''} onChange={(e) => setHolidayData((prev) => ({ ...prev, additionalInfo: e.target.value }))} className="holiday-input"></textarea>
 
                 <div className="itinerary-section">
@@ -340,7 +341,7 @@ const UpdateHolidays = () => {
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
-                style={customStyles}
+                 style={customStyles}
                 contentLabel="Add Itinerary"
             >
                 <ItineraryForm onSubmit={addItinerary} onCancel={closeModal} setItineraryImages={setItineraryImages} itineraryData={itineraryData} />

@@ -3,19 +3,80 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+
+}
+.holiday-formmain{
+border-radius: 10px;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+flex-wrap: wrap;
+background:#ffffff;
+box-shadow: 1px 0px 9px 3px rgb(179, 176, 176);
+
+
+  
+}
+.holiday-from1{
+  margin: 10px;
+  gap: 20px;
+  display: flex;
+  width: 400px;
+  flex-direction: column;
+}
+.holiday-from2{
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+
 }
 
-input {
+.holiday-from2 input
+ {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #383434;
   border-radius: 5px;
 }
+.holidaySecondFrom {
+  margin-top: 13px;
+  width: 100%;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 10px;
+  box-shadow: 1px 0px 9px 3px rgb(179, 176, 176);
+}
+
+.holidaysecondfrom1 {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Prevent buttons from wrapping to a new line */
+  gap: 10px; /* Add space between buttons */
+  width: 100%; /* Ensure it spans the full width of the parent */
+}
+
+.holidaysecondfrom1 button {
+  background-color: #1b831d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+
 
 .btn {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #28a745;
+  background-color: #28a728;
   color: white;
   cursor: pointer;
 }
@@ -88,7 +149,7 @@ li {
 .form-textarea {
   width: 100%;
   padding: 0.8rem;
-  border: 1px solid #bdc3c7;
+  border: 1px solid #000000;
   border-radius: 4px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
@@ -180,17 +241,28 @@ li {
 /* Holidays.css */
 
 .holidays-container {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+
+
+
+
+  background-color: #ffffff;
+  border-radius: 8px;
+
+  box-shadow: 1px 0px 9px 3px rgb(179, 176, 176);
 }
 
-.holidays-title {
+.holidays-title  {
   font-size: 2em;
-  color: #333;
+
   margin-bottom: 20px;
   text-align: center;
+color: #1ad7ce;
+
+
 }
 
 .holiday-form {
@@ -201,7 +273,7 @@ li {
 
 .holiday-input {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #040404;
   border-radius: 4px;
   font-size: 1em;
 }
@@ -210,13 +282,6 @@ li {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.itinerary-section {
-  margin-top: 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 15px;
 }
 
 .itinerary-title {
@@ -301,8 +366,11 @@ li {
 }
 
 /* Add styles for your "Add" buttons */
-.btn-add {
-  background-color: #4CAF50;
+.holidaysecondfrom1 button {
+  background-color: #1b831d;
+display: flex;
+justify-content: space-around;
+flex-direction: row;
   /* Green background */
   color: white;
   /* White text */
@@ -316,7 +384,9 @@ li {
   /* Rounded corners */
   cursor: pointer;
   /* Pointer on hover */
-  margin-right: 10px;
+
+
+
   /* Space between buttons */
   transition: background-color 0.3s ease;
   /* Smooth transition for hover effect */

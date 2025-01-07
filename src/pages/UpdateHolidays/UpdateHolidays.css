@@ -1,0 +1,128 @@
+ .holidays-containers {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    
+    border-radius: 8px;
+    box-shadow: 0px 1px 10px 2px rgba(25, 166, 159, 0.48);
+
+
+
+}
+
+  
+
+.holidays-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.holiday-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.holiday-inputs {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #a45858;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+
+
+}
+
+
+
+.holiday-inputs:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.block {
+    margin-top: 10px;
+}
+
+.itinerary-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.itinerary-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.itinerary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.itinerary-item:last-child {
+    border-bottom: none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #068a1c;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-add {
+    margin-top: 10px;
+}
+
+.submit-btn {
+    margin-top: 20px;
+    background-color: #1376e8;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+.button-row {
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    margin-top: 20px; /* Space above the button row */
+    justify-content: center; /* Center align the buttons */
+    flex-wrap: wrap; /* Wrap buttons to the next line if necessary */
+}
+
+.btn-add {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0ca826;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-add:hover {
+    background-color: #0056b3;
+} 
