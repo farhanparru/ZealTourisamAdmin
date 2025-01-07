@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
-import baseUrl from '../../contants/baseUrl';
+
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ children }) => {
@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
    useEffect(() => {
       const checkAuth = async () => {
          try {
-            const response = await axios.get(baseUrl + '/admin/protected', {
+            const response = await axios.get('https://api.zealtourism.com/admin/protected', {
                headers: {
                   'x-access-token': token,
                },
