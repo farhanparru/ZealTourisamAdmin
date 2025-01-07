@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import Modal from 'react-modal';
 
 const customStyles = {
@@ -7,7 +7,6 @@ const customStyles = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     right: 'auto',
-    // bottom: 'auto',
     width: '90%',
     height: "90%",
     maxWidth: '650px',
@@ -17,69 +16,46 @@ const customStyles = {
   },
 };
 
-
-// eslint-disable-next-line react/prop-types
 const UmrahMoreDetailsModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
   const [moreDetails, setMoreDetails] = useState({
-    // eslint-disable-next-line react/prop-types
     overview: umrahData?.moreDetails?.overview || '',
-    // eslint-disable-next-line react/prop-types
     tourOverview: umrahData?.moreDetails?.tourOverview || '',
-    // eslint-disable-next-line react/prop-types
-    faculty: umrahData?.moreDetails?.faculty || '',
-    // eslint-disable-next-line react/prop-types
-    inclusion: umrahData?.moreDetails?.inclusion || '',
-    // eslint-disable-next-line react/prop-types
-    exclusion: umrahData?.moreDetails?.exclusion || '',
-    // eslint-disable-next-line react/prop-types
-    itinerary: Array.isArray(umrahData?.moreDetails?.itinerary)
-    // eslint-disable-next-line react/prop-types
-    ? umrahData.moreDetails.itinerary
-    : [{
-        title: '',
-        description: '',
-        place: '',
-        startDate: '',
-        endDate: '',
-        details: [{
-          title: '',
-          icon: '',
-          category: '',
-          location: '',
-          room: '',
-          checkIn: '',
-          checkout: ''
-        }]
-      }]
-});
+    faculty: umrahData?.moreDetails?.faculty || [''],
+    inclusion: umrahData?.moreDetails?.inclusion || [''],
+    exclusion: umrahData?.moreDetails?.exclusion || [''],
+    AdditionalInformation: umrahData?.moreDetails?.AdditionalInformation || [''],
+  });
 
-  const handleChange = (event, path) => {
-    
-    // eslint-disable-next-line no-unused-vars
+  const handleChange = (event, path, index) => {
     const { name, value } = event.target;
 
     setMoreDetails(prevState => {
-      const updateNestedField = (obj, pathArr) => {
-        if (pathArr.length === 1) {
-          return { ...obj, [pathArr[0]]: value };
-        }
-
-        const [firstKey, ...restKeys] = pathArr;
-        return {
-          ...obj,
-          [firstKey]: updateNestedField(obj[firstKey] || {}, restKeys),
-        };
-      };
-
-      const updatedMoreDetails = updateNestedField(prevState, path.split('.'));
-      return updatedMoreDetails;
+      if (index !== undefined) {
+        const updatedArray = [...prevState[path]];
+        updatedArray[index] = value;
+        return { ...prevState, [path]: updatedArray };
+      }
+      return { ...prevState, [path]: value };
     });
   };
 
+  const handleAddItem = (field) => {
+    setMoreDetails(prevState => ({
+      ...prevState,
+      [field]: [...prevState[field], '']
+    }));
+  };
+
+  const handleRemoveItem = (field, index) => {
+    setMoreDetails(prevState => ({
+      ...prevState,
+      [field]: prevState[field].filter((_, i) => i !== index)
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(moreDetails); // Pass data to parent component
+    onSubmit(moreDetails);
     onClose();
   };
 
@@ -102,39 +78,85 @@ const UmrahMoreDetailsModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
             value={moreDetails.tourOverview || ""}
             onChange={(e) => handleChange(e, 'tourOverview')}
             placeholder="Enter Tour Overview"
-            className="form-textarea"
             style={{ width: "100%" }}
           />
 
           <h6 className='font-bold mb-4'>Faculty</h6>
-          <textarea
-            name="faculty"
-            value={moreDetails.faculty || ""}
-            onChange={(e) => handleChange(e, 'faculty')}
-            placeholder="Enter Faculty"
-            className="form-textarea"
-            style={{ width: "100%" }}
-          />
+          {moreDetails.faculty.map((item, index) => (
+            <div key={index} className="mb-2 flex items-center space-x-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => handleChange(e, 'faculty', index)}
+                placeholder={`Faculty ${index + 1}`}
+                className="form-input w-full"
+              />
+              <button type="button" onClick={() => handleRemoveItem('faculty', index)} className="btn bg-red-500 text-white rounded px-2 py-1">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddItem('faculty')} className="btn bg-green-500 text-white rounded px-2 py-1">
+            Add Faculty
+          </button>
 
           <h6 className='font-bold mb-4'>Inclusion</h6>
-          <textarea
-            name="inclusion"
-            value={moreDetails.inclusion || ""}
-            onChange={(e) => handleChange(e, 'inclusion')}
-            placeholder="Enter Inclusion"
-            className="form-textarea"
-            style={{ width: "100%" }}
-          />
+          {moreDetails.inclusion.map((item, index) => (
+            <div key={index} className="mb-2 flex items-center space-x-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => handleChange(e, 'inclusion', index)}
+                placeholder={`Inclusion ${index + 1}`}
+                className="form-input w-full"
+              />
+              <button type="button" onClick={() => handleRemoveItem('inclusion', index)} className="btn bg-red-500 text-white rounded px-2 py-1">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddItem('inclusion')} className="btn bg-green-500 text-white rounded px-2 py-1">
+            Add Inclusion
+          </button>
 
           <h6 className='font-bold mb-4'>Exclusion</h6>
-          <textarea
-            name="exclusion"
-            value={moreDetails.exclusion || ""}
-            onChange={(e) => handleChange(e, 'exclusion')}
-            placeholder="Enter Exclusion"
-            className="form-textarea"
-            style={{ width: "100%" }}
-          />
+          {moreDetails.exclusion.map((item, index) => (
+            <div key={index} className="mb-2 flex items-center space-x-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => handleChange(e, 'exclusion', index)}
+                placeholder={`Exclusion ${index + 1}`}
+                className="form-input w-full"
+              />
+              <button type="button" onClick={() => handleRemoveItem('exclusion', index)} className="btn bg-red-500 text-white rounded px-2 py-1">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddItem('exclusion')} className="btn bg-green-500 text-white rounded px-2 py-1">
+            Add Exclusion
+          </button>
+
+          <h6 className='font-bold mb-4'>Additional Information</h6>
+          {moreDetails.AdditionalInformation.map((item, index) => (
+            <div key={index} className="mb-2 flex items-center space-x-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => handleChange(e, 'AdditionalInformation', index)}
+                placeholder={`Additional Information ${index + 1}`}
+                className="form-input w-full"
+              />
+              <button type="button" onClick={() => handleRemoveItem('AdditionalInformation', index)} className="btn bg-red-500 text-white rounded px-2 py-1">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => handleAddItem('AdditionalInformation')} className="btn bg-green-500 text-white rounded px-2 py-1">
+            Add AdditionalInformation
+          </button>
+
           <div className="mt-3 flex justify-end space-x-2">
             <button type="submit" className="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
               Save Details

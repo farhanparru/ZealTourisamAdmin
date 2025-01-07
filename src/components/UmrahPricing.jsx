@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 
 const customStyles = {
@@ -11,7 +11,7 @@ const customStyles = {
     right: 'auto',
     // bottom: 'auto',
     width: '90%',
-    height:"90%",
+    height: "90%",
     maxWidth: '600px',
     padding: '20px',
     borderRadius: '9px',
@@ -23,31 +23,45 @@ const customStyles = {
 // eslint-disable-next-line react/prop-types
 const UmrahPricingModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
   const [pricingData, setPricingData] = useState({
-    
-// eslint-disable-next-line react/prop-types
-    title: umrahData.pricing?.title || '',
-    
-// eslint-disable-next-line react/prop-types
-    description: umrahData.pricing?.description || '',
-    
-// eslint-disable-next-line react/prop-types
+
+    adultNo: umrahData.pricing?.adultNo || '',
+    childNo: umrahData.pricing?.childNo || '',
+    infantNo: umrahData.pricing?.infantNo || '',
+
     packageCost: umrahData.pricing?.packageCost || [{
       title: '',
       amount: '',
       currency: '',
     }],
-    // eslint-disable-next-line react/prop-types
+
     tax: umrahData.pricing?.tax || [{
       title: '',
       amount: '',
       currency: '',
     }],
-      // eslint-disable-next-line react/prop-types
     totalAmount: umrahData.pricing?.totalAmount || '',
   });
 
+    // Calculate total amount
+    const calculateTotal = () => {
+      const packageCostTotal = pricingData.packageCost.reduce(
+        (sum, item) => sum + (parseFloat(item.amount) || 0),
+        0
+      );
+      const taxTotal = pricingData.tax.reduce(
+        (sum, item) => sum + (parseFloat(item.amount) || 0),
+        0
+      );
+      return packageCostTotal + taxTotal;
+    };
+  
+    // Update total amount whenever packageCost or tax changes
+    useEffect(() => {
+      const total = calculateTotal();
+      setPricingData((prevData) => ({ ...prevData, totalAmount: total.toFixed(2) }));
+    }, [pricingData.packageCost, pricingData.tax]);
 
-  // Handle changes for title, description, and totalAmount
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPricingData({ ...pricingData, [name]: value });
@@ -84,26 +98,38 @@ const UmrahPricingModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Pricing Details</h2>
         <form onSubmit={handleSubmit}>
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-            Title
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="adultNo">
+            Adult Number
           </label>
           <input
-            type="text"
-            name="title"
-            value={pricingData.title}
+            type="number"
+            name="adultNo"
+            value={pricingData.adultNo}
             onChange={handleChange}
-            placeholder="Title"
+            placeholder="Adult No."
             className="form-input w-full mb-4 p-2 border border-gray-300 rounded"
           />
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-            Description
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="childNo">
+            Child Number
           </label>
-          <textarea
-            name="description"
-            value={pricingData.description}
+          <input
+            name="childNo"
+            type="number"
+            value={pricingData.childNo}
             onChange={handleChange}
-            placeholder="Description"
-            className="form-textarea w-full mb-4 p-2 border border-gray-300 rounded"
+            placeholder="Child No"
+            className="form-input w-full mb-4 p-2 border border-gray-300 rounded"
+          />
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="infantNo">
+          Infant Number
+          </label>
+          <input
+            name="infantNo"
+            type="number"
+            value={pricingData.infantNo}
+            onChange={handleChange}
+            placeholder="Infant No"
+            className="form-input w-full mb-4 p-2 border border-gray-300 rounded"
           />
 
           <h3 className="text-xl font-semibold mb-2">Package Cost</h3>
@@ -136,7 +162,7 @@ const UmrahPricingModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
             </div>
           ))}
           <button type="button" onClick={() => handleAddItem('packageCost')} className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-            Add Package Cost
+            Add Cost
           </button>
 
           <h3 className="text-xl font-semibold mb-2">Tax</h3>
@@ -176,6 +202,7 @@ const UmrahPricingModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
           <input
             type="text"
             name="totalAmount"
+            disabled
             value={pricingData.totalAmount}
             onChange={handleChange}
             placeholder="Total Amount"

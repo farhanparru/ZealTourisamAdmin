@@ -21,14 +21,10 @@ const customStyles = {
 // eslint-disable-next-line react/prop-types
 const UmrahBookingPolicyModal = ({ isOpen, onClose, onSubmit, umrahData }) => {
   const [bookingPolicy, setBookingPolicy] = useState({
-    // eslint-disable-next-line react/prop-types
-    cancellation: umrahData?.bookingPolicy?.cancellation || '',
-    // eslint-disable-next-line react/prop-types
-    childPolicy: umrahData?.bookingPolicy?.childPolicy || '',
-    // eslint-disable-next-line react/prop-types
-    otherPolicies: umrahData?.bookingPolicy?.otherPolicies || [{ title: '', description: '' }],
-    // eslint-disable-next-line react/prop-types
-    faq: umrahData?.bookingPolicy?.otherPolicies || [{ title: '', description: '' }]
+    cancellation: umrahData?.bookingPolicy?.cancellation || 'asdasd',
+    childPolicy: umrahData?.bookingPolicy?.childPolicy || 'asdasd',
+    otherPolicies: umrahData?.bookingPolicy?.otherPolicies || [{ title: 'asdasd', description: 'asdasd' }],
+    faq: umrahData?.bookingPolicy?.otherPolicies || [{ title: 'adsads', description: 'asdasd' }]
   });
 
 

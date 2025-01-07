@@ -58,10 +58,6 @@ const Umraha = () => {
     navigate(`/Umrahaall/view-package/${pkg._id}`, { state: { packageData: pkg } })
   };
 
-  
-
-
-
 
 
 
@@ -144,8 +140,8 @@ const Umraha = () => {
                
                 <FaEdit
                   className="text-green-500 cursor-pointer"
-                 
-                />
+                  onClick={() => navigate(`/updateUmrahaall/${pkg._id}`)}
+                  />
                 <FaTrashAlt
                   className="text-red-500 cursor-pointer"
                   onClick={() => handleDelete(pkg._id)}
