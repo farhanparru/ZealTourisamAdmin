@@ -5,7 +5,7 @@ const fetchProtectedData = async () => {
     const token = localStorage.getItem('adminToken'); // Retrieve the token from localStorage
 
     try {
-        const response = await axios.get('http://localhost:3002/api/admin/protected', {
+        const response = await axios.get('https://api.zealtourism.com/api/admin/protected', {
             headers: {
                 Authorization: `Bearer ${token}`, // Include the token in the header
             },

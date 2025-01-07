@@ -265,7 +265,7 @@ const AddGlobalVisasPackageModal = () => {
   
       // Send POST request
       const response = await axios.post(
-        "http://localhost:3002/api/global-visa",
+        "https://api.zealtourism.com/api/global-visa",
         formDataToSend,
         {
           headers: {
