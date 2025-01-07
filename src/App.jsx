@@ -21,6 +21,7 @@ import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
 import UmrahaSEO from './SEOsettings/UmrahaSEO';
 import AddBanner from './packages/AddBanner';
 import Enquiry from './components/Enquiry';
+import EditUmrahPackageModal from './packages/EditUmrahaPackageModal';
 
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
@@ -74,7 +75,8 @@ function App() {
           <Route path="/deals" element={<Deals />} />
           
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />
-        
+          <Route path="/updateUmrahaall/:id" element={<ProtectedRoute><EditUmrahPackageModal /></ProtectedRoute>} />
+          
           <Route path="/holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
           <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />
           <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />

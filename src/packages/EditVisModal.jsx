@@ -219,7 +219,6 @@ const EditVisModal = () => {
         if (response.status === 200) {
             navigate('/GlobalVisas')
            toast.success("Global visa updated successfully");
-         
         }
     } catch (error) {
         console.error("Error updating global visa:", error);

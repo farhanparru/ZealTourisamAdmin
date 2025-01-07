@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import Modal from 'react-modal';
 
 const customStyles = {
@@ -7,9 +7,8 @@ const customStyles = {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         right: 'auto',
-        // bottom: 'auto',
         width: '90%',
-        height: "90%",
+        height: '90%',
         maxWidth: '650px',
         padding: '20px',
         borderRadius: '9px',
@@ -18,208 +17,303 @@ const customStyles = {
 };
 
 // eslint-disable-next-line react/prop-types
-const ItineraryForm = ({ isOpen, onSubmit, onClose, setItineraryImages, itineraryData }) => {
-    const [formData, setFormData] = useState({
-        // eslint-disable-next-line react/prop-types
-        title: itineraryData?.title || '',
-        // eslint-disable-next-line react/prop-types
-        description: itineraryData?.description || '',
-        // eslint-disable-next-line react/prop-types
-        place: itineraryData?.place || '',
-        // eslint-disable-next-line react/prop-types
-        dayDetails: itineraryData?.dayDetails || '',
-        // eslint-disable-next-line react/prop-types
-        details: itineraryData?.details || [{ title: '', image: '', category: '', location: '', room: '', checkIn: '', checkout: '' }]
-    });
-    const [images, setImages] = useState({});
-    const handleChange = (e, index = null) => {
+const ItineraryForm = ({ isOpen, onSubmit, onClose }) => {
+    const [formData, setFormData] = useState([
+        {
+            place: 'ert',
+            description: 'ddfgfg',
+            ItineraryDay: 'dfgdg',
+            ItineraryDate: 'dfgfg',
+            HotelDetails: { Hoteltitle: 'dfgdfg', image: null, location: 'dfgdf', roomType: 'dfg', checkIn: 'dfg', checkout: 'dfg' },
+            TransportDetails: { Transporttitle: 'dfgdfg', image: null, from: 'dgfdgf', to: 'dfgdg', time: { timeTitle: 'dfgdgf', time: 'dgf' } },
+        },
+    ]);
+
+    const handleChange = (index, e) => {
         const { name, value } = e.target;
-        if (index !== null) {
-            const newDetails = [...formData.details];
-            newDetails[index] = { ...newDetails[index], [name]: value };
-            setFormData(prev => ({ ...prev, details: newDetails }));
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
-        }
+        console.log(value);
+        
+
+        setFormData((prev) =>
+            prev.map((item, i) =>
+                i === index
+                    ? name in item.HotelDetails
+                        ? {
+                            ...item,
+                            HotelDetails: {
+                                ...item.HotelDetails,
+                                [name]: value,
+                            },
+                        }
+                        : name in item.TransportDetails
+                            ? {
+                                ...item,
+                                TransportDetails: {
+                                    ...item.TransportDetails,
+                                    [name]: name === 'time' || name === 'timeTitle'
+                                        ? {
+                                            ...item.TransportDetails.time,
+                                            [name]: value,
+                                        }
+                                        : value,
+                                },
+                            }
+                            : { ...item, [name]: value }
+                    : item
+            )
+        );
     };
 
-    const handleImageChange = (index, e) => {
-        if (e.target.files && e.target.files[0]) {
-            setImages(prev => ({ ...prev, [index]: e.target.files[0] }));
-            setItineraryImages(prev => ({ ...prev, [index]: e.target.files[0] }));
-        }
+
+    const handleImageChange = (index, type, event) => {
+        const file = event.target.files[0]; // Get the first selected file
+        setFormData((prev) =>
+            prev.map((item, i) =>
+                i === index
+                    ? type === 'hotel'
+                        ? {
+                            ...item,
+                            HotelDetails: {
+                                ...item.HotelDetails,
+                                image: file,
+                            },
+                        }
+                        : type === 'transport'
+                            ? {
+                                ...item,
+                                TransportDetails: {
+                                    ...item.TransportDetails,
+                                    image: file,
+                                },
+                            }
+                            : item
+                    : item
+            )
+        );
     };
+    
+
 
     const addDetail = () => {
-        setFormData(prev => ({
+        setFormData((prev) => [
             ...prev,
-            details: [...prev.details, { title: '', image: '', category: '', location: '', room: '', checkIn: '', checkout: '' }]
-        }));
+            {
+                place: '',
+                description: '',
+                ItineraryDay: '',
+                ItineraryDate: '',
+                HotelDetails: { Hoteltitle: '', image: null, location: '', roomType: '', checkIn: '', checkout: '' },
+                TransportDetails: { Transporttitle: '', image: null, from: '', to: '', time: { timeTitle: '', time: '' } },
+            },
+        ]);
     };
 
     const removeDetail = (index) => {
-        setFormData(prev => ({
-            ...prev,
-            details: prev.details.filter((_, i) => i !== index)
-        }));
-        setImages(prev => {
-            const newImages = { ...prev };
-            delete newImages[index];
-            return newImages;
-        });
+        setFormData((prev) => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const itineraryWithImages = formData.details.map((detail, index) => {
-            if (images[index]) {
-                return { ...detail, image: images[index].name };
-            }
-            return detail;
-        });
+        console.log(e);
 
-        const itineraryData = {
-            title: formData.title,
-            description: formData.description,
-            place: formData.place,
-            dayDetails: formData.dayDetails,
-            details: itineraryWithImages,
-        };
-
-        onSubmit(itineraryData); // Pass data to the parent component
+        const formattedData = formData.map((detail) => ({
+            ...detail,
+            HotelDetails: {
+                ...detail.HotelDetails,
+                image: detail.HotelDetails.image ? detail.HotelDetails.image.name : null,
+            },
+            TransportDetails: {
+                ...detail.TransportDetails,
+                image: detail.TransportDetails.image ? detail.TransportDetails.image.name : null,
+            },
+        }));
+        onSubmit(formattedData); // Pass the form data to the parent component
     };
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={onClose} contentLabel="BookingPolicy Modal" style={customStyles}>
+        <Modal isOpen={isOpen} onRequestClose={onClose} contentLabel="Itinerary Modal" style={customStyles}>
             <div className="p-6">
                 <h2 className="text-2xl font-bold mb-4">Itinerary Information</h2>
-                <form onSubmit={handleSubmit} className="itinerary-form">
-                    {/* <div className="form-card"> */}
-                    {/* <div className="form-content"> */}
-                    <h6 className='font-bold'>Title</h6>
-                    <input
-                        type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        placeholder="Title"
-                        className="form-input"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                    />
-                    <h6 className='font-bold'>Description</h6>
-                    <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        placeholder="Description"
-                        className="form-textarea"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                        />
-                    <h6 className='font-bold'>Place</h6>
+                <form onSubmit={handleSubmit}>
+                    {formData.map((detail, index) => (
+                        <div key={index} className="form-card mb-6 border p-4 rounded shadow">
+                            <h6 className="font-bold">Place</h6>
+                            <input
+                                type="text"
+                                name="place"
+                                value={detail.place}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Place"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <h6 className="font-bold">Description</h6>
+                            <textarea
+                                name="description"
+                                value={detail.description}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Description"
+                                className="form-textarea"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <h6 className="font-bold">Day</h6>
+                            <input
+                                type="text"
+                                name="ItineraryDay"
+                                value={detail.ItineraryDay}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Day in Word"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <h6 className="font-bold">Date</h6>
+                            <input
+                                type="date"
+                                name="ItineraryDate"
+                                value={detail.ItineraryDate}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Date"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <h6 className="font-bold">Hotel Details</h6>
+                            <input
+                                type="text"
+                                name="Hoteltitle"
+                                value={detail.HotelDetails.Hoteltitle}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Hotel Title"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="file"
+                                onChange={(e) => handleImageChange(index, 'hotel', e)}
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="text"
+                                name="location"
+                                value={detail.HotelDetails.location}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Location"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="text"
+                                name="roomType"
+                                value={detail.HotelDetails.roomType}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Room Type"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="text"
+                                name="checkIn"
+                                value={detail.HotelDetails.checkIn}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Check-In"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="text"
+                                name="checkout"
+                                value={detail.HotelDetails.checkout}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Check-Out"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
 
-                    <input
-                        type="text"
-                        name="place"
-                        value={formData.place}
-                        onChange={handleChange}
-                        placeholder="Place"
-                        className="form-input"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                    />
-                    <h6 className='font-bold'>Day Details</h6>
-                    <textarea
-                        type="text"
-                        name="dayDetails"
-                        value={formData.dayDetails}
-                        onChange={handleChange}
-                        placeholder="Day Details"
-                        className="form-input"
-                        style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                        />
-                    {/* </div> */}
-                    {/* </div> */}
+                            <h6 className="font-bold">Transport Details</h6>
+                            <input
+                                type="text"
+                                name="Transporttitle"
+                                value={detail.TransportDetails.Transporttitle}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="Transport Title"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="file"
+                                onChange={(e) => handleImageChange(index, 'transport', e)}
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="text"
+                                name="from"
+                                value={detail.TransportDetails.from}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="From"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
+                            <input
+                                type="text"
+                                name="to"
+                                value={detail.TransportDetails.to}
+                                onChange={(e) => handleChange(index, e)}
+                                placeholder="To"
+                                className="form-input"
+                                style={{ width: '100%', margin: '10px 0', padding: '5px' }}
+                            />
 
-                    {formData.details.map((detail, index) => (
-                        <div key={index} className="form-card">
-                            <h3 className="form-subtitle">Detail {index + 1}</h3>
-                            <div className="form-content">
+                            <div className="flex">
                                 <input
-                                    type="text"
-                                    name="title"
-                                    value={detail.title}
-                                    onChange={(e) => handleChange(e, index)}
-                                    placeholder="Title"
+                                    type="time"
+                                    name="time"
+                                    value={detail.TransportDetails.time?.time || ''}
+                                    onChange={(e) => handleChange(index, e)}
+                                    placeholder="Time"
                                     className="form-input"
-                                    style={{ width: "100%", margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
+                                    style={{ width: '70%', margin: '10px 0', padding: '5px' }}
                                 />
-                                <input
-                                    type="file"
-                                    onChange={(e) => handleImageChange(index, e)}
-                                    className="form-input"
-                                    style={{ width: "100%" }}
-                                />
-                                <input
-                                    type="text"
-                                    name="category"
-                                    value={detail.category}
-                                    onChange={(e) => handleChange(e, index)}
-                                    placeholder="Category"
-                                    className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                                />
-                                <input
-                                    type="text"
-                                    name="location"
-                                    value={detail.location}
-                                    onChange={(e) => handleChange(e, index)}
-                                    placeholder="Location"
-                                    className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                                />
-                                <input
-                                    type="text"
-                                    name="room"
-                                    value={detail.room}
-                                    onChange={(e) => handleChange(e, index)}
-                                    placeholder="Room"
-                                    className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                                />
-                                <input
-                                    type="text"
-                                    name="checkIn"
-                                    value={detail.checkIn}
-                                    onChange={(e) => handleChange(e, index)}
-                                    placeholder="Check-in"
-                                    className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                                />
-                                <input
-                                    type="text"
-                                    name="checkout"
-                                    value={detail.checkout}
-                                    onChange={(e) => handleChange(e, index)}
-                                    placeholder="Check-out"
-                                    className="form-input"
-                                    style={{ margin:"10px 10px 10px 0px" , padding:"5px 5px 5px 5px"}}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => removeDetail(index)}
-                                    className="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-6 mb-4">
-                                    Remove Detail
-                                </button>
+                                <select
+                                    name="timeTitle"    
+                                    // value={detail?.TransportDetails?.time?.timeTitle || ''}
+                                    onChange={(e) => handleChange(index, e)}
+                                    className="form-select"
+                                    style={{ width: '30%', margin: '10px 0', padding: '5px' }}
+                                >
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
+
+
+                            <button
+                                type="button"
+                                onClick={() => removeDetail(index)}
+                                className="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
+                            >
+                                Remove Detail
+                            </button>
                         </div>
                     ))}
-
-                    <button type="button" onClick={addDetail} className="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    <button
+                        type="button"
+                        onClick={addDetail}
+                        className="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+                    >
                         Add Detail
                     </button>
-                    <button type="submit" className="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">
+                    <button
+                        type="submit"
+                        className="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4 mt-4"
+                    >
                         Save Itinerary
                     </button>
-                    <button type="button" onClick={onClose} className="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-4">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-4 mt-4"
+                    >
                         Cancel
                     </button>
                 </form>

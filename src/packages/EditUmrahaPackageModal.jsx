@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UmrahPricingModal from "../components/UmrahPricing";
 import UmrahBookingPolicy from "../components/UmrahBookingPolicy";
@@ -7,8 +7,14 @@ import MoreDetails from "../components/MoreDetailsofUmrah";
 import ItineraryForm from "../components/UmrahItinery";
 import makka from '../assets/Images/calendar-date.png'
 import UmrahPackageDetails from "../components/UmrahDetails";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from 'react-toastify';
 
-const AddUmrahPackageModal = () => {
+const EditUmrahPackageModal = () => {
+
+    let { id } = useParams();
+    const navigate = useNavigate();
+
   const [packageData, setPackageData] = useState({
     title: 'Umrah Package 2025',
     description: 'A comprehensive package for your spiritual journey.',
@@ -95,7 +101,90 @@ const AddUmrahPackageModal = () => {
   });
   
 
-  console.log("packageData", packageData);
+
+
+  useEffect(() => {
+    const fetchHoliday = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3002/api/umrahaall/${id}`);
+        if (response.status === 200) {
+          const data = response.data.results;
+          setPackageData({
+            title: data?.title || '',
+            description: data?.description || '',
+            slug: data?.slug || '',
+            images: data?.images || [],
+            thumbnail: data?.thumbnail || '',
+            faculty: data?.faculty || [],
+            overview: data?.overview || '',
+            packageDetails: {
+              Days: data?.packageDetails?.Days || '',
+              Nights: data?.packageDetails?.Nights || '',
+              Country: data?.packageDetails?.Country || '',
+              Cities: data?.packageDetails?.Cities || '',
+              TravelFrom: data?.packageDetails?.TravelFrom || '',
+              TravelTo: data?.packageDetails?.TravelTo || '',
+              TravelDate: data?.packageDetails?.TravelDate || '',
+              TravelTime: {
+                time: data?.packageDetails?.TravelTime?.time || '',
+                timeTitle: data?.packageDetails?.TravelTime?.timeTitle || '',
+              },
+            },
+            itinerary: data?.itinerary?.map((item) => ({
+              place: item?.place || '',
+              description: item?.description || '',
+              ItineraryDay: item?.ItineraryDay || '',
+              ItineraryDate: item?.ItineraryDate || '',
+              HotelDetails: {
+                Hoteltitle: item?.HotelDetails?.Hoteltitle || '',
+                image: item?.HotelDetails?.image || null,
+                location: item?.HotelDetails?.location || '',
+                roomType: item?.HotelDetails?.roomType || '',
+                checkIn: item?.HotelDetails?.checkIn || '',
+                checkout: item?.HotelDetails?.checkout || '',
+              },
+              TransportDetails: {
+                Transporttitle: item?.TransportDetails?.Transporttitle || '',
+                image: item?.TransportDetails?.image || null,
+                from: item?.TransportDetails?.from || '',
+                to: item?.TransportDetails?.to || '',
+                time: {
+                  timeTitle: item?.TransportDetails?.time?.timeTitle || '',
+                  time: item?.TransportDetails?.time?.time || '',
+                },
+              },
+            })) || [],
+            tourOverview: data?.tourOverview || '',
+            inclusion: data?.inclusion || [],
+            exclusion: data?.exclusion || [],
+            AdditionalInformation: data?.AdditionalInformation || [],
+            pricing: {
+              adultNo: data?.pricing?.adultNo || '',
+              childNo: data?.pricing?.childNo || '',
+              infantNo: data?.pricing?.infantNo || '',
+              packageCost: data?.pricing?.packageCost || [{ title: '', amount: 0, currency: '' }],
+              tax: data?.pricing?.tax || [{ title: '', amount: 0, currency: '' }],
+              totalAmount: data?.pricing?.totalAmount || '',
+            },
+            bookingPolicy: {
+              cancellation: data?.bookingPolicy?.cancellation || '',
+              childPolicy: data?.bookingPolicy?.childPolicy || '',
+              faq: data?.bookingPolicy?.faq || [{ question: '', answer: '' }],
+              otherPolicies: data?.bookingPolicy?.otherPolicies || [{ title: '', description: '' }],
+            },
+          });
+          
+        } else {
+          throw new Error("Failed to fetch holiday");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to fetch holiday");
+      }
+    };
+    fetchHoliday();
+  }, [id]);
+
 
   // eslint-disable-next-line no-unused-vars
   const [itineraryImages, setItineraryImages] = useState({});
@@ -166,8 +255,7 @@ const AddUmrahPackageModal = () => {
       });
   
       // Send data to the backend
-      const response = await axios.post(
-        "https://api.zealtourism.com/api/umrahaall",
+      const response = await axios.put(`http://localhost:3002/api/umrahaall/${id}`,
         formDataToSend,
         {
           headers: {
@@ -178,65 +266,13 @@ const AddUmrahPackageModal = () => {
       );
   
       // Handle response
-      if (response.status === 200) {
-        console.log("Package submitted successfully:", response.data);
-        // Reset form
-        setPackageData({
-          title: '',
-          description: '',
-          slug: '',
-          images: [''],
-          thumbnail: '',
-          faculty: [''],
-          overview: '',
-          packageDetails: { Days: '', Nights: '', Country: '', Cities: '' },
-          itinerary: [
-            {
-              place: '',
-              description: '',
-              ItineraryDay: '',
-              ItineraryDate: '',
-              HotelDetails: {
-                Hoteltitle: '',
-                image: null,
-                location: '',
-                roomType: '',
-                checkIn: '',
-                checkout: '',
-              },
-              TransportDetails: {
-                Transporttitle: '',
-                image: null,
-                from: '',
-                to: '',
-                time: { timeTitle: '', time: '' },
-              },
-            },
-          ],
-          tourOverview: '',
-          inclusion: [''],
-          exclusion: [''],
-          AdditionalInformation: [''],
-          pricing: {
-            adultNo: '',
-            childNo: '',
-            infantNo: '',
-            packageCost: [{ title: '', amount: Number, currency: '' }],
-            tax: [{ title: '', amount: Number, currency: '' }],
-            totalAmount: '',
-          },
-          bookingPolicy: {
-            cancellation: '',
-            childPolicy: '',
-            faq: [{ question: '', answer: '' }],
-            otherPolicies: [{ title: '', description: '' }],
-          },
-        });
-      } else {
-        console.error("Error:", response.status, response.data);
-      }
+        if (response.status === 200) {
+            navigate('/Umrahaall')
+           toast.success("Umraha updated successfully");
+        }
     } catch (error) {
-      console.error("Error submitting form:", error);
+        console.error("Error updating Umraha:", error);
+        toast.error("Failed to update Umraha");
     }
   };
   
@@ -468,4 +504,4 @@ const AddUmrahPackageModal = () => {
   );
 };
 
-export default AddUmrahPackageModal;
+export default EditUmrahPackageModal;
