@@ -3,21 +3,48 @@ import React, { useState, useEffect } from "react";
 import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
 import axios from "axios"; // Import axios for making API requests
 import visas from "../assets/Images/visas.png"; // You can change this path or use different images for packages
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import "react-toastify/dist/ReactToastify.css";
+import Modal from "react-modal"; // Modal for displaying holiday details
 
 const GlobalVisas = () => {
-  
   const navigate = useNavigate();
 
-  const handleClick = ()=>{
-     navigate('/AddVisa')
-  }
+  const handleClick = () => {
+    navigate("/AddVisa");
+  };
 
-  
   const [packages, setPackages] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  console.log(selectedPackage, "selectedPackage");
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const modalStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      maxWidth: "90%",
+      maxHeight: "90%",
+      minWidth: "80%",
+      overflow: "auto",
+      padding: "20px",
+      backgroundColor: "#f0f0f0",
+      borderRadius: "8px",
+      boxShadow: "0 4px 6px rgba(197, 75, 75, 0.1)",
+    },
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.75)",
+    },
+  };
 
   // Fetching visa packages from the API
   useEffect(() => {
@@ -26,6 +53,8 @@ const GlobalVisas = () => {
         const response = await axios.get(
           "http://localhost:3002/api/global-visa"
         );
+
+        console.log();
 
         if (response.data.success) {
           const fetchedPackages = response.data.results.map((pkg) => ({
@@ -73,7 +102,7 @@ const GlobalVisas = () => {
 
       .then((response) => {
         if (response.data.success) {
-          toast.success("Delete pacakaje successfully")
+          toast.success("Delete pacakaje successfully");
           // Remove the deleted package from the state
           const updatedPackages = packages.filter((pkg) => pkg.id !== id);
           setPackages(updatedPackages);
@@ -84,11 +113,12 @@ const GlobalVisas = () => {
       });
   };
 
-  // handle Editt
+  // View GlobalVisa pacakje deleteils
 
-
-
-
+  const handleViewDetails = (pkg) => {
+    setSelectedPackage(pkg); // Set the selected package details
+    setModalIsOpen(true); // Open the modal
+  };
 
   return (
     <div className="p-6">
@@ -117,14 +147,12 @@ const GlobalVisas = () => {
       <div className="bg-white shadow rounded-lg p-4 mb-6">
         <h2 className="text-xl font-semibold mb-2">Add New Package</h2>
         <button
-         
           className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center space-x-2"
           onClick={handleClick}
         >
           Add New Package
         </button>
       </div>
-
 
       {/* Packages Table */}
       <div className="bg-white shadow rounded-lg p-4">
@@ -156,8 +184,11 @@ const GlobalVisas = () => {
                     />
                   </td>
                   <td className="px-4 py-2 text-center">
-                    <Link to="/View">
-                      <button className="text-blue-500 hover:text-blue-600 mx-2">
+                    <Link>
+                      <button
+                        className="text-blue-500 hover:text-blue-600 mx-2"
+                        onClick={() => handleViewDetails(pkg)}
+                      >
                         <FiEye />
                       </button>
                     </Link>
@@ -181,7 +212,177 @@ const GlobalVisas = () => {
         </div>
       </div>
 
-      
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Package Details"
+        style={modalStyles}
+      >
+        {selectedPackage ? (
+          <div className="p-6 bg-white rounded-lg shadow-lg max-w-5xl mx-auto">
+            {/* Title */}
+            <h2 className="text-3xl font-bold mb-4">
+              {selectedPackage.packageName}
+            </h2>
+
+            {/* Overview & Description */}
+            <p className="text-gray-700 mb-4">
+              <strong>Overview:</strong> {selectedPackage.overview}
+            </p>
+            <p className="text-gray-700 mb-4">
+              <strong>Description:</strong> {selectedPackage.description}
+            </p>
+
+            {/* Images & Thumbnail */}
+            <div className="flex space-x-4 mb-4">
+              {selectedPackage.images ? (
+                <img
+                  src={selectedPackage.images}
+                  alt="Package Image"
+                  className="w-40 h-40 object-cover rounded shadow"
+                />
+              ) : (
+                <p>No image available</p>
+              )}
+              {selectedPackage.thumbnail ? (
+                <img
+                  src={selectedPackage.thumbnail}
+                  alt="Package Thumbnail"
+                  className="w-20 h-20 object-cover rounded shadow"
+                />
+              ) : (
+                <p>No thumbnail available</p>
+              )}
+            </div>
+
+            {/* Pricing Table */}
+            <h3 className="text-xl font-semibold mb-2">Pricing</h3>
+            <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border border-gray-300 px-4 py-2">Title</th>
+                  <th className="border border-gray-300 px-4 py-2">Amount</th>
+                  <th className="border border-gray-300 px-4 py-2">Currency</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedPackage.pricing.packageCost.map((cost, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {cost.title}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {cost.amount}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {cost.currency}
+                    </td>
+                  </tr>
+                ))}
+                {selectedPackage.pricing.tax.map((tax, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {tax.title}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {tax.amount}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {tax.currency}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Options */}
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">Options</h3>
+              {selectedPackage.options && selectedPackage.options.length > 0 ? (
+                selectedPackage.options.map((option, index) => (
+                  <div key={index} className="mb-4 border p-4 rounded shadow">
+                    <p>
+                      <strong>Title:</strong> {option.title}
+                    </p>
+                    <p>
+                      <strong>Badge:</strong> {option.badge}
+                    </p>
+                    <p>
+                      <strong>Discount:</strong> {option.discountPercentage}
+                    </p>
+                    <p>
+                      <strong>Refund Status:</strong> {option.refundStatus}
+                    </p>
+                    <p>
+                      <strong>Price:</strong> {option.price} {option.currency}
+                    </p>
+                    <p>
+                      <strong>Footer Text:</strong> {option.footerText}
+                    </p>
+
+                    {/* Process Type */}
+                    {option.processType && option.processType.length > 0 && (
+                      <p>
+                        <strong>Process Type:</strong>{" "}
+                        {option.processType.join(", ")}
+                      </p>
+                    )}
+
+                    {/* Price With Currency */}
+                    {option.priceWithCurrency &&
+                      option.priceWithCurrency.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold mt-2">
+                            Price with Currency
+                          </h4>
+                          <ul className="list-disc list-inside">
+                            {option.priceWithCurrency.map((pwc, pwcIndex) => (
+                              <li key={pwcIndex}>
+                                <strong>Currency:</strong> {pwc.currency},
+                                <strong> Discount Price:</strong>{" "}
+                                {pwc.discountPrice},
+                                <strong> Discount Percentage:</strong>{" "}
+                                {pwc.discountPercentage}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                  </div>
+                ))
+              ) : (
+                <p>No options available</p>
+              )}
+            </div>
+
+            {/* FAQ */}
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">FAQ</h3>
+              {selectedPackage.faq && selectedPackage.faq.length > 0 ? (
+                <ul className="list-disc list-inside">
+                  {selectedPackage.faq.map((item, index) => (
+                    <li key={index}>
+                      <strong>{item.question}</strong>: {item.answer}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No FAQs available</p>
+              )}
+            </div>
+
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Close
+            </button>
+          </div>
+        ) : (
+          <p>Loading package details...</p>
+        )}
+      </Modal>
     </div>
   );
 };

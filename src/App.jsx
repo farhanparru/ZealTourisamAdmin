@@ -5,7 +5,6 @@ import Sidebar from './AdminUI/Sidebar';
 import Navbar from './AdminUI/Navabar';
 import Dashboard from './AdminUI/Dashboard';
 import Umraha from './packages/Umraha';
-import Holidays2 from './packages/Holidays';
 import GlobalVisas from './packages/GlobalVisas';
 import AdminLogin from './AdminUI/AdminLogin';
 import ProtectedRoute from './AdminUI/ProtectedRoute';
@@ -17,7 +16,7 @@ import Holidays from './pages/Holidays/Holidays';
 import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
 import EditVisModal from '../src/packages/EditVisModal'
 import { ToastContainer } from 'react-toastify';
-import GlobalVisa from './AllPackgesviewSection/GlobalVisa';
+
 import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
 import UmrahaSEO from './SEOsettings/UmrahaSEO';
 import AddBanner from './packages/AddBanner';
@@ -75,7 +74,7 @@ function App() {
           <Route path="/deals" element={<Deals />} />
           
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />
-          <Route path="/Holidays2" element={<ProtectedRoute><Holidays2 /></ProtectedRoute>} />
+        
           <Route path="/holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
           <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />
           <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />
@@ -84,7 +83,7 @@ function App() {
           <Route path="/feedback" element={<Feedback />} />
           <Route path='/Profile' element={<Adminprofile />} />
           <Route path='/forgot' element={<AdminForgotPassword />} />
-          <Route path='/View' element={<GlobalVisa />} />
+        
           
         </Routes>
         <ToastContainer />
