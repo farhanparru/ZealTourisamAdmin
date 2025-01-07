@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import '../AddHolidays/AddHolidays.css';
 import ItineraryForm from '../../components/ItineraryForm';
 import MoreDetailsModal from '../../components/MoreDetailsModal'; // Import the new modal component
-import baseUrl from '../../../contants/baseUrl';
+
 import FaqModal from '../../components/FaqModal';
 import BookingPolicyModal from '../../components/BookingPolicyModal';
 import PricingModal from '../../components/PricingModal';
@@ -67,7 +67,7 @@ const UpdateHolidays = () => {
     useEffect(() => {
         const fetchHoliday = async () => {
             try {
-                const response = await axios.get(baseUrl + '/holidays/' + id);
+                const response = await axios.get(`https://api.zealtourism.com/holidays/${id}`);
                 if (response.status === 200) {
                     let data = response?.data?.result
                     setHolidayData({
@@ -195,7 +195,7 @@ const UpdateHolidays = () => {
                 alert('Please provide a valid id');
                 return;
             }
-            const response = await axios.put(baseUrl + '/holidays/' + id, formDataToSend, {
+            const response = await axios.put(`https://api.zealtourism.com/holidays/${id}`, formDataToSend, {
                 headers: {
                     "x-access-token": localStorage.getItem("adminToken"),
                     "Content-Type": "multipart/form-data",
