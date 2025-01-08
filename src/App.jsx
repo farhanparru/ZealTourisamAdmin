@@ -20,7 +20,8 @@ import { ToastContainer } from 'react-toastify';
 import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
 import UmrahaSEO from './SEOsettings/UmrahaSEO';
 import AddBanner from './packages/AddBanner';
-import Enquiry from './components/Enquiry';
+import Enquiry from './components/VisaEnquiry';
+import UmrahaEnquiry from './components/UmrahEnquiry'
 import EditUmrahPackageModal from './packages/EditUmrahaPackageModal';
 
 // Dummy components for the routes
@@ -72,6 +73,7 @@ function App() {
           <Route path="/travelers" element={<Travelers />} />
           <Route path="/Addbanner" element={<AddBanner />} />
           <Route path="/EnquirysVisa" element={<Enquiry />} />
+          <Route path='/EnquiryUmraha' element={<UmrahaEnquiry/>}/>
           <Route path="/deals" element={<Deals />} />
           
           <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />

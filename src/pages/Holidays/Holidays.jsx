@@ -4,7 +4,8 @@ import axios from "axios";
 import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
 import Modal from "react-modal"; // Modal for displaying holiday details
 import "./Holidays.css"; // Add any custom CSS styling here
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import cdnUrl from "../../../contants/cdnUrl";
 // import { FaRegFilePdf } from "react-icons/fa";
 import visas from "../../assets/Images/holidaysimg1.jpg";
@@ -72,6 +73,7 @@ const Holidays = () => {
         },
       }); // Replace with your API URL
       setState(!state);
+         toast.success("Delete pacakaje successfully");
     } catch (error) {
       console.error("Error deleting holiday:", error);
     }
