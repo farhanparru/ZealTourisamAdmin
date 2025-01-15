@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
    useEffect(() => {
       const checkAuth = async () => {
          try {
-            const response = await axios.get( 'https://api.zealtourism.com/api/admin/protected', {
+            const response = await axios.get( 'http://localhost:3002/api/admin/protected', {
                headers: {
                   'x-access-token': token,
                },
@@ -48,4 +48,5 @@ const ProtectedRoute = ({ children }) => {
    return children;
 };
 
-export default ProtectedRoute;
+// eslint-disable-next-line no-irregular-whitespace
+export default  ProtectedRoute;

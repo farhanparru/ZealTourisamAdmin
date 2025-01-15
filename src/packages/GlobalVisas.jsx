@@ -51,7 +51,7 @@ const GlobalVisas = () => {
     const fetchVisaPackages = async () => {
       try {
         const response = await axios.get(
-          "https://api.zealtourism.com/api/global-visa"
+          "http://localhost:3002/api/global-visa"
         );
 
         console.log();
@@ -113,8 +113,8 @@ const GlobalVisas = () => {
       });
   };
 
-  // View GlobalVisa pacakje deleteils
 
+  // View GlobalVisa pacakje deleteils
   const handleViewDetails = (pkg) => {
     setSelectedPackage(pkg); // Set the selected package details
     setModalIsOpen(true); // Open the modal
