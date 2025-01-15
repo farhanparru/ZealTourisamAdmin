@@ -51,7 +51,7 @@ const GlobalVisas = () => {
     const fetchVisaPackages = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3002/api/global-visa"
+          "https://api.zealtourism.com/api/global-visa"
         );
 
         console.log();
