@@ -10,6 +10,8 @@ const Enquiry = () => {
   useEffect(() => {
     const fetchEnquiries = async () => {
       try {
+        axios.defaults.withCredentials = true;
+
         const response = await axios.get('https://zeal-tourisam-backend.vercel.app/api/globalvisa/VisagetEnquirys');
         // Extract the `data` array from the response
         setEnquiries(response.data.data);
