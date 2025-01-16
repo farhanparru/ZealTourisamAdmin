@@ -10,7 +10,7 @@ const UmrahEnquiry = () => {
   useEffect(() => {
     const fetchEnquiries = async () => {
       try {
-        const response = await axios.get('https://api.zealtourism.com/api/enquire/umrahEnquire');
+        const response = await axios.get('https://zeal-tourisam-backend.vercel.app/api/enquire/umrahEnquire');
         // Extract the `data` array from the response
         setEnquiries(response.data.results);
         console.log(response.data.results);

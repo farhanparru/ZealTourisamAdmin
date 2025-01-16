@@ -16,7 +16,7 @@ const Navbar = () => {
   // Handle Logout
   const handleLogout = async () => {
     try {
-      const response = await axios.post('https://api.zealtourism.com/api/admin/adminLogout');
+      const response = await axios.post('https://zeal-tourisam-backend.vercel.app/api/admin/adminLogout');
       if (response.data.success) {
         navigate('/');
         toast.success('Admin Logout successfully');

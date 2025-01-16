@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
    useEffect(() => {
       const checkAuth = async () => {
          try {
-            const response = await axios.get( 'https://api.zealtourism.com/api/admin/protected', {
+            const response = await axios.get( 'https://zeal-tourisam-backend.vercel.app/api/admin/protected', {
                headers: {
                   'x-access-token': token,
                },

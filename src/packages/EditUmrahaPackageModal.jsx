@@ -106,7 +106,7 @@ const EditUmrahPackageModal = () => {
   useEffect(() => {
     const fetchHoliday = async () => {
       try {
-        const response = await axios.get(`https://api.zealtourism.com/api/umrahaall/${id}`);
+        const response = await axios.get(`https://zeal-tourisam-backend.vercel.app/api/umrahaall/${id}`);
         if (response.status === 200) {
           const data = response.data.results;
           setPackageData({
@@ -255,7 +255,7 @@ const EditUmrahPackageModal = () => {
       });
   
       // Send data to the backend
-      const response = await axios.put(`https://api.zealtourism.com/api/umrahaall/${id}`,
+      const response = await axios.put(`https://zeal-tourisam-backend.vercel.app/api/umrahaall/${id}`,
         formDataToSend,
         {
           headers: {

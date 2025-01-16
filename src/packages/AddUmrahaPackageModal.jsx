@@ -135,7 +135,7 @@ const AddUmrahPackageModal = () => {
   
       // Send data to the backend
       const response = await axios.post(
-        "https://api.zealtourism.com/api/umrahaall",
+        "https://zeal-tourisam-backend.vercel.app/api/umrahaall",
         formDataToSend,
         {
           headers: {

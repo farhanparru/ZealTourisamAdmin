@@ -51,7 +51,7 @@ const GlobalVisas = () => {
     const fetchVisaPackages = async () => {
       try {
         const response = await axios.get(
-          "https://api.zealtourism.com/api/global-visa"
+          "https://zeal-tourisam-backend.vercel.app/api/global-visa"
         );
 
         console.log();
@@ -93,7 +93,7 @@ const GlobalVisas = () => {
     const token = localStorage.getItem("adminToken");
 
     axios
-      .delete(`https://api.zealtourism.com/api/global-visa/${id} `, {
+      .delete(`https://zeal-tourisam-backend.vercel.app/api/global-visa/${id} `, {
         headers: {
           "x-access-token": `${token}`,
           "Content-Type": "application/json",
