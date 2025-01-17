@@ -24,7 +24,7 @@ import AddBanner from './packages/AddBanner';
 import Enquiry from './components/VisaEnquiry';
 import UmrahaEnquiry from './components/UmrahEnquiry'
 import EditUmrahPackageModal from './packages/EditUmrahaPackageModal';
-import BestHotels from './packages/bestHotels';
+import BestHotel from './packages/BestHotel';
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
 const Bookings = () => <h2>Bookings</h2>;
@@ -84,7 +84,7 @@ function App() {
           <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />
           <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />
                
-          <Route path='/Hotels' element={<BestHotels/>}/>
+          <Route path="/Hotels" element={<BestHotel />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path='/Profile' element={<Adminprofile />} />
           <Route path='/forgot' element={<AdminForgotPassword />} />

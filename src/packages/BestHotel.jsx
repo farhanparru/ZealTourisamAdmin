@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react'
 
-const bestHotels = () => {
+const BestHotel = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
           <div className="text-center bg-white p-8 rounded-lg shadow-md">
@@ -16,5 +16,4 @@ const bestHotels = () => {
       );
     };
 
-export default bestHotels
-
+export default BestHotel
