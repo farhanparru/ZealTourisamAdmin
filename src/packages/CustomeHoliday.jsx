@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
-import React from 'react'
+import React from 'react';
 
-const BestHotel = () => {
+const CustomeHoliday = () => {
   return (
     <div className="bg-gray-100 dark:bg-gray-800 min-h-screen flex flex-col justify-center items-center">
       <img
@@ -33,4 +33,4 @@ const BestHotel = () => {
   );
 };
 
-export default BestHotel
+export default CustomeHoliday;

@@ -67,19 +67,19 @@ const Sidebar = () => {
               <Link to="/Hotels">BEST HOTELS</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
-              <Link to="/custom-holidays">CUSTOM HOLIDAYS</Link>
+              <Link to="/CustomeHoliday">CUSTOM HOLIDAYS</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
-              <Link to="/car-transfer">CAR TRANSFER</Link>
+              <Link to="/CarTransfer">CAR TRANSFER</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
-              <Link to="/special-day">SPECIAL DAY</Link>
+              <Link to="/Speciladay">SPECIAL DAY</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
-              <Link to="/tours-package">TOURS PACKAGE</Link>
+              <Link to="/Tourspackaje">TOURS PACKAGE</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
-              <Link to="/default-four-tours">DEFAULT FOUR TOURS</Link>
+              <Link to="/DefaultTours">DEFAULT FOUR TOURS</Link>
             </li>
           </ul>
         )}
