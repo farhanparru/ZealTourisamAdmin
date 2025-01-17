@@ -15,7 +15,7 @@ import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
 import Holidays from './pages/Holidays/Holidays';
 import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
 import EditVisModal from '../src/packages/EditVisModal'
-import BestHotels from './packages/bestHotels';
+
 import { ToastContainer } from 'react-toastify';
 
 import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
@@ -24,7 +24,7 @@ import AddBanner from './packages/AddBanner';
 import Enquiry from './components/VisaEnquiry';
 import UmrahaEnquiry from './components/UmrahEnquiry'
 import EditUmrahPackageModal from './packages/EditUmrahaPackageModal';
-
+import BestHotels from './packages/bestHotels';
 // Dummy components for the routes
 const Packages = () => <h2>Packages</h2>;
 const Bookings = () => <h2>Bookings</h2>;

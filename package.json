@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "vercel-build": "cp src/vercel.json ./ && npm run build",
     "start": "vite",
     "build": "vite build",
     "lint": "eslint .",
