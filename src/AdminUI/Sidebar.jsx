@@ -64,7 +64,7 @@ const Sidebar = () => {
               <Link to="/Umrahaall">UMRAHA FOR ALL</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
-              <Link to="/best-hotels">BEST HOTELS</Link>
+              <Link to="/Hotels">BEST HOTELS</Link>
             </li>
             <li className="p-2 font-semibold text-black-600 hover:bg-blue-200 rounded-md">
               <Link to="/custom-holidays">CUSTOM HOLIDAYS</Link>

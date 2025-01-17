@@ -15,6 +15,7 @@ import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
 import Holidays from './pages/Holidays/Holidays';
 import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
 import EditVisModal from '../src/packages/EditVisModal'
+import BestHotels from './packages/bestHotels';
 import { ToastContainer } from 'react-toastify';
 
 import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
@@ -82,8 +83,8 @@ function App() {
           <Route path="/holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
           <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />
           <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />
-
-      
+               
+          <Route path='/Hotels' element={<BestHotels/>}/>
           <Route path="/feedback" element={<Feedback />} />
           <Route path='/Profile' element={<Adminprofile />} />
           <Route path='/forgot' element={<AdminForgotPassword />} />
