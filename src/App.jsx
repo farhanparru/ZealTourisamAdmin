@@ -15,9 +15,7 @@ import UpdateHolidays from './pages/UpdateHolidays/UpdateHolidays';
 import Holidays from './pages/Holidays/Holidays';
 import AddGlobalVisasPackageModal from '../src/packages/AddGlobalVisasPackageModal';
 import EditVisModal from '../src/packages/EditVisModal'
-
 import { ToastContainer } from 'react-toastify';
-
 import AddUmrahPackageModal from './packages/AddUmrahaPackageModal';
 import UmrahaSEO from './SEOsettings/UmrahaSEO';
 import AddBanner from './packages/AddBanner';
@@ -30,7 +28,7 @@ import CartTransfer from './packages/CartTransfer';
 import SpecilaDay from './packages/SpecilaDay';
 import ToursPackaje from './packages/ToursPackaje';
 import DefaultTours from './packages/DefaultTours';
-
+import Booking from './packages/Booking'
 
 
 
@@ -78,7 +76,7 @@ function App() {
           <Route path="/update-holidays/:id" element={<ProtectedRoute><UpdateHolidays /></ProtectedRoute>} />   
           <Route path='/Profile' element={<Adminprofile />} />
           <Route path='/forgot' element={<AdminForgotPassword />} />
-        
+          <Route path='/Booking' element={<Booking/>}/>
           <Route path="/Hotels" element={<BestHotel />} />\
           <Route path='/CustomeHoliday' element={<CustomeHoliday/>}/>
           <Route path='/CarTransfer' element={<CartTransfer/>}/>

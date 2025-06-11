@@ -86,7 +86,7 @@ const Sidebar = () => {
 
         <li className={`flex items-center p-3 my-4 text-blue-700 rounded-lg transition-all duration-200 ${isActive('/bookings') ? 'bg-blue-300' : 'hover:bg-blue-200'}`}>
           <FaCalendar className="text-xl" />
-          {isOpen && <Link to="/bookings" className="ml-4 font-semibold text-md">Bookings</Link>}
+          {isOpen && <Link to="/Booking" className="ml-4 font-semibold text-md">Bookings</Link>}
         </li>
 
         <li className={`flex items-center p-3 my-4 text-blue-700 rounded-lg transition-all duration-200 ${isActive('/travelers') ? 'bg-blue-300' : 'hover:bg-blue-200'}`}>
