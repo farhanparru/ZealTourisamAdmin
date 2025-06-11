@@ -67,7 +67,7 @@ const UpdateHolidays = () => {
     useEffect(() => {
         const fetchHoliday = async () => {
             try {
-                const response = await axios.get(`http://localhost:3002/api/holidays/${id}`);
+                const response = await axios.get(`https://zeal-tourisam-api.vercel.app/api/holidays/${id}`);
                 if (response.status === 200) {
                     let data = response?.data?.result
                     setHolidayData({
@@ -195,7 +195,7 @@ const UpdateHolidays = () => {
                 alert('Please provide a valid id');
                 return;
             }
-            const response = await axios.put(`http://localhost:3002/api/holidays/${id}`, formDataToSend, {
+            const response = await axios.put(`https://zeal-tourisam-api.vercel.app/api/holidays/${id}`, formDataToSend, {
                 headers: {
                     "x-access-token": localStorage.getItem("adminToken"),
                     "Content-Type": "multipart/form-data",

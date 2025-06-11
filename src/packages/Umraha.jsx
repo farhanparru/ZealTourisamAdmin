@@ -50,7 +50,7 @@ console.log(selectedPackage,"selectedPackage");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/api/umrahaall/'); // Add your backend URL here
+        const response = await axios.get('https://zeal-tourisam-api.vercel.app/api/umrahaall/'); // Add your backend URL here
         console.log(response,"new response");
         
         setPackages(response.data.results); // Set the response data to state
@@ -68,7 +68,7 @@ console.log(selectedPackage,"selectedPackage");
     console.log("Deleting package with id:", id); // Check if id is undefined
     const token = localStorage.getItem("adminToken");
     try {
-      await axios.delete(`http://localhost:3002/api/umrahaall/${id}`,{
+      await axios.delete(`https://zeal-tourisam-api.vercel.app/api/umrahaall/${id}`,{
         headers: {
           "x-access-token": `${token}`,
           "Content-Type": "application/json",
