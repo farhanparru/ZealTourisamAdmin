@@ -21,7 +21,7 @@ const handleLogin = async (e)=>{
   setErrorMessage(''); // Reset error message before submitting
 
   try {
-    const response = await axios.post('http://localhost:3002/api/admin/login', {
+    const response = await axios.post('https://zeal-api-backend.vercel.app/api/admin/login', {
       username,
       password
     });
