@@ -51,10 +51,10 @@ const GlobalVisas = () => {
     const fetchVisaPackages = async () => {
       try {
         const response = await axios.get(
-          "https://zeal-tourisam-backend.vercel.app/api/global-visa"
+          "http://localhost:3002/api/global-visa"
         );
 
-        console.log();
+        console.log(response,"myGlobal");
 
         if (response.data.success) {
           const fetchedPackages = response.data.results.map((pkg) => ({
@@ -64,7 +64,7 @@ const GlobalVisas = () => {
             images: pkg.images.length > 0 ? pkg.images[0] : null, // Use the first image or null if none
             thumbnail: pkg.thumbnail,
             details: pkg.details,
-            faculty: pkg.faculty.length > 0 ? pkg.faculty : ["Not specified"], // Ensure faculty is an array
+            faculty: pkg.faculty?.length > 0 ? pkg.faculty : ["Not specified"], // Ensure faculty is an array
             visaNo: pkg.visaNo?.length > 0 ? pkg.visaNo : [0],
             howToApply: pkg.howToApply,
             overview: pkg.overview,
@@ -80,7 +80,7 @@ const GlobalVisas = () => {
           setPackages(fetchedPackages);
         }
       } catch (error) {
-        console.log(error);
+        console?.log(error);
       }
     };
 
@@ -93,7 +93,7 @@ const GlobalVisas = () => {
     const token = localStorage.getItem("adminToken");
 
     axios
-      .delete(`https://zeal-tourisam-backend.vercel.app/api/global-visa/${id} `, {
+      .delete(`http://localhost:3002/api/global-visa/${id} `, {
         headers: {
           "x-access-token": `${token}`,
           "Content-Type": "application/json",

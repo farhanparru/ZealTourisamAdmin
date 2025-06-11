@@ -80,7 +80,7 @@ const Holidays = () => {
     details: [
       {
         title: "",
-        image: "",
+        image: [],
         category: "",
         location: "",
         room: "",
@@ -169,7 +169,7 @@ const Holidays = () => {
     formDataToSend.append("details", JSON.stringify(holidayData.details));
 
     try {
-      const response = await axios.post('https://zeal-tourisam-backend.vercel.app/api/holidays', formDataToSend, {
+      const response = await axios.post('http://localhost:3002/api/holidays', formDataToSend, {
         headers: {
           "x-access-token": localStorage.getItem("adminToken"),
           "Content-Type": "multipart/form-data",

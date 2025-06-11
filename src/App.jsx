@@ -71,7 +71,7 @@ function App() {
           <Route path="/Addbanner" element={<AddBanner />} />
           <Route path="/EnquirysVisa" element={<Enquiry />} />
           <Route path='/EnquiryUmraha' element={<UmrahaEnquiry/>}/>
-          <Route path="/Umrahaall" element={<ProtectedRoute><Umraha /></ProtectedRoute>} />
+          <Route path="/Umrahaall" element={<Umraha />} />
           <Route path="/updateUmrahaall/:id" element={<ProtectedRoute><EditUmrahPackageModal /></ProtectedRoute>} />
           <Route path="/holidays" element={<ProtectedRoute><Holidays /></ProtectedRoute>} />
           <Route path="/add-holidays" element={<ProtectedRoute><AddHolidays /></ProtectedRoute>} />

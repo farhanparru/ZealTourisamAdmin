@@ -10,7 +10,7 @@ const Enquiry = () => {
   useEffect(() => {
     const fetchEnquiries = async () => {
       try {
-        const response = await axios.get('https://zeal-tourisam-backend.vercel.app/api/enquire/umrahEnquire');
+        const response = await axios.get('http://localhost:3002/api/enquire/umrahEnquire');
         // Extract the `data` array from the response
         setEnquiries(response.data.data);
       } catch (error) {

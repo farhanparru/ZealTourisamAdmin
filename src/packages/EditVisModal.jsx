@@ -56,7 +56,7 @@ const EditVisModal = () => {
   useEffect(() => {
     const fetchHoliday = async () => {
       try {
-        const response = await axios.get(`https://zeal-tourisam-backend.vercel.app/api/global-visa/${id}`);
+        const response = await axios.get(`http://localhost:3002/api/global-visa/${id}`);
         if (response.status === 200) {
           const data = response.data.results;
           setGlobalVisaData({
@@ -209,7 +209,7 @@ const EditVisModal = () => {
         }
 
         // Send the form data to the backend
-        const response = await axios.put(`https://zeal-tourisam-backend.vercel.app/api/global-visa/${id}`, formData, {
+        const response = await axios.put(`http://localhost:3002/api/global-visa/${id}`, formData, {
             headers: {
                 "x-access-token": token,
                 // Content-Type is automatically set by axios for FormData

@@ -11,7 +11,7 @@ const UmrahEnquiry = () => {
     const fetchEnquiries = async () => {
       try {
         axios.defaults.withCredentials = true;
-        const response = await axios.get('https://zeal-tourisam-backend.vercel.app/api/enquire/umrahEnquire');
+        const response = await axios.get('http://localhost:3002/api/enquire/umrahEnquire');
         // Extract the `data` array from the response
         setEnquiries(response.data.results);
         console.log(response.data.results);

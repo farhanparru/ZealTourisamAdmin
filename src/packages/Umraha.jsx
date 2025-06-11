@@ -15,6 +15,7 @@ const Umraha = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedPackage, setSelectedPackage] = useState(null);
 
+console.log(selectedPackage,"selectedPackage");
 
     const closeModal = () => {
       setModalIsOpen(false);
@@ -49,8 +50,9 @@ const Umraha = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://zeal-tourisam-backend.vercel.app/api/umrahaall/'); // Add your backend URL here
-
+        const response = await axios.get('http://localhost:3002/api/umrahaall/'); // Add your backend URL here
+        console.log(response,"new response");
+        
         setPackages(response.data.results); // Set the response data to state
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -66,7 +68,7 @@ const Umraha = () => {
     console.log("Deleting package with id:", id); // Check if id is undefined
     const token = localStorage.getItem("adminToken");
     try {
-      await axios.delete(`https://zeal-tourisam-backend.vercel.app/api/umrahaall/${id}`,{
+      await axios.delete(`http://localhost:3002/api/umrahaall/${id}`,{
         headers: {
           "x-access-token": `${token}`,
           "Content-Type": "application/json",
@@ -139,7 +141,7 @@ const Umraha = () => {
           <div>Name</div>
           <div>Description</div>
           <div>Location</div>
-          <div>Image</div>
+          <div>Images</div>
           <div>Actions</div>
         </div>
 

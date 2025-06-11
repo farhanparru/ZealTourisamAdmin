@@ -99,10 +99,11 @@ const AddUmrahPackageModal = () => {
       formDataToSend.append("description", packageData.description);
   
       // Append images
-      packageData.images.forEach((image, index) => {
-        formDataToSend.append(`images[${index}]`, image);
-      });
-  
+        // Append images (without index notation if backend expects just 'images')
+    packageData.images.forEach((image) => {
+      formDataToSend.append("images", image); // Changed from images[${index}]
+    });
+
       // Append thumbnail
       if (packageData.thumbnail) {
         formDataToSend.append("thumbnail", packageData.thumbnail);
@@ -135,7 +136,7 @@ const AddUmrahPackageModal = () => {
   
       // Send data to the backend
       const response = await axios.post(
-        "https://zeal-tourisam-backend.vercel.app/api/umrahaall",
+        "http://localhost:3002/api/umrahaall",
         formDataToSend,
         {
           headers: {
@@ -204,7 +205,7 @@ const AddUmrahPackageModal = () => {
         console.error("Error:", response.status, response.data);
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.log("Error submitting form:", error);
     }
   };
   
@@ -213,6 +214,8 @@ const AddUmrahPackageModal = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
+    console.log(files);
+    
     setPackageData({
       ...packageData,
       images: files, // Store the image files directly
