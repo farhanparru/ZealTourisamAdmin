@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { FaCalendarAlt, FaUsers, FaMoneyBillWave, FaMosque, FaUmbrellaBeach } from 'react-icons/fa';
 import { BiSolidPlaneAlt } from 'react-icons/bi';
