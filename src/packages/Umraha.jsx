@@ -50,7 +50,7 @@ console.log(selectedPackage,"selectedPackage");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://zeal-tourisam-api.vercel.app/api/umrahall/'); // Add your backend URL here
+        const response = await axios.get('https://zeal-tourisam-api.vercel.app/api/umrahall/'); // Add your backend URL 
         console.log(response,"new response");
         
         setPackages(response.data.results); // Set the response data to state
