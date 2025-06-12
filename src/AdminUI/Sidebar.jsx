@@ -6,7 +6,8 @@ import {
   FaImage, FaQuestionCircle, FaHotel, FaCar, FaUmbrellaBeach, FaGlobe
 } from 'react-icons/fa';
 import { BiSolidOffer } from 'react-icons/bi';
-import { GiArabianGate } from 'react-icons/gi';
+import { GiCastle } from 'react-icons/gi'; // Valid icon
+
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -107,7 +108,7 @@ const Sidebar = () => {
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
                 >
-                  <GiArabianGate className="mr-2" />
+                  <GiCastle className="mr-2" />
                   Umrah For All
                 </Link>
               </li>
@@ -277,7 +278,7 @@ const Sidebar = () => {
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
                 >
-                  <GiArabianGate className="mr-2" />
+                  <GiCastle className="mr-2" />
                   Umrah Enquiry
                 </Link>
               </li>
