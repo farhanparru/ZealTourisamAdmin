@@ -1,8 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Sidebar from './AdminUI/Sidebar';
-import Navbar from './AdminUI/Navabar';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './AdminUI/Dashboard';
 import Umraha from './packages/Umraha';
 import GlobalVisas from './packages/GlobalVisas';
@@ -29,35 +25,16 @@ import SpecilaDay from './packages/SpecilaDay';
 import ToursPackaje from './packages/ToursPackaje';
 import DefaultTours from './packages/DefaultTours';
 import Booking from './packages/Booking'
+import Layout from './AdminUI/Layout';
 
 
 
-// Helper component to determine if current route is login
-// eslint-disable-next-line react/prop-types
-const AppLayout = ({ children }) => {
-  const location = useLocation();
-  const isLoginPage = location.pathname === '/'; // Check if current route is /Adminlogin
-  const isForgotPasswordPage = location.pathname === '/forgot'; // Check if current route is /forgot
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      {/* Conditionally show Navbar and Sidebar */}
-      {!isLoginPage && !isForgotPasswordPage && <Navbar />}
-      <div className="flex flex-grow">
-        {/* Conditionally show Sidebar */}
-        {!isLoginPage && !isForgotPasswordPage && <Sidebar />}
-        <div className="flex-grow p-7">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 function App() {
   return (
     <Router>
-      <AppLayout>
+      <Layout>
         <Routes>
           <Route path="/" element={<AdminLogin />} />
           <Route path="/AddVisa"  element={<AddGlobalVisasPackageModal/>}/>
@@ -86,7 +63,7 @@ function App() {
           
         </Routes>
         <ToastContainer />
-      </AppLayout>
+    </Layout>
     </Router>
     
   );

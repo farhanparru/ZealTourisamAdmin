@@ -1,36 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import {
-  FaHome, FaCalendar, FaUsers, FaSuitcase, FaUser, FaCommentDots, 
-  FaImage, FaQuestionCircle, FaHotel, FaCar, FaUmbrellaBeach, FaGlobe
+  FaHome, FaCalendar, FaUsers, FaSuitcase, FaUser,
+  FaImage,  FaHotel, FaCar, FaUmbrellaBeach, 
+  FaPlane, FaPassport, FaMapMarkedAlt, FaMoneyBillWave, FaCog
 } from 'react-icons/fa';
 import { BiSolidOffer } from 'react-icons/bi';
-import { GiCastle } from 'react-icons/gi'; // Valid icon
+import { GiCastle, GiJourney } from 'react-icons/gi';
 
-
-const Sidebar = () => {
+// eslint-disable-next-line react/prop-types
+const Sidebar = ({ isMobileSidebarOpen, toggleMobileSidebar }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [isPackagesOpen, setIsPackagesOpen] = useState(false);
-  const [isEnquiriesOpen, setIsEnquiriesOpen] = useState(false);
+  const [openMenus, setOpenMenus] = useState({
+    packages: false,
+    enquiries: false,
+    accounts: false,
+    features: false
+  });
   const location = useLocation();
+
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  }, [location]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const togglePackagesDropdown = () => {
-    setIsPackagesOpen(!isPackagesOpen);
-  };
-
-  const toggleEnquiriesDropdown = () => {
-    setIsEnquiriesOpen(!isEnquiriesOpen);
+  const toggleMenu = (menu) => {
+    setOpenMenus(prev => ({
+      ...prev,
+      [menu]: !prev[menu]
+    }));
   };
 
   const isActive = (path) => location.pathname === path;
 
+  // Close sidebar on mobile when clicking a link
+  const handleLinkClick = () => {
+    if (window.innerWidth < 768) {
+      toggleMobileSidebar();
+    }
+  };
+
   return (
-    <div className={`bg-gradient-to-b from-[#0D1526] to-[#1E2A4A] shadow-xl p-5 pt-8 duration-300 ${isOpen ? 'w-72' : 'w-24'} relative h-screen border-r-2 border-amber-500 border-opacity-30`}>
+    <div className={`
+      bg-gradient-to-b from-[#0D1526] to-[#1E2A4A] shadow-xl p-5 pt-8 duration-300 
+      ${isOpen ? 'w-72' : 'w-24'} 
+      ${isMobileSidebarOpen ? 
+        'fixed inset-y-0 z-40 transform translate-x-0' : 
+        'fixed md:relative -translate-x-full md:translate-x-0'}
+      h-screen border-r-2 border-amber-500 border-opacity-30
+      transition-transform ease-in-out duration-300
+    `}>
       {/* Sidebar Toggle */}
       <div className="flex justify-between items-center mb-8">
         <button 
@@ -47,37 +72,38 @@ const Sidebar = () => {
         )}
       </div>
 
-      <ul className="pt-2 space-y-2">
+      <ul className="pt-2 space-y-2 overflow-y-auto h-[calc(100vh-180px)]">
         {/* Dashboard */}
         <li>
           <Link 
-            to="/Dashboard" 
-            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/Dashboard') ? 
+            to="/dashboard" 
+            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/dashboard') ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+            onClick={handleLinkClick}
           >
             <FaHome className="text-xl min-w-[24px]" />
             {isOpen && <span className="ml-4 font-medium">Dashboard</span>}
           </Link>
         </li>
 
-        {/* Packages Section */}
+        {/* Packages Menu */}
         <li>
           <div 
-            onClick={togglePackagesDropdown}
-            className={`flex items-center p-3 my-1 rounded-lg cursor-pointer transition-all duration-200 ${isPackagesOpen ? 
+            onClick={() => toggleMenu('packages')}
+            className={`flex items-center p-3 my-1 rounded-lg cursor-pointer transition-all duration-200 ${openMenus.packages ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
           >
             <FaSuitcase className="text-xl min-w-[24px]" />
             {isOpen && <span className="ml-4 font-medium">Packages</span>}
-            {isOpen && (isPackagesOpen ? 
+            {isOpen && (openMenus.packages ? 
               <FiChevronUp className="ml-auto" /> : 
               <FiChevronDown className="ml-auto" />)}
           </div>
 
           {/* Packages Submenu */}
-          {isPackagesOpen && isOpen && (
+          {openMenus.packages && isOpen && (
             <ul className="ml-8 mt-1 space-y-1">
               <li>
                 <Link 
@@ -85,6 +111,7 @@ const Sidebar = () => {
                   className={`flex items-center p-2 rounded-md transition-all ${isActive('/holidays') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
                   <FaUmbrellaBeach className="mr-2" />
                   Exciting Holidays
@@ -93,20 +120,22 @@ const Sidebar = () => {
               <li>
                 <Link 
                   to="/GlobalVisas" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/GlobalVisas') ? 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/global-visas') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
-                  <FaGlobe className="mr-2" />
+                  <FaPassport className="mr-2" />
                   Global Visas
                 </Link>
               </li>
               <li>
                 <Link 
                   to="/Umrahaall" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/Umrahaall') ? 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/umrah-for-all') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
                   <GiCastle className="mr-2" />
                   Umrah For All
@@ -114,10 +143,11 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link 
-                  to="/Hotels" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/Hotels') ? 
+                  to="/best-hotels" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/best-hotels') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
                   <FaHotel className="mr-2" />
                   Best Hotels
@@ -125,10 +155,11 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link 
-                  to="/CustomeHoliday" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/CustomeHoliday') ? 
+                  to="/custom-holidays" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/custom-holidays') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
                   <BiSolidOffer className="mr-2" />
                   Custom Holidays
@@ -136,10 +167,11 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link 
-                  to="/CarTransfer" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/CarTransfer') ? 
+                  to="/car-transfer" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/car-transfer') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
                   <FaCar className="mr-2" />
                   Car Transfer
@@ -147,10 +179,11 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link 
-                  to="/Speciladay" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/Speciladay') ? 
+                  to="/special-day" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/special-day') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
                   <FaCalendar className="mr-2" />
                   Special Day
@@ -158,26 +191,17 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link 
-                  to="/Tourspackaje" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/Tourspackaje') ? 
+                  to="/tours-packages" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/tours-packages') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
-                  <FaUmbrellaBeach className="mr-2" />
-                  Tours Package
+                  <GiJourney className="mr-2" />
+                  Tours Packages
                 </Link>
               </li>
-              <li>
-                <Link 
-                  to="/DefaultTours" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/DefaultTours') ? 
-                    'text-amber-300 bg-[#2a3a5f]' : 
-                    'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
-                >
-                  <FaGlobe className="mr-2" />
-                  Default Four Tours
-                </Link>
-              </li>
+             
             </ul>
           )}
         </li>
@@ -186,129 +210,145 @@ const Sidebar = () => {
         <li>
           <Link 
             to="/Booking" 
-            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/Booking') ? 
+            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/bookings') ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+            onClick={handleLinkClick}
           >
             <FaCalendar className="text-xl min-w-[24px]" />
             {isOpen && <span className="ml-4 font-medium">Bookings</span>}
           </Link>
         </li>
 
-        {/* Travelers */}
-        <li>
-          <Link 
-            to="/travelers" 
-            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/travelers') ? 
-              'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
-              'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
-          >
-            <FaUsers className="text-xl min-w-[24px]" />
-            {isOpen && <span className="ml-4 font-medium">Travelers</span>}
-          </Link>
-        </li>
-
         {/* Add Banner */}
         <li>
           <Link 
-            to="/Addbanner" 
-            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/Addbanner') ? 
+            to="/add-banner" 
+            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/add-banner') ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+            onClick={handleLinkClick}
           >
             <FaImage className="text-xl min-w-[24px]" />
             {isOpen && <span className="ml-4 font-medium">Add Banner</span>}
           </Link>
         </li>
 
-        {/* Enquiries Section */}
+        {/* Accounts Menu */}
         <li>
           <div 
-            onClick={toggleEnquiriesDropdown}
-            className={`flex items-center p-3 my-1 rounded-lg cursor-pointer transition-all duration-200 ${isEnquiriesOpen ? 
+            onClick={() => toggleMenu('accounts')}
+            className={`flex items-center p-3 my-1 rounded-lg cursor-pointer transition-all duration-200 ${openMenus.accounts ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
           >
-            <FaQuestionCircle className="text-xl min-w-[24px]" />
-            {isOpen && <span className="ml-4 font-medium">Enquiries</span>}
-            {isOpen && (isEnquiriesOpen ? 
+            <FaUser className="text-xl min-w-[24px]" />
+            {isOpen && <span className="ml-4 font-medium">Accounts</span>}
+            {isOpen && (openMenus.accounts ? 
               <FiChevronUp className="ml-auto" /> : 
               <FiChevronDown className="ml-auto" />)}
           </div>
 
-          {isEnquiriesOpen && isOpen && (
+          {/* Accounts Submenu */}
+          {openMenus.accounts && isOpen && (
             <ul className="ml-8 mt-1 space-y-1">
               <li>
                 <Link 
-                  to="/EnquirysVisa" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/EnquirysVisa') ? 
+                  to="/crm" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/crm') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
-                  <FaGlobe className="mr-2" />
-                  Visa Enquiry
+                  <FaUsers className="mr-2" />
+                  CRM
                 </Link>
               </li>
               <li>
                 <Link 
-                  to="/holidays-enquiry" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/holidays-enquiry') ? 
+                  to="/payments" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/payments') ? 
                     'text-amber-300 bg-[#2a3a5f]' : 
                     'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
                 >
-                  <FaUmbrellaBeach className="mr-2" />
-                  Holidays Enquiry
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/tours-enquiry" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/tours-enquiry') ? 
-                    'text-amber-300 bg-[#2a3a5f]' : 
-                    'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
-                >
-                  <FaSuitcase className="mr-2" />
-                  Tours Enquiry
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/EnquiryUmraha" 
-                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/EnquiryUmraha') ? 
-                    'text-amber-300 bg-[#2a3a5f]' : 
-                    'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
-                >
-                  <GiCastle className="mr-2" />
-                  Umrah Enquiry
+                  <FaMoneyBillWave className="mr-2" />
+                  Payments
                 </Link>
               </li>
             </ul>
           )}
         </li>
 
-        {/* Accounts */}
+        {/* Travel Features Menu */}
         <li>
-          <Link 
-            to="/accounts" 
-            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/accounts') ? 
+          <div 
+            onClick={() => toggleMenu('features')}
+            className={`flex items-center p-3 my-1 rounded-lg cursor-pointer transition-all duration-200 ${openMenus.features ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
           >
-            <FaUser className="text-xl min-w-[24px]" />
-            {isOpen && <span className="ml-4 font-medium">Accounts</span>}
-          </Link>
+            <FaPlane className="text-xl min-w-[24px]" />
+            {isOpen && <span className="ml-4 font-medium">Travel Features</span>}
+            {isOpen && (openMenus.features ? 
+              <FiChevronUp className="ml-auto" /> : 
+              <FiChevronDown className="ml-auto" />)}
+          </div>
+
+          {/* Features Submenu */}
+          {openMenus.features && isOpen && (
+            <ul className="ml-8 mt-1 space-y-1">
+              <li>
+                <Link 
+                  to="/itinerary-planner" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/itinerary-planner') ? 
+                    'text-amber-300 bg-[#2a3a5f]' : 
+                    'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
+                >
+                  <FaMapMarkedAlt className="mr-2" />
+                  Itinerary Planner
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/travel-insurance" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/travel-insurance') ? 
+                    'text-amber-300 bg-[#2a3a5f]' : 
+                    'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
+                >
+                  <FaUmbrellaBeach className="mr-2" />
+                  Travel Insurance
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/visa-assistance" 
+                  className={`flex items-center p-2 rounded-md transition-all ${isActive('/visa-assistance') ? 
+                    'text-amber-300 bg-[#2a3a5f]' : 
+                    'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+                  onClick={handleLinkClick}
+                >
+                  <FaPassport className="mr-2" />
+                  Visa Assistance
+                </Link>
+              </li>
+            </ul>
+          )}
         </li>
 
-        {/* Feedback */}
+        {/* Settings */}
         <li>
           <Link 
-            to="/feedback" 
-            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/feedback') ? 
+            to="/settings" 
+            className={`flex items-center p-3 my-1 rounded-lg transition-all duration-200 ${isActive('/settings') ? 
               'bg-amber-600 bg-opacity-30 text-amber-100 border-l-4 border-amber-500' : 
               'text-amber-100 hover:bg-[#2a3a5f] hover:text-amber-300'}`}
+            onClick={handleLinkClick}
           >
-            <FaCommentDots className="text-xl min-w-[24px]" />
-            {isOpen && <span className="ml-4 font-medium">Feedback</span>}
+            <FaCog className="text-xl min-w-[24px]" />
+            {isOpen && <span className="ml-4 font-medium">Settings</span>}
           </Link>
         </li>
       </ul>
