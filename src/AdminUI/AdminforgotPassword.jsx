@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import forgotlogo from '../assets/Images/forgotpassword.jpg';
-import dubaiSkyline from '../assets/Images/dubai-skyline.jpg'; // Add this image
+import dubaiSkyline from '../assets/Images/Dubai-Skyline.jpg'; // Add this image
 import uaeFlag from '../assets/Images/image.png'; // Add this image
 
 const AdminForgotPassword = () => {
