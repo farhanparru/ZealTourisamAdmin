@@ -16,17 +16,27 @@ import { FaCalendarAlt } from "react-icons/fa";
 import "./AddHolidays.css"
 
 const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    maxWidth: "80%",
-    maxHeight: "80%",
-    overflow: "auto",
+ content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '95%', // More width for mobile
+    maxWidth: '1200px',
+    maxHeight: '90vh',
+    padding: '0',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+    border: 'none',
+    overflow: 'hidden'
   },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 1000
+  }
 };
 
 const Holidays = () => {

@@ -7,6 +7,8 @@ import MoreDetails from "../components/MoreDetailsofUmrah";
 import ItineraryForm from "../components/UmrahItinery";
 import makka from '../assets/Images/calendar-date.png'
 import UmrahPackageDetails from "../components/UmrahDetails";
+import '../pages/AddHolidays/AddHolidays.css'
+
 
 const AddUmrahPackageModal = () => {
   const [packageData, setPackageData] = useState({
@@ -231,140 +233,165 @@ const AddUmrahPackageModal = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
-      <h1 className="text-xl font-semibold text-center text-gray-700 mb-6 flex items-center justify-center gap-2">
+    <div className="holidays-container">
+      <h1 className="holidays-title">
         <img src={makka} style={{ height: "30px", width: "30px" }} alt="Makka icon" />
-        Umrah Package
+        Add Umrah Package
       </h1>
 
-      <form>
-        <div className="grid gap-4">
-          <label className="block">
-            <span className="text-gray-700 font-medium">Title*</span>
-            <input
-              type="text"
-              value={packageData.title}
-              onChange={(e) => setPackageData({ ...packageData, title: e.target.value })}
-              required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
-            />
-          </label>
+      <form className="holiday-form">
+        <div className="holiday-formmain">
+          <div className="holiday-from1">
+            <div>
+              <label>Title*</label>
+              <input
+                type="text"
+                value={packageData.title}
+                onChange={(e) => setPackageData({ ...packageData, title: e.target.value })}
+                className="holiday-input"
+                required
+              />
+            </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Description*</span>
-            <textarea
-              value={packageData.description}
-              onChange={(e) => setPackageData({ ...packageData, description: e.target.value })}
-              required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
-            />
-          </label>
+            <div>
+              <label>Description*</label>
+              <textarea
+                value={packageData.description}
+                onChange={(e) => setPackageData({ ...packageData, description: e.target.value })}
+                className="holiday-input"
+                rows={3}
+                required
+              />
+            </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Details*</span>
-            <textarea
-              value={packageData.details}
-              onChange={(e) => setPackageData({ ...packageData, details: e.target.value })}
-              required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
-            />
-          </label>
+            <div>
+              <label>Slug*</label>
+              <input
+                type="text"
+                value={packageData.slug}
+                onChange={(e) => setPackageData({ ...packageData, slug: e.target.value })}
+                className="holiday-input"
+                required
+              />
+            </div>
+          </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Slug*</span>
-            <input
-              type="text"
-              value={packageData.slug}
-              onChange={(e) => setPackageData({ ...packageData, slug: e.target.value })}
-              required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
-            />
-          </label>
+          <div className="holiday-from2">
+            <div>
+              <label>Images File*</label>
+              <div className="file-upload-container">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  className="file-upload-input"
+                  id="images-upload"
+                  required
+                />
+                <label htmlFor="images-upload" className="file-upload-label">
+                  Choose Files
+                </label>
+                <span className="file-upload-text">
+                  {packageData.images.length > 0 ? `${packageData.images.length} files selected` : "No files chosen"}
+                </span>
+              </div>
+            </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Images File*</span>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
+            <div>
+              <label>Thumbnail File*</label>
+              <div className="file-upload-container">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailUpload}
+                  className="file-upload-input"
+                  id="thumbnail-upload"
+                  required
+                />
+                <label htmlFor="thumbnail-upload" className="file-upload-label">
+                  Choose File
+                </label>
+                <span className="file-upload-text">
+                  {packageData.thumbnail ? "1 file selected" : "No file chosen"}
+                </span>
+              </div>
+            </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Thumbnail File*</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleThumbnailUpload}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
+            <div>
+              <label>Overview</label>
+              <textarea
+                value={packageData.overview}
+                onChange={(e) => setPackageData({ ...packageData, overview: e.target.value })}
+                className="holiday-input"
+                rows={3}
+              />
+            </div>
+          </div>
+        </div>
 
-          <div className="grid gap-3">
-
+        <div className="holidaySecondFrom">
+          <div className="holidaysecondfrom1">
             <button
               type="button"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
               onClick={openPackageDetailsModal}
+              className="btn-add"
             >
               Add Package Details
             </button>
-
+            
             <button
               type="button"
-              className="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
               onClick={openItineryModal}
+              className="btn-add"
             >
-              Add Itinery
+              Add Itinerary
             </button>
+            
             <button
               type="button"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
               onClick={openMoreDetailsModal}
+              className="btn-add"
             >
               Add More Details
             </button>
-
+            
             <button
               type="button"
-              className="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
               onClick={openPricingModal}
+              className="btn-add"
             >
               Add Pricing
             </button>
-
+            
             <button
               type="button"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
               onClick={openBookingPolicyModal}
+              className="btn-add"
             >
               Add Booking Policy
             </button>
           </div>
+        </div>
 
-          <div className="flex justify-between mt-4">
-            <button
-              type="reset"
-              className="w-[48%] bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
-            >
-              Reset
-            </button>
-
-            <button
-              type="submit"
-              className="w-[48%] bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
-          </div>
+        <div className="form-actions">
+          <button
+            type="reset"
+            className="btn cancel-btn"
+          >
+            Reset
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="btn submit-btn"
+          >
+            Submit
+          </button>
         </div>
       </form>
 
+      {/* Keep all your modal components here */}
       <UmrahBookingPolicy
         isOpen={isBookingPolicyModalOpen}
         onClose={closeBookingPolicyModal}
@@ -432,9 +459,6 @@ const AddUmrahPackageModal = () => {
         umrahData={packageData}
         onClose={closePackageDetailsModal}
       />
-
-
-
     </div>
   );
 };

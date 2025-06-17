@@ -1,57 +1,59 @@
 // src/Holidays.js
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
-import Modal from "react-modal"; // Modal for displaying holiday details
-import "./Holidays.css"; // Add any custom CSS styling here
+import { FiEdit, FiTrash, FiEye, FiSearch } from "react-icons/fi";
+import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import cdnUrl from "../../../contants/cdnUrl";
-// import { FaRegFilePdf } from "react-icons/fa";
 import visas from "../../assets/Images/holidaysimg1.jpg";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+
 const modalStyles = {
   content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    maxWidth: "90%",
-    maxHeight: "90%",
-    minWidth: "80%",
-    overflow: "auto",
-    padding: "20px",
-    backgroundColor: "#f0f0f0",
-    borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(197, 75, 75, 0.1)",
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '95%', // More width for mobile
+    maxWidth: '1200px',
+    maxHeight: '90vh',
+    padding: '0',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+    border: 'none',
+    overflow: 'hidden'
   },
   overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.75)",
-  },
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 1000
+  }
 };
 const Holidays = () => {
   const navigate = useNavigate();
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  // const [setSelectedHoliday] = useState(null);
-  const [state, setState] = useState(false);
-  // Holiday data structure for the modal
   const [holidayData, setHolidayData] = useState(null);
+  const [state, setState] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterLocation, setFilterLocation] = useState("all");
 
-  console.log(holidayData, "holiday view ::::::::::::::::");
   // Fetch holidays from API
   useEffect(() => {
     const fetchHolidays = async () => {
       try {
-        const response = await axios.get("https://zeal-tourisam-api.vercel.app/api/holidays", {
-          headers: {
-            "x-access-token": localStorage.getItem("adminToken"),
-          },
-        }); // Replace with your API URL
+        const response = await axios.get(
+          "https://zeal-tourisam-api.vercel.app/api/holidays",
+          {
+            headers: {
+              "x-access-token": localStorage.getItem("adminToken"),
+            },
+          }
+        );
         setHolidays(response.data.results);
       } catch (error) {
         console.error("Error fetching holidays:", error);
@@ -63,17 +65,29 @@ const Holidays = () => {
     fetchHolidays();
   }, [state]);
 
+  // Filter packages based on search term
+  const filteredHolidays = holidays?.filter(pkg => {
+    const matchesSearch = pkg.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         pkg.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
+
+  // Get unique locations for filter dropdown
+  const locations = holidays ? [...new Set(holidays.map(pkg => pkg.location))] : [];
+
   // Delete a holiday
   const handleDelete = async (id) => {
-    console.log(id, "id::::::::");
     try {
-      await axios.delete(`https://zeal-tourisam-api.vercel.app/api/holidays/${id}`, {
-        headers: {
-          "x-access-token": localStorage.getItem("adminToken"),
-        },
-      }); // Replace with your API URL
+      await axios.delete(
+        `https://zeal-tourisam-api.vercel.app/api/holidays/${id}`,
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("adminToken"),
+          },
+        }
+      );
       setState(!state);
-         toast.success("Delete pacakaje successfully");
+      toast.success("Package deleted successfully");
     } catch (error) {
       console.error("Error deleting holiday:", error);
     }
@@ -81,27 +95,20 @@ const Holidays = () => {
 
   // Open modal and set selected holiday data
   const handleViewDetails = (pkg) => {
-    // setSelectedHoliday(pkg);
     setHolidayData({
       title: pkg?.title,
       description: pkg?.description,
       slug: pkg?.slug,
       thumbnail: pkg?.thumbnail,
       images: pkg?.images,
-      pdf: pkg?.pdf,
-      faculty: pkg?.faculty,
-      details: pkg?.details,
       highlights: pkg?.highlights,
       overview: pkg?.overview,
       itinerary: pkg?.itinerary,
       timings: pkg?.timings,
       inclusions: pkg?.inclusions,
       exclusions: pkg?.exclusions,
-      tourOverview: pkg?.tourOverview,
       pricing: pkg?.pricing,
-      bookingPolicy: pkg?.bookingPolicy,
       faq: pkg?.faq,
-      rating: pkg?.rating,
       additionalInfo: pkg?.additionalInfo,
     });
     setModalIsOpen(true);
@@ -112,264 +119,345 @@ const Holidays = () => {
     setModalIsOpen(false);
   };
 
-  if (loading) return <div>Loading holidays...</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
+    </div>
+  );
 
   return (
-    <div>
-      <div className="bg-gradient-to-r from-blue-500 to-green-500 text-white p-6 rounded-lg shadow mb-6 flex items-center justify-between">
-        <div className="w-1/2">
-          <h2 className="text-2xl font-bold mb-4">
-            Take only memories, leave only footprints
-          </h2>
-          <p className="mb-4">
-            Get exclusive discounts on our holiday packages for a limited time!
-          </p>
-          <button className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-full font-bold hover:bg-yellow-300 transition">
-            Discover Offers
-          </button>
-        </div>
-        <div className="w-1/2 flex justify-end">
-          <img
-            src={visas}
-            alt="Special Offer Global Visas"
-            className="w-80 h-auto rounded-lg shadow-lg"
-          />
+    <div className="container mx-auto p-4">
+      {/* Hero Section with UAE-inspired design */}
+      <div className="relative bg-gradient-to-r from-blue-900 to-green-800 text-white py-16 px-4 sm:px-6 lg:px-8 rounded-xl mb-8 overflow-hidden">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')]"></div>
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Holiday Packages</h1>
+          <p className="text-xl md:text-2xl mb-8">Discover exclusive travel experiences in the UAE</p>
+          
+          {/* Search and Filter Bar */}
+          <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-4 flex flex-col md:flex-row gap-4">
+            <div className="relative flex-grow">
+              <FiSearch className="absolute left-3 top-3 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search packages..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-800"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select
+              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-800"
+              value={filterLocation}
+              onChange={(e) => setFilterLocation(e.target.value)}
+            >
+              <option value="all">All Locations</option>
+              {locations.map((loc, index) => (
+                <option key={index} value={loc}>{loc}</option>
+              ))}
+            </select>
+            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition duration-300 flex items-center justify-center gap-2">
+              <FiSearch /> Search
+            </button>
+          </div>
         </div>
       </div>
-      <div className="bg-white shadow rounded-lg p-4 mb-6">
-        <h2 className="text-xl font-semibold mb-2">Holidays</h2>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center space-x-2"
-          onClick={() => navigate("/add-holidays")}
+
+      {/* Add New Package Section */}
+      <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-100">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Manage Holiday Packages</h2>
+            <p className="text-gray-600">Add new packages or manage existing ones</p>
+          </div>
+          <button
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-full font-medium hover:from-yellow-600 hover:to-yellow-700 transition flex items-center gap-2 shadow-lg"
+            onClick={() => navigate("/add-holidays")}
+          >
+            <span>+</span> Add New Package
+          </button>
+        </div>
+      </div>
+
+     {/* Packages List Section */}
+<div className="bg-white rounded-xl shadow-md overflow-hidden">
+  {/* Table Header - Fixed */}
+  <div className="grid grid-cols-12 bg-gradient-to-r from-blue-900 to-green-800 text-white p-4 font-bold sticky top-0 z-10">
+    <div className="col-span-1">#</div>
+    <div className="col-span-3">Title</div>
+    <div className="col-span-2">Date</div>
+    <div className="col-span-3">Image</div>
+    <div className="col-span-3 text-center">Actions</div>
+  </div>
+
+  {/* Scrollable Package Rows */}
+  <div className="h-32  overflow-y-auto">
+    {filteredHolidays.length > 0 ? (
+      filteredHolidays.map((pkg, index) => (
+        <div 
+          key={pkg._id} 
+          className="grid grid-cols-12 items-center p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors"
         >
-          Add Holiday
+          <div className="col-span-1 text-gray-700">{index + 1}</div>
+          <div className="col-span-3 font-medium text-gray-800 truncate">{pkg.title}</div>
+          <div className="col-span-2 text-gray-600">
+            {moment(pkg.createdAt).format("DD-MM-YYYY")}
+          </div>
+          <div className="col-span-3">
+            <img
+              src={pkg.thumbnail || pkg.images?.[0] || visas}
+              alt={pkg.title}
+              className="w-20 h-16 object-cover rounded-lg shadow-sm"
+            />
+          </div>
+          <div className="col-span-3 flex justify-center gap-4">
+            <button
+              onClick={() => handleViewDetails(pkg)}
+              className="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition"
+              title="View Details"
+            >
+              <FiEye size={18} />
+            </button>
+            <button
+              onClick={() => navigate(`/update-holidays/${pkg._id}`)}
+              className="text-yellow-600 hover:text-yellow-800 p-2 rounded-full hover:bg-yellow-50 transition"
+              title="Edit"
+            >
+              <FiEdit size={18} />
+            </button>
+            <button
+              onClick={() => handleDelete(pkg._id)}
+              className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition"
+              title="Delete"
+            >
+              <FiTrash size={18} />
+            </button>
+          </div>
+        </div>
+      ))
+    ) : (
+      <div className="p-8 text-center text-gray-500 grid grid-cols-12">
+        <div className="col-span-12">
+          No packages found matching your search criteria
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+   {/* Modal for Package Details */}
+<Modal
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  contentLabel="Package Details"
+  style={modalStyles}
+  ariaHideApp={false}
+>
+  {holidayData ? (
+    <div className="p-4 md:p-6">
+      {/* Header with Close Button */}
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 border-b-2 border-yellow-500 pb-2">
+            {holidayData.title}
+          </h2>
+          <p className="text-green-700 mt-1">{holidayData.location || 'UAE'}</p>
+        </div>
+        <button
+          onClick={closeModal}
+          className="text-gray-500 hover:text-red-600 text-2xl"
+        >
+          ✕
         </button>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-4">
-        <h2 className="text-xl font-semibold mb-2">All Packages</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-gray-600">id</th>
-                <th className="px-4 py-2 text-left text-gray-600">Title</th>
-                <th className="px-4 py-2 text-left text-gray-600">Date</th>
-                <th className="px-4 py-2 text-left text-gray-600">Image</th>
-                <th className="px-4 py-2 text-center text-gray-600">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {holidays.map((pkg, index) => (
-                <tr key={pkg._id} className="border-b">
-                  <td className="px-4 py-2">{index + 1}</td>
-                  <td className="px-4 py-2">{pkg.title}</td>
-                  <td>
-                    {moment(pkg.createdAt).format("DD-MM-YYYY HH:MM:SS A")}
-                  </td>
-                  <td className="px-4 py-2">
-                    <img
-                      src={pkg.images} // Ensure this is the correct field for your image
-                      alt="Hidd"
-                      className="w-20 h-auto rounded"
-                    />
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <button
-                      className="text-blue-500 hover:text-blue-600 mx-2"
-                      onClick={() => handleViewDetails(pkg)}
-                    >
-                      <FiEye />
-                    </button>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column - Images and Highlights */}
+        <div className="lg:col-span-2">
+          {/* Main Image */}
+          <div className="mb-6 rounded-xl overflow-hidden shadow-lg">
+            <img
+              src={holidayData.thumbnail || holidayData.images?.[0] || visas}
+              alt={holidayData.title}
+              className="w-full h-64 md:h-80 object-cover"
+            />
+          </div>
 
-                    <button
-                      className="text-yellow-500 hover:text-yellow-600 mx-2"
-                      onClick={() => navigate(`/update-holidays/${pkg._id}`)}
-                    >
-                      <FiEdit />
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-600 mx-2"
-                      onClick={() => handleDelete(pkg._id)} // Pass the package ID to the delete function
-                    >
-                      <FiTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* Gallery */}
+          {holidayData.images?.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b-2 border-yellow-500 pb-2">
+                Gallery
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {holidayData.images.map((image, index) => (
+                  <div 
+                    key={index} 
+                    className="relative group cursor-pointer"
+                    onClick={() => window.open(image, '_blank')}
+                  >
+                    <img
+                      src={image}
+                      alt={`${holidayData.title} ${index + 1}`}
+                      className="w-full h-24 md:h-32 object-cover rounded-lg shadow-md group-hover:opacity-75 transition"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <FiEye className="text-white text-2xl" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Description */}
+          <div className="mb-8 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-800">
+            <h3 className="text-xl font-semibold mb-3 text-blue-800">
+              Package Description
+            </h3>
+            <p className="text-gray-700">{holidayData.description}</p>
+          </div>
+        </div>
+
+        {/* Right Column - Details */}
+        <div className="lg:col-span-1">
+          {/* Quick Facts */}
+          <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mb-6">
+            <h3 className="text-xl font-semibold mb-3 text-yellow-700">
+              Quick Facts
+            </h3>
+            <div className="space-y-2">
+              <p className="flex items-center">
+                <span className="font-medium w-24">Duration:</span>
+                <span>7 Days / 6 Nights</span>
+              </p>
+              <p className="flex items-center">
+                <span className="font-medium w-24">Location:</span>
+                <span>{holidayData.location || 'Dubai'}</span>
+              </p>
+              <p className="flex items-center">
+                <span className="font-medium w-24">Rating:</span>
+                <span className="text-yellow-500">★★★★☆</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Pricing */}
+          {holidayData.pricing && (
+            <div className="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-900 to-green-800 text-white p-3">
+                <h3 className="text-lg font-semibold">Pricing Information</h3>
+              </div>
+              <div className="p-4">
+                <table className="w-full">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-3 py-2 text-left text-gray-700">Item</th>
+                      <th className="px-3 py-2 text-right text-gray-700">Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {holidayData.pricing.packageCost?.map((cost, index) => (
+                      <tr key={index} className="border-t">
+                        <td className="px-3 py-2">{cost.title}</td>
+                        <td className="px-3 py-2 text-right">
+                          {cost.amount} {cost.currency}
+                        </td>
+                      </tr>
+                    ))}
+                    {holidayData.pricing.tax?.map((tax, index) => (
+                      <tr key={`tax-${index}`} className="border-t">
+                        <td className="px-3 py-2">{tax.title}</td>
+                        <td className="px-3 py-2 text-right">
+                          {tax.amount} {tax.currency}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="bg-gray-50">
+                    <tr>
+                      <td className="px-3 py-2 font-semibold">Total</td>
+                      <td className="px-3 py-2 text-right font-semibold">
+                        ${holidayData.pricing.totalAmount || '0'}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Highlights */}
+          {holidayData.highlights?.length > 0 && (
+            <div className="mb-6 bg-green-50 p-4 rounded-lg border-l-4 border-green-600">
+              <h3 className="text-xl font-semibold mb-3 text-green-800">
+                Package Highlights
+              </h3>
+              <ul className="space-y-2">
+                {holidayData.highlights.map((highlight, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-green-600 mr-2">✓</span>
+                    <span className="text-gray-700">{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Holiday Details"
-        style={modalStyles}
-      >
-        <div className="holiday-modal p-4 bg-white rounded shadow-md max-w-6xl mx-auto">
-  <h2 className="text-3xl font-bold mb-6 text-center">{holidayData?.title}</h2>
+      {/* FAQ Section */}
+      {holidayData.faq?.length > 0 && (
+        <div className="mt-8">
+          <h3 className="text-2xl font-semibold mb-4 text-gray-800 border-b-2 border-yellow-500 pb-2">
+            Frequently Asked Questions
+          </h3>
+          <div className="space-y-4">
+            {holidayData.faq.map((item, index) => (
+              <div 
+                key={index} 
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              >
+                <h4 className="font-semibold text-blue-800 mb-2 flex items-start">
+                  <span className="bg-blue-100 text-blue-600 rounded-full w-6 h-6 flex items-center justify-center mr-2">Q</span>
+                  {item.question}
+                </h4>
+                <p className="text-gray-700 ml-8 flex items-start">
+                  <span className="bg-green-100 text-green-600 rounded-full w-6 h-6 flex items-center justify-center mr-2">A</span>
+                  {item.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-  {/* General Information Table */}
-  <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
-    <thead>
-      <tr className="bg-gray-200">
-        <th className="border border-gray-300 px-4 py-2 text-left">Field</th>
-        <th className="border border-gray-300 px-4 py-2 text-left">Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className="border border-gray-300 px-4 py-2">Description</td>
-        <td className="border border-gray-300 px-4 py-2">{holidayData?.description}</td>
-      </tr>
-      <tr>
-        <td className="border border-gray-300 px-4 py-2">Slug</td>
-        <td className="border border-gray-300 px-4 py-2">{holidayData?.slug}</td>
-      </tr>
-      <tr>
-        <td className="border border-gray-300 px-4 py-2">Overview</td>
-        <td className="border border-gray-300 px-4 py-2">{holidayData?.overview}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  {/* Highlights */}
-  <div className="mb-6">
-    <h3 className="text-xl font-semibold mb-4">Highlights</h3>
-    <ul className="list-disc pl-5">
-      {holidayData?.highlights?.map((highlight, index) => (
-        <li key={index}>{highlight}</li>
-      ))}
-    </ul>
-  </div>
-
-
-  <div className="flex flex-row gap-6">
-  {/* Images Section */}
-  <div className="mb-6 flex-1">
-    <h3 className="text-xl font-semibold mb-2">Images</h3>
-    <div className="flex flex-wrap gap-4">
-      {holidayData?.images?.map((image, index) => (
-        <a
-          key={index}
-          href={image} // Full URL of the image
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
-        >
-          <img
-            src={image} // Display the image
-            alt={`Holiday ${index + 1}`}
-            className="w-60 h-40 object-cover rounded shadow-lg"
-          />
-        </a>
-      ))}
-    </div>
-  </div>
-
-  {/* Thumbnail Section */}
-  <div className="mb-6 flex-1">
-    <h3 className="text-xl font-semibold mb-2">Thumbnail</h3>
-    {holidayData?.thumbnail && (
-      <img
-        src={holidayData?.thumbnail}
-        alt="Thumbnail"
-        className="w-60 h-40 object-cover rounded shadow-lg"
-      />
-    )}
-  </div>
-
-  {/* PDF Section */}
-  {/* <div className="mb-6 flex-1">
-    <h3 className="text-xl font-semibold mb-2">PDFkkkk</h3>
-    <div className="flex flex-col gap-2">
-      {holidayData?.pdf?.map((pdf, index) => (
-        <a
-          key={index}
-          href={`${cdnUrl}${pdf.link}`} // Correctly render the PDF link
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 flex items-center gap-2"
-        >
-          <span className="font-medium">View PDF</span>
-        </a>
-      ))}
-    </div>
-  </div> */}
-</div>
-
-
- 
-     
-  {/* Pricing Table */}
-  <h3 className="text-xl font-semibold mb-4">Pricing</h3>
-  <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
-    <thead>
-      <tr className="bg-gray-200">
-        <th className="border border-gray-300 px-4 py-2">Title</th>
-        <th className="border border-gray-300 px-4 py-2">Description</th>
-        <th className="border border-gray-300 px-4 py-2">Total Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className="border border-gray-300 px-4 py-2">{holidayData?.pricing?.title}</td>
-        <td className="border border-gray-300 px-4 py-2">{holidayData?.pricing?.description}</td>
-        <td className="border border-gray-300 px-4 py-2">{holidayData?.pricing?.totalAmount}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  {/* Timings Table */}
-  <h3 className="text-xl font-semibold mb-4">Timings</h3>
-  <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
-    <thead>
-      <tr className="bg-gray-200">
-        <th className="border border-gray-300 px-4 py-2">Title</th>
-        <th className="border border-gray-300 px-4 py-2">Days</th>
-        <th className="border border-gray-300 px-4 py-2">Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      {holidayData?.timings?.map((timing, index) => (
-        <tr key={index}>
-          <td className="border border-gray-300 px-4 py-2">{timing.title}</td>
-          <td className="border border-gray-300 px-4 py-2">{timing.days}</td>
-          <td className="border border-gray-300 px-4 py-2">{timing.time}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-
-  {/* FAQ */}
-  <div className="mb-6">
-    <h3 className="text-xl font-semibold mb-4">FAQ</h3>
-    {holidayData?.faq?.map((faq, index) => (
-      <div key={index} className="mb-4">
-        <p className="font-semibold">Q: {faq.question}</p>
-        <p>A: {faq.answer}</p>
+      {/* Call to Action */}
+      <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>
+          <h4 className="text-lg font-semibold text-gray-800">Ready to book this package?</h4>
+          <p className="text-gray-600">Contact our travel experts now</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={closeModal}
+            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+          >
+            Close
+          </button>
+          <button className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-yellow-700 transition">
+            Book Now
+          </button>
+        </div>
       </div>
-    ))}
-  </div>
-
-  {/* Additional Information */}
-  <div className="mb-6">
-    <h3 className="text-xl font-semibold mb-4">Additional Information</h3>
-    <p>{holidayData?.additionalInfo}</p>
-  </div>
-
-  {/* Close Button */}
-  <button
-    onClick={closeModal}
-    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
-  >
-    Close
-  </button>
-</div>
-
-      </Modal>
+    </div>
+  ) : (
+    <div className="p-8 text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mx-auto"></div>
+      <p className="mt-4 text-gray-600">Loading package details...</p>
+    </div>
+  )}
+</Modal>
     </div>
   );
 };

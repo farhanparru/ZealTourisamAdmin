@@ -1,52 +1,47 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
-import { FiEdit, FiTrash, FiEye } from "react-icons/fi";
-import axios from "axios"; // Import axios for making API requests
-import visas from "../assets/Images/visas.png"; // You can change this path or use different images for packages
-import { useNavigate, Link } from "react-router-dom";
+import { FiEdit, FiTrash, FiEye, FiSearch, FiPlus } from "react-icons/fi";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Modal from "react-modal";
 import "react-toastify/dist/ReactToastify.css";
-import Modal from "react-modal"; // Modal for displaying holiday details
+import visas from "../assets/Images/visas.png";
 
 const GlobalVisas = () => {
   const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate("/AddVisa");
-  };
-
   const [packages, setPackages] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
-  console.log(selectedPackage, "selectedPackage");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
+const modalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '95%', // More width for mobile
+    maxWidth: '1200px',
+    maxHeight: '90vh',
+    padding: '0',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+    border: 'none',
+    overflow: 'hidden'
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 1000
+  }
+};
 
-  const modalStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      maxWidth: "90%",
-      maxHeight: "90%",
-      minWidth: "80%",
-      overflow: "auto",
-      padding: "20px",
-      backgroundColor: "#f0f0f0",
-      borderRadius: "8px",
-      boxShadow: "0 4px 6px rgba(197, 75, 75, 0.1)",
-    },
-    overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.75)",
-    },
-  };
+  const closeModal = () => setModalIsOpen(false);
 
-  // Fetching visa packages from the API
   useEffect(() => {
     const fetchVisaPackages = async () => {
       try {
@@ -54,17 +49,15 @@ const GlobalVisas = () => {
           "https://zeal-tourisam-api.vercel.app/api/global-visa"
         );
 
-        console.log(response,"myGlobal");
-
         if (response.data.success) {
           const fetchedPackages = response.data.results.map((pkg) => ({
-            id: pkg._id, // Ensure 'id' is included
+            id: pkg._id,
             packageName: pkg.title,
             description: pkg.description,
-            images: pkg.images.length > 0 ? pkg.images[0] : null, // Use the first image or null if none
+            images: pkg.images.length > 0 ? pkg.images[0] : null,
             thumbnail: pkg.thumbnail,
             details: pkg.details,
-            faculty: pkg.faculty?.length > 0 ? pkg.faculty : ["Not specified"], // Ensure faculty is an array
+            faculty: pkg.faculty?.length > 0 ? pkg.faculty : ["Not specified"],
             visaNo: pkg.visaNo?.length > 0 ? pkg.visaNo : [0],
             howToApply: pkg.howToApply,
             overview: pkg.overview,
@@ -75,312 +68,283 @@ const GlobalVisas = () => {
             options: pkg.options || [],
             faq: pkg.faq || [],
           }));
-          console.log(fetchedPackages, "fetchedPackages");
-
           setPackages(fetchedPackages);
         }
       } catch (error) {
-        console?.log(error);
+        console.error("Error fetching visa packages:", error);
+        toast.error("Failed to load visa packages");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchVisaPackages();
   }, []);
 
-  // Delete Visa package by ID
-  const handleDeletePackage = (id) => {
-    console.log("Deleting package with id:", id); // Check if id is undefined
+  const handleDeletePackage = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this visa package?")) return;
+    
     const token = localStorage.getItem("adminToken");
-
-    axios
-      .delete(`https://zeal-tourisam-api.vercel.app/api/global-visa/${id} `, {
-        headers: {
-          "x-access-token": `${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-
-      .then((response) => {
-        if (response.data.success) {
-          toast.success("Delete pacakaje successfully");
-          // Remove the deleted package from the state
-          const updatedPackages = packages.filter((pkg) => pkg.id !== id);
-          setPackages(updatedPackages);
+    try {
+      await axios.delete(
+        `https://zeal-tourisam-api.vercel.app/api/global-visa/${id}`,
+        {
+          headers: {
+            "x-access-token": token,
+            "Content-Type": "application/json",
+          },
         }
-      })
-      .catch((error) => {
-        console.error("There was an error deleting the package!", error);
-      });
+      );
+      toast.success("Visa package deleted successfully");
+      setPackages(packages.filter((pkg) => pkg.id !== id));
+    } catch (error) {
+      console.error("Error deleting visa package:", error);
+      toast.error("Failed to delete visa package");
+    }
   };
 
-
-  // View GlobalVisa pacakje deleteils
   const handleViewDetails = (pkg) => {
-    setSelectedPackage(pkg); // Set the selected package details
-    setModalIsOpen(true); // Open the modal
+    setSelectedPackage(pkg);
+    setModalIsOpen(true);
   };
+
+  const filteredPackages = packages.filter((pkg) =>
+    pkg.packageName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    pkg.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6">
-      {/* Special Offer Section */}
-      <div className="bg-gradient-to-r from-blue-500 to-green-500 text-white p-6 rounded-lg shadow mb-6 flex items-center justify-between">
-        <div className="w-1/2">
-          <h2 className="text-2xl font-bold mb-4">
-            Special Offer: Global Visas Discount
-          </h2>
-          <p className="mb-4">
-            Get exclusive discounts on our visa packages for a limited time!
+    <div className="container mx-auto p-4">
+      {/* Hero Section with UAE-inspired design */}
+      <div className="relative bg-gradient-to-r from-blue-900 to-green-800 text-white py-16 px-4 sm:px-6 lg:px-8 rounded-xl mb-8 overflow-hidden">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')]"></div>
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Global Visa Packages</h1>
+          <p className="text-xl md:text-2xl mb-8">
+            Explore our exclusive visa services for destinations worldwide
           </p>
-          <button className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-full font-bold hover:bg-yellow-300 transition">
-            Discover Offers
+          
+          {/* Search Bar */}
+          <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-4">
+            <div className="relative flex-grow">
+              <FiSearch className="absolute left-3 top-3 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search visa packages..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-800"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Add New Package Section */}
+      <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-100">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Manage Visa Packages</h2>
+            <p className="text-gray-600">Add new packages or manage existing ones</p>
+          </div>
+          <button
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-full font-medium hover:from-yellow-600 hover:to-yellow-700 transition flex items-center gap-2 shadow-lg"
+            onClick={() => navigate("/AddVisa")}
+          >
+            <FiPlus /> Add New Package
           </button>
         </div>
-        <div className="w-1/2 flex justify-end">
-          <img
-            src={visas}
-            alt="Special Offer Global Visas"
-            className="w-80 h-auto rounded-lg shadow-lg"
-          />
+      </div>
+
+      {/* Packages List Section */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        {/* Table Header - Fixed */}
+        <div className="grid grid-cols-12 bg-gradient-to-r from-blue-900 to-green-800 text-white p-4 font-bold sticky top-0 z-10">
+          <div className="col-span-4">Package Name</div>
+          <div className="col-span-5">Description</div>
+          <div className="col-span-1">Image</div>
+          <div className="col-span-2 text-center">Actions</div>
+        </div>
+
+        {/* Scrollable Package Rows */}
+        <div className="h-32  overflow-y-auto">
+          {filteredPackages.length > 0 ? (
+            filteredPackages.map((pkg) => (
+              <div 
+                key={pkg.id} 
+                className="grid grid-cols-12 items-center p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <div className="col-span-4 font-medium text-gray-800 truncate">{pkg.packageName}</div>
+                <div className="col-span-5 text-gray-600 truncate">{pkg.description}</div>
+                <div className="col-span-1">
+                  <img
+                    src={pkg.images || pkg.thumbnail || visas}
+                    alt={pkg.packageName}
+                    className="w-12 h-12 object-cover rounded-lg"
+                  />
+                </div>
+                <div className="col-span-2 flex justify-center gap-4">
+                  <button
+                    onClick={() => handleViewDetails(pkg)}
+                    className="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition"
+                    title="View Details"
+                  >
+                    <FiEye size={16} />
+                  </button>
+                  <button
+                    onClick={() => navigate(`/EditGlobalVisa/${pkg.id}`)}
+                    className="text-yellow-600 hover:text-yellow-800 p-2 rounded-full hover:bg-yellow-50 transition"
+                    title="Edit"
+                  >
+                    <FiEdit size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDeletePackage(pkg.id)}
+                    className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition"
+                    title="Delete"
+                  >
+                    <FiTrash size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-8 text-center text-gray-500">
+              {packages.length === 0 ? "No visa packages available" : "No packages match your search"}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-4 mb-6">
-        <h2 className="text-xl font-semibold mb-2">Add New Package</h2>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition flex items-center space-x-2"
-          onClick={handleClick}
-        >
-          Add New Package
-        </button>
-      </div>
-
-      {/* Packages Table */}
-      <div className="bg-white shadow rounded-lg p-4">
-        <h2 className="text-xl font-semibold mb-2">All Packages</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-gray-600">
-                  Package Name
-                </th>
-                <th className="px-4 py-2 text-left text-gray-600">
-                  Description
-                </th>
-                <th className="px-4 py-2 text-left text-gray-600">Image</th>
-                <th className="px-4 py-2 text-center text-gray-600">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {packages.map((pkg) => (
-                <tr key={pkg._id} className="border-b">
-                  <td className="px-4 py-2">{pkg.packageName}</td>
-                  <td className="px-4 py-2">{pkg.description}</td>
-                  <td className="px-4 py-2">
-                    <img
-                      src={pkg.images} // Ensure this is the correct field for your image
-                      alt="Hidd"
-                      className="w-20 h-auto rounded"
-                    />
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <Link>
-                      <button
-                        className="text-blue-500 hover:text-blue-600 mx-2"
-                        onClick={() => handleViewDetails(pkg)}
-                      >
-                        <FiEye />
-                      </button>
-                    </Link>
-                    <button
-                      className="text-yellow-500 hover:text-yellow-600 mx-2"
-                      onClick={() => navigate(`/EditGlobalVisa/${pkg.id}`)}
-                    >
-                      <FiEdit />
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-600 mx-2"
-                      onClick={() => handleDeletePackage(pkg.id)} // Pass the package ID to the delete function
-                    >
-                      <FiTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
+      {/* Package Details Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Package Details"
+        contentLabel="Visa Package Details"
         style={modalStyles}
       >
         {selectedPackage ? (
-          <div className="p-6 bg-white rounded-lg shadow-lg max-w-5xl mx-auto">
-            {/* Title */}
-            <h2 className="text-3xl font-bold mb-4">
-              {selectedPackage.packageName}
-            </h2>
-
-            {/* Overview & Description */}
-            <p className="text-gray-700 mb-4">
-              <strong>Overview:</strong> {selectedPackage.overview}
-            </p>
-            <p className="text-gray-700 mb-4">
-              <strong>Description:</strong> {selectedPackage.description}
-            </p>
-
-            {/* Images & Thumbnail */}
-            <div className="flex space-x-4 mb-4">
-              {selectedPackage.images ? (
-                <img
-                  src={selectedPackage.images}
-                  alt="Package Image"
-                  className="w-40 h-40 object-cover rounded shadow"
-                />
-              ) : (
-                <p>No image available</p>
-              )}
-              {selectedPackage.thumbnail ? (
-                <img
-                  src={selectedPackage.thumbnail}
-                  alt="Package Thumbnail"
-                  className="w-20 h-20 object-cover rounded shadow"
-                />
-              ) : (
-                <p>No thumbnail available</p>
-              )}
+          <div className="p-6">
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-3xl font-bold text-gray-800">
+                {selectedPackage.packageName}
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
             </div>
 
-            {/* Pricing Table */}
-            <h3 className="text-xl font-semibold mb-2">Pricing</h3>
-            <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border border-gray-300 px-4 py-2">Title</th>
-                  <th className="border border-gray-300 px-4 py-2">Amount</th>
-                  <th className="border border-gray-300 px-4 py-2">Currency</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedPackage.pricing.packageCost.map((cost, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {cost.title}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {cost.amount}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {cost.currency}
-                    </td>
-                  </tr>
-                ))}
-                {selectedPackage.pricing.tax.map((tax, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {tax.title}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {tax.amount}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {tax.currency}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              {/* Main Image */}
+              <div className="col-span-1">
+                <img
+                  src={selectedPackage.images || selectedPackage.thumbnail || visas}
+                  alt={selectedPackage.packageName}
+                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                />
+              </div>
 
-            {/* Options */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Options</h3>
-              {selectedPackage.options && selectedPackage.options.length > 0 ? (
-                selectedPackage.options.map((option, index) => (
-                  <div key={index} className="mb-4 border p-4 rounded shadow">
-                    <p>
-                      <strong>Title:</strong> {option.title}
-                    </p>
-                    <p>
-                      <strong>Badge:</strong> {option.badge}
-                    </p>
-                    <p>
-                      <strong>Discount:</strong> {option.discountPercentage}
-                    </p>
-                    <p>
-                      <strong>Refund Status:</strong> {option.refundStatus}
-                    </p>
-                    <p>
-                      <strong>Price:</strong> {option.price} {option.currency}
-                    </p>
-                    <p>
-                      <strong>Footer Text:</strong> {option.footerText}
-                    </p>
+              {/* Quick Info */}
+              <div className="col-span-1">
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4">
+                  <h3 className="font-bold text-yellow-700 mb-2">Overview</h3>
+                  <p className="text-gray-700">{selectedPackage.overview || "No overview available"}</p>
+                </div>
 
-                    {/* Process Type */}
-                    {option.processType && option.processType.length > 0 && (
-                      <p>
-                        <strong>Process Type:</strong>{" "}
-                        {option.processType.join(", ")}
-                      </p>
-                    )}
-
-                    {/* Price With Currency */}
-                    {option.priceWithCurrency &&
-                      option.priceWithCurrency.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold mt-2">
-                            Price with Currency
-                          </h4>
-                          <ul className="list-disc list-inside">
-                            {option.priceWithCurrency.map((pwc, pwcIndex) => (
-                              <li key={pwcIndex}>
-                                <strong>Currency:</strong> {pwc.currency},
-                                <strong> Discount Price:</strong>{" "}
-                                {pwc.discountPrice},
-                                <strong> Discount Percentage:</strong>{" "}
-                                {pwc.discountPercentage}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                  </div>
-                ))
-              ) : (
-                <p>No options available</p>
-              )}
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                  <h3 className="font-bold text-blue-700 mb-2">Description</h3>
+                  <p className="text-gray-700">{selectedPackage.description || "No description available"}</p>
+                </div>
+              </div>
             </div>
+
+            {/* Pricing */}
+            {selectedPackage.pricing && (
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+                  Pricing Information
+                </h3>
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  <table className="min-w-full">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-gray-700">Title</th>
+                        <th className="px-4 py-3 text-left text-gray-700">Amount</th>
+                        <th className="px-4 py-3 text-left text-gray-700">Currency</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedPackage.pricing.packageCost?.map((cost, index) => (
+                        <tr key={index} className="border-t">
+                          <td className="px-4 py-3">{cost.title || 'Package Cost'}</td>
+                          <td className="px-4 py-3">{cost.amount || '-'}</td>
+                          <td className="px-4 py-3">{cost.currency || '-'}</td>
+                        </tr>
+                      ))}
+                      {selectedPackage.pricing.tax?.map((tax, index) => (
+                        <tr key={`tax-${index}`} className="border-t">
+                          <td className="px-4 py-3">{tax.title || 'Tax'}</td>
+                          <td className="px-4 py-3">{tax.amount || '-'}</td>
+                          <td className="px-4 py-3">{tax.currency || '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* How to Apply */}
+            {selectedPackage.howToApply && (
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+                  How to Apply
+                </h3>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-gray-700">{selectedPackage.howToApply}</p>
+                </div>
+              </div>
+            )}
 
             {/* FAQ */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">FAQ</h3>
-              {selectedPackage.faq && selectedPackage.faq.length > 0 ? (
-                <ul className="list-disc list-inside">
+            {selectedPackage.faq?.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+                  Frequently Asked Questions
+                </h3>
+                <div className="space-y-4">
                   {selectedPackage.faq.map((item, index) => (
-                    <li key={index}>
-                      <strong>{item.question}</strong>: {item.answer}
-                    </li>
+                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-blue-800 mb-2">Q: {item.question}</h4>
+                      <p className="text-gray-700">A: {item.answer}</p>
+                    </div>
                   ))}
-                </ul>
-              ) : (
-                <p>No FAQs available</p>
-              )}
-            </div>
+                </div>
+              </div>
+            )}
 
-            {/* Close Button */}
-            <button
-              onClick={closeModal}
-              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Close
-            </button>
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={closeModal}
+                className="bg-gradient-to-r from-blue-900 to-green-800 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-800 hover:to-green-700 transition"
+              >
+                Close
+              </button>
+            </div>
           </div>
         ) : (
-          <p>Loading package details...</p>
+          <div>Loading package details...</div>
         )}
       </Modal>
     </div>

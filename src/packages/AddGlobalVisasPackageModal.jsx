@@ -8,6 +8,7 @@ import VisaOption from "../components/VisaOption";
 import Pricing from "../components/Pricing";
 import MoreDetails from "../components/MoreDetails";
 import { useNavigate} from 'react-router-dom';
+import '../pages/AddHolidays/AddHolidays.css'
 
 const AddGlobalVisasPackageModal = () => {
 
@@ -338,149 +339,171 @@ const AddGlobalVisasPackageModal = () => {
     });
   };
 
-  return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200" style={{marginTop:'-19px'}}>
-      <h1 className="text-xl font-semibold text-center text-gray-700 mb-6 flex items-center justify-center gap-2">
-        <FaGlobe className="text-blue-500" /> Add Global Visas Package
-      </h1>
+ return (
+  <div className="holidays-container" style={{marginTop: '-19px'}}>
+    <h1 className="holidays-title">
+      <FaGlobe className="text-blue-500" /> Add Global Visas Package
+    </h1>
 
-      <form>
-        <div className="grid gap-4">
-          <label className="block">
-            <span className="text-gray-700 font-medium">Title*</span>
+    <form className="holiday-form">
+      <div className="holiday-formmain">
+        <div className="holiday-from1">
+          <div>
+            <label>Title*</label>
             <input
               type="text"
               value={globalVisaData.title}
               onChange={(e) => setGlobalVisaData({ ...globalVisaData, title: e.target.value })}
+              className="holiday-input"
               required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Description*</span>
+          <div>
+            <label>Description*</label>
             <textarea
               value={globalVisaData.description}
               onChange={(e) => setGlobalVisaData({ ...globalVisaData, description: e.target.value })}
+              className="holiday-input"
+              rows={3}
               required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
-          </label>
+          </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Details*</span>
+          <div>
+            <label>Details*</label>
             <textarea
               value={globalVisaData.details}
               onChange={(e) => setGlobalVisaData({ ...globalVisaData, details: e.target.value })}
+              className="holiday-input"
+              rows={3}
               required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
             />
-          </label>
+          </div>
+        </div>
 
-          <label className="block">
-            <span className="text-gray-700 font-medium">Slug*</span>
+        <div className="holiday-from2">
+          <div>
+            <label>Slug*</label>
             <input
               type="text"
               value={globalVisaData.slug}
               onChange={(e) => setGlobalVisaData({ ...globalVisaData, slug: e.target.value })}
-              required
-              className="mt-1 block w-full p-2 border rounded border-gray-300"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 font-medium">Images File*</span>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
+              className="holiday-input"
               required
             />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 font-medium">Thumbnail File*</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleThumbnailUpload}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 outline-none"
-              required
-            />
-          </label>
-
-          <div className="grid gap-3">
-            <button
-              type="button"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded transition"
-              onClick={openMoreDetailsModal}
-            >
-              Add More Details
-            </button>
-
-            <button
-              type="button"
-              className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded transition"
-              onClick={openPricingModal}
-            >
-              Add Pricing
-            </button>
-
-            <button
-              type="button"
-              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 rounded transition"
-              onClick={openVisaoptionModal}
-            >
-              Add Visa Options
-            </button>
-            
           </div>
 
-          
+          <div>
+            <label>Images File*</label>
+            <div className="file-upload-container">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="file-upload-input"
+                id="images-upload"
+                required
+              />
+              <label htmlFor="images-upload" className="file-upload-label">
+                Choose Files
+              </label>
+              <span className="file-upload-text">
+                {globalVisaData.images.length > 0 ? `${globalVisaData.images.length} files selected` : "No files chosen"}
+              </span>
+            </div>
+          </div>
 
-          <div className="flex justify-between mt-4">
-            <button
-              type="reset"
-              className="w-[48%] bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 rounded transition"
-              onClick={handleClick}
-            >
-               SEO Settings
-            </button>
-
-            <button
-              type="submit"
-              className="w-[48%] bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
+          <div>
+            <label>Thumbnail File*</label>
+            <div className="file-upload-container">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailUpload}
+                className="file-upload-input"
+                id="thumbnail-upload"
+                required
+              />
+              <label htmlFor="thumbnail-upload" className="file-upload-label">
+                Choose File
+              </label>
+              <span className="file-upload-text">
+                {globalVisaData.thumbnail ? "1 file selected" : "No file chosen"}
+              </span>
+            </div>
           </div>
         </div>
-      </form>
+      </div>
 
-      {/* Render AddMoreDetails modal and pass open and close handlers */}
-      <VisaOption
-        isOpen={isVisaOptionModalOpen}
-        onClose={closeVisaoptionModal}
-        globalVisaData={globalVisaData}
-        onSubmit={AddVisaOptionSubmit}
-      />
-      <Pricing
+      <div className="holidaySecondFrom">
+        <div className="holidaysecondfrom1">
+          <button
+            type="button"
+            className="btn-add"
+            onClick={openMoreDetailsModal}
+          >
+            Add More Details
+          </button>
+
+          <button
+            type="button"
+            className="btn-add"
+            onClick={openPricingModal}
+          >
+            Add Pricing
+          </button>
+
+          <button
+            type="button"
+            className="btn-add"
+            onClick={openVisaoptionModal}
+          >
+            Add Visa Options
+          </button>
+        </div>
+      </div>
+
+      <div className="form-actions">
+        <button
+          type="button"
+          className="btn cancel-btn"
+          onClick={handleClick}
+        >
+          SEO Settings
+        </button>
+        <button
+          type="submit"
+          className="btn submit-btn"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+
+    {/* Modals */}
+    <VisaOption
+      isOpen={isVisaOptionModalOpen}
+      onClose={closeVisaoptionModal}
+      globalVisaData={globalVisaData}
+      onSubmit={AddVisaOptionSubmit}
+    />
+    <Pricing
       isOpen={isPricingModalOpen}
       onClose={closePricingModal} 
       globalVisaData={globalVisaData} 
-      onSubmit={addPricingSubmit}/>
-
-      <MoreDetails
-        isOpen={isMoreDetailsModalOpen}
-        onClose={closeMoreDetailsModal}
-        globalVisaData={globalVisaData}
-        onSubmit={addMoreDetailsSubmit} // Pass the submit handler
-      />
-    </div>
-  );
+      onSubmit={addPricingSubmit}
+    />
+    <MoreDetails
+      isOpen={isMoreDetailsModalOpen}
+      onClose={closeMoreDetailsModal}
+      globalVisaData={globalVisaData}
+      onSubmit={addMoreDetailsSubmit}
+    />
+  </div>
+);
 };
 
 export default AddGlobalVisasPackageModal;
